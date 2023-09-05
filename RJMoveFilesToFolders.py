@@ -1,6 +1,9 @@
 import os
 import shutil
 
+# Minecraft - 
+# Fortnite - 
+
 # Define the directory you want to start the search in
 start_directory = "/path/to/your/directory"
 
