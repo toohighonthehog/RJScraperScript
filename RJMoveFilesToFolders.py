@@ -5,34 +5,32 @@ import shutil
 # Fortnite - 
 
 # Define the directory you want to start the search in
-start_directory = "/path/to/your/directory"
+start_directory = "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"
 
 # Define the file extension you want to search for
 target_extension = ".txt"
 
-# Maximum depth to search (3 levels deep)
-max_depth = 3
+# Iterate through the directory and its subdirectories
+for file in os.listdir(start_directory):
+    if os.path.isfile(start_directory + file) and file.endswith(target_extension):
+        print(f"Moving : {file}")
+        # Get the full path of the file
+        #print(file + "xx")
+        #file_path = os.path.join(root, file)
+        # Extract the extension without the dot
+        folder_without_dot = file.replace(target_extension,'')
+        extension_without_dot = target_extension.strip(".")
+        #print(folder_without_dot + "yy")
 
-# Function to move a file to a folder with the same name as its extension
-def move_file_to_extension_folder(file_path):
-    _, file_name = os.path.split(file_path)
-    extension = os.path.splitext(file_name)[1]
-    extension_folder = os.path.join(os.path.dirname(file_path), extension.lstrip('.'))
-    
-    if not os.path.exists(extension_folder):
-        os.makedirs(extension_folder)
-    
-    destination_path = os.path.join(extension_folder, file_name)
-    shutil.move(file_path, destination_path)
-    print(f"Moved '{file_name}' to '{extension_folder}'")
+        # Create a folder with the same name as the extension if it doesn't exist
+        destination_directory = start_directory + folder_without_dot
 
-# Recursively search and move files
-for root, _, files in os.walk(start_directory):
-    depth = root.count(os.path.sep) - start_directory.count(os.path.sep)
-    if depth > max_depth:
-        continue
-    
-    for file in files:
-        if file.endswith(target_extension):
-            file_path = os.path.join(root, file)
-            move_file_to_extension_folder(file_path)
+        if not os.path.exists(destination_directory):
+            os.makedirs(destination_directory)
+
+        # Move the file to the folder
+
+        print(file)
+        print(destination_directory)
+        os.rename(start_directory + file, destination_directory + "/" + file)
+        print(f"Moved '{file}' to '{destination_directory}'")
