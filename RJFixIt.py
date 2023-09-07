@@ -78,12 +78,13 @@ def download_subtitlecat(process_folder, process_title, process_language):
             except:
                 pass
 
-# Define the directory you want to start the search + the file extension + language suffix
-base_directory= "/mnt/multimedia/Other/RatedFinalJ/<path>/12/"
-target_extension = ".mp4"
-language="en.srt"
-
-title = move_to_folder(base_directory, target_extension)
-
-if len(title) > 0:
-    download_subtitlecat(start_directory, title, language)
+if __name__ == "__main__":
+    # Define the directory you want to start the search + the file extension + language suffix
+    base_directory= "/mnt/multimedia/Other/RatedFinalJ/<path>/12/"
+    target_extension = ".mp4"
+    language="en.srt"
+    
+    title = move_to_folder(base_directory, target_extension)
+    
+    if len(title) > 0:
+        download_subtitlecat(start_directory, title, language)
