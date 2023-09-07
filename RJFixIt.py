@@ -4,18 +4,17 @@ from requests_html import HTMLSession
 def move_to_folder(process_folder, process_extension):
     result = ""
     for file in os.listdir(process_folder):
-        if os.path.isfile(process_folder + file) and file.endswith(process_extension):
+        if os.path.isfile(process_folder + file) and file.lower().endswith(process_extension):
             print(f"Moving : {file}")
             # Get the full path of the file
-            #print(file + "xx")
-            #file_path = os.path.join(root, file)
             # Extract the extension without the dot
-            folder_without_dot = file.replace(process_extension,'')
+            file_without_extension = re.sub(process_extension, '', file, flags=re.IGNORECASE)
             extension_without_dot = process_extension.strip(".")
+            
             #print(folder_without_dot + "yy")
 
             # Create a folder with the same name as the extension if it doesn't exist
-            destination_directory = process_folder + folder_without_dot
+            destination_directory = process_folder + insert_hyphen_between_letters_and_numbers(file_without_extension.upper())
 
             print(destination_directory)
 
@@ -24,11 +23,12 @@ def move_to_folder(process_folder, process_extension):
 
             # Move the file to the folder
 
-            print(file)
-            print(destination_directory)
-            os.rename(start_directory + file, destination_directory + "/" + folder_without_dot + process_extension)
+            print(process_folder + file)
+            print(insert_hyphen_between_letters_and_numbers(destination_directory) + "/" + insert_hyphen_between_letters_and_numbers(file_without_extension).upper() + process_extension.lower())
+            os.rename(process_folder + file, insert_hyphen_between_letters_and_numbers(destination_directory) + "/" + insert_hyphen_between_letters_and_numbers(file_without_extension).upper() + process_extension.lower())
             print(f"Moved '{file}' to '{destination_directory}'")
-            result = folder_without_dot
+            result = file_without_extension
+            print("======================================")
     
     return result
 
@@ -79,8 +79,12 @@ def download_subtitlecat(process_folder, process_title):
                             filename = ((suburlresult.rsplit('/', 1)[1]).lower())
                         print("Download " + filename)
                         rfile = requests.get(suburlresult, allow_redirects=True)
+                        
                         print(process_folder  + filename)
                         open(process_folder + filename, 'wb').write(rfile.content)
+                        new_filename = filename.replace(process_title, (process_title).upper())
+                        os.rename(filename, new_filename)
+                        
                         print("======================================")
             except:
                 pass
@@ -100,6 +104,7 @@ target_extension = ".mp4"
 language="en.srt"
 
 title = move_to_folder(start_directory, target_extension)
+print(title)
 
 if len(title) > 0:
     download_subtitlecat(start_directory, title)
