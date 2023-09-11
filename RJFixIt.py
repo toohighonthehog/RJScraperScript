@@ -1,23 +1,25 @@
 import sys, os, re, requests, json, logging, time, hashlib
 import mysql.connector
 
-
 from requests_html import HTMLSession
 from javscraper import *
 
 
-javlibrary = JAVLibrary()
 
+
+javlibrary = JAVLibrary()
 
 # add a rerun option + re-get json - done by creating a move down a level function
 # and some logic to check we're not nesting deeper and deeper
 # how about putting all the jsons in a central folder too? - done
-# send results to a database
+# send results to a database - almost done
 # colour coding or logging for output - half done
 # add subtitle available attribute - done
 # get date working in metadata
 # DASD677 subs??
-# actress to actor
+# Inst --- ???
+# actress to actor - done
+# check if incumbent subs exist, so may the subs_avaiable setting True regardless of SC.
 
 def move_to_directory(process_directory, process_file, process_extension):
     process_result = ""
@@ -37,9 +39,9 @@ def move_to_directory(process_directory, process_file, process_extension):
     os.rename(process_directory + file, insert_hyphen_between_letters_and_numbers(destination_directory) + "/" + insert_hyphen_between_letters_and_numbers(file_without_extension).upper() + process_extension.lower())
     my_logger.info("MUL - Moved " + process_file + " to " + destination_directory + ".")
     process_result = file_without_extension
-    
     return process_result
 
+# This can probably be made better - i.e. find the code in a big string.
 def insert_hyphen_between_letters_and_numbers(input_string):
     # Use regular expression to find all occurrences of letters followed by numbers
     # and insert a hyphen between them
@@ -56,6 +58,12 @@ def download_subtitlecat(process_directory, process_title, process_language):
     # Create the HTML session
     session = HTMLSession()
     process_subtitleavailable = False
+
+    ##########
+    if any(file.endswith(process_language) for file in os.listdir(process_directory)):
+        process_subtitleavailable = True
+    ##########
+    
     url_level1 = 'https://www.subtitlecat.com/index.php?search=' + process_title
     response_level1 = session.get(url_level1)
 
@@ -93,7 +101,7 @@ def download_metadata(process_directory, process_cjson_directory, process_title,
     process_title = insert_hyphen_between_letters_and_numbers(process_title)
     metadata = javlibrary.get_video(process_title)
     if metadata is not None:
-        metadata_array = { "Code": metadata.code, "Name": metadata.name, "Actress": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "Location": process_directory + process_title + "/" + process_title + process_extension, "Subtitles": process_subtitle_available}
+        metadata_array = { "Code": metadata.code, "Name": metadata.name, "actor": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "Location": process_directory + process_title + "/" + process_title + process_extension, "Subtitles": process_subtitle_available}
         metadata_json = json.dumps(metadata_array, indent=4)
         my_logger.info("GMD - Downloading metadata for " + process_title + ".json.")    
         with open(process_directory + process_title + "/" + process_title + ".json", "w") as outfile:
@@ -101,48 +109,18 @@ def download_metadata(process_directory, process_cjson_directory, process_title,
         with open(process_cjson_directory + process_title + ".json", "w") as outfile:
             outfile.write(metadata_json)
         # check if records exist
-        # split out genre and actresses
+        # split out genre and actor
 
         my_logger.info("GMD - Write metadata for " + process_title + " to database.")
 
         send_data_to_database(metadata, (process_directory + process_title + "/" + process_title + process_extension), (process_subtitle_available))
- 
-        # my_insert_sql_titles = "INSERT INTO titles (code, name, studio, image, score, location, subtitles) VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY DO NOTHING"
-        # my_insert_sql_genre = "INSERT INTO genre (code, description) VALUES (%s %s) ON DUPLICATE KEY UPDATE"
-        # my_insert_sql_actresses = "INSERT INTO actresses (code, name) VALUES (%s %s) ON DUPLICATE KEY UPDATE"
-                          
-        #my_cursor.execute(my_insert_sql_titles, (metadata.code, metadata.name, metadata.studio, metadata.image, metadata.score, (process_directory + process_title + "/" + process_title + process_extension), (process_subtitle_available)))
-        #my_cursor.execute(my_insert_sql_genre, (metadata.code, "xxx"))
-        #my_cursor.execute(my_insert_sql_actresses, (metadata.code, "yyy"))
-
-        
-
-
-        #
-        # Add 
-        # To
-        # Database
-        #
-        # Title
-        # Actress
-        # Genre
-        # (date)
-        #
-
-
-
-
-
-
-
-
     else:
         my_logger.info("GMD - No metadata for " + process_title + ".")
 
 def send_data_to_database(process_metadata, process_location, process_subtitles_avail):
     my_insert_sql_titles = "INSERT IGNORE INTO titles (code, name, studio, image, score, location, subtitles) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     my_insert_sql_genre = "INSERT IGNORE INTO genre (code, description, key) VALUES (%s, %s, %s)"
-    my_insert_sql_actresses = "INSERT IGNORE INTO actress (code, name, key) VALUES (%s, %s, %s)"
+    my_insert_sql_actor = "INSERT IGNORE INTO actor (code, name, key) VALUES (%s, %s, %s)"
 
     my_cursor.execute(my_insert_sql_titles, (process_metadata.code, process_metadata.name, process_metadata.studio, process_metadata.image, process_metadata.score, process_location, process_subtitles_avail))
 
@@ -154,14 +132,13 @@ def send_data_to_database(process_metadata, process_location, process_subtitles_
         print(hash_output)
         my_cursor.execute(my_insert_sql_genre, (process_metadata.code, g, hash_output))
 
-    for a in process_metadata.actresses:
+    for a in process_metadata.actor:
         hash_input = (process_metadata.code + a).encode()
         hash_output = hashlib.md5(hash_input).hexdigest()
         print(hash_output)
-        my_cursor.execute(my_insert_sql_actresses, (process_metadata.code, a, hash_output))
+        my_cursor.execute(my_insert_sql_actor, (process_metadata.code, a, hash_output))
 
     my_connection.commit()
-
 
 def move_down_level(process_directory, process_file, process_extension):
     file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
@@ -183,7 +160,7 @@ def get_console_handler():
 
 # def get_syslog_handler():
 #    syslog_handler = logging.handlers.SysLogHandler(address=(LOGHOST, 514))
-#    syslog_handler.setFormatter(logging.Formatter("RJMediaHasher %(message)s"))
+#    syslog_handler.setFormatter(logging.Formatter("RJMediaScraper %(message)s"))
 #    return syslog_handler
 
 def get_logger():
@@ -220,8 +197,8 @@ if __name__ == "__main__":
         if os.path.isdir(base_directory + file):
             move_down_level(base_directory, file, target_extension)
 
-    # # # # Do the scanning.
-    for file in os.listdir(base_directory):
+    # Do the scanning
+    for file in start_dir:
         if os.path.isfile(base_directory + file) and file.lower().endswith(target_extension):
             to_be_scraped = move_to_directory(base_directory, file, target_extension)
             subtitle_available = download_subtitlecat(base_directory, to_be_scraped, target_language)
