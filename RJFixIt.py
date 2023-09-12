@@ -3,6 +3,11 @@ import mysql.connector
 from requests_html import HTMLSession
 from javscraper import *
 
+# Define the directory you want to start the search + the file extension + language suffix
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Series/Bban/"
+TARGET_EXTENSION = ".mkv"
+TARGET_LANGUAGE = "en.srt"
+
 ## add a rerun option + re-get json - done by creating a move down a level function
 #  and some logic to check we're not nesting deeper and deeper
 ## how about putting all the jsons in a central folder too? - done
@@ -183,10 +188,6 @@ def get_logger():
    return logger
 
 if __name__ == "__main__":
-    # Define the directory you want to start the search + the file extension + language suffix
-    base_directory = "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"
-    target_extension = ".mp4"
-    target_language = "en.srt"
 
     my_connection = mysql.connector.connect( 
         user="rjohnson", 
@@ -202,27 +203,27 @@ if __name__ == "__main__":
 
     my_logger.info("======================================================================================")
 
-    start_dir = os.listdir(base_directory)
+    start_dir = os.listdir(BASE_DIRECTORY)
 
     # Moves the files down level so they get rescanned.
     for file in start_dir:
-        if os.path.isdir(base_directory + file):
-            move_down_level(base_directory, file, target_extension)
+        if os.path.isdir(BASE_DIRECTORY + file):
+            move_down_level(BASE_DIRECTORY, file, TARGET_EXTENSION)
 
     my_logger.info("======================================================================================")
 
-    time.sleep(10)
-    start_dir = os.listdir(base_directory)
+    # time.sleep(10)
+    # start_dir = os.listdir(BASE_DIRECTORY)
 
-    # Scan through the folder
-    for file in start_dir:
-        if os.path.isfile(base_directory + file) and file.lower().endswith(target_extension):
-            my_logger.info("+++++ " + file + " +++++")
-            to_be_scraped = move_to_directory(base_directory, file, target_extension, target_language)
-            subtitle_available = download_subtitlecat(base_directory, to_be_scraped, target_language)
-            download_metadata(base_directory, to_be_scraped, target_extension, subtitle_available)
-            my_logger.info("======================================================================================")
-            pass
+    # # Scan through the folder
+    # for file in start_dir:
+    #     if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
+    #         my_logger.info("+++++ " + file + " +++++")
+    #         to_be_scraped = move_to_directory(BASE_DIRECTORY, file, TARGET_EXTENSION, TARGET_LANGUAGE)
+    #         subtitle_available = download_subtitlecat(BASE_DIRECTORY, to_be_scraped, TARGET_LANGUAGE)
+    #         download_metadata(BASE_DIRECTORY, to_be_scraped, TARGET_EXTENSION, subtitle_available)
+    #         my_logger.info("======================================================================================")
+    #         pass
 
     my_cursor.close()
 
