@@ -212,18 +212,18 @@ if __name__ == "__main__":
 
     my_logger.info("======================================================================================")
 
-    # time.sleep(10)
-    # start_dir = os.listdir(BASE_DIRECTORY)
+    time.sleep(10)
+    start_dir = os.listdir(BASE_DIRECTORY)
 
-    # # Scan through the folder
-    # for file in start_dir:
-    #     if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
-    #         my_logger.info("+++++ " + file + " +++++")
-    #         to_be_scraped = move_to_directory(BASE_DIRECTORY, file, TARGET_EXTENSION, TARGET_LANGUAGE)
-    #         subtitle_available = download_subtitlecat(BASE_DIRECTORY, to_be_scraped, TARGET_LANGUAGE)
-    #         download_metadata(BASE_DIRECTORY, to_be_scraped, TARGET_EXTENSION, subtitle_available)
-    #         my_logger.info("======================================================================================")
-    #         pass
+    # Scan through the folder
+    for file in start_dir:
+        if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
+            my_logger.info("+++++ " + file + " +++++")
+            to_be_scraped = move_to_directory(BASE_DIRECTORY, file, TARGET_EXTENSION, TARGET_LANGUAGE)
+            subtitle_available = download_subtitlecat(BASE_DIRECTORY, to_be_scraped, TARGET_LANGUAGE)
+            download_metadata(BASE_DIRECTORY, to_be_scraped, TARGET_EXTENSION, subtitle_available)
+            my_logger.info("======================================================================================")
+            pass
 
     my_cursor.close()
 
