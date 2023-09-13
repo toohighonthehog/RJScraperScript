@@ -1,11 +1,11 @@
-import sys, os, re, requests, json, logging, time, hashlib, shutil
+import sys, os, re, requests, json, logging, time, hashlib, shutil, glob
 import mysql.connector
 from requests_html import HTMLSession
 from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
-BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Series/Bban/"
-TARGET_EXTENSION = ".mkv"
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"
+TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
 
 ## add a rerun option + re-get json - done by creating a move down a level function
@@ -17,11 +17,13 @@ TARGET_LANGUAGE = "en.srt"
 ## get date working in metadata
 ## actress to actor - done
 ## check if incumbent subs exist, so may the subs_avaiable setting True regardless of SC. - done
+## if it can't be found, don't move it - just skip
+## multiple file extensions?  (MP4, MKV, AVI)
+#  If it doesn't exist, create an actor row. Needs Testing - seems to be working - test a bit more.
+#  Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. (line 43)
 
 def move_to_directory(process_directory, process_file, process_extension, process_language):
-    process_result = ""
-
-    # Get the full path of the file and extract the extension without the dot
+    process_result = False
     source_file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
     destination_file_without_extension = (fix_file_code(re.sub(process_extension, '', process_file, flags=re.IGNORECASE)))
 
@@ -31,42 +33,41 @@ def move_to_directory(process_directory, process_file, process_extension, proces
         os.makedirs(destination_directory)
 
     # Move the file to the folder
-    os.rename(process_directory + process_file, destination_directory + "/" + fix_file_code(destination_file_without_extension + process_extension))
+    os.rename(process_directory + process_file + process_extension, destination_directory + "/" + fix_file_code(destination_file_without_extension + process_extension))
 
     file_list = os.listdir(process_directory)
     for file in file_list:
         if (file.startswith(source_file_without_extension) and file.endswith(process_language)):
-                shutil.move(process_directory + file, destination_directory)
-                my_logger.info("MUL - Moved " + file + " to " + destination_directory + ".")
+                os.rename(process_directory + file, destination_directory + "/" + fix_file_code(file))
+                #shutil.move(process_directory + file, destination_directory)
+                my_logger.info("MUL - Moved " + file + " to " + destination_directory + "/.")
 
-    my_logger.info("MUL - Moved " + process_file + " to " + destination_directory + ".")
+    my_logger.info("MUL - Moved " + process_file + " to " + destination_directory + "/.")
     process_result = destination_file_without_extension
+    
     return process_result
 
 def fix_file_code(input_string, delim = "-"):
     letters = ""
     numbers = ""
-
-    file_name, file_extension = os.path.splitext(input_string)
-    file_name = file_name.upper()
+    filename, file_extension = os.path.splitext(input_string)
+    #filename = filename.upper()
     file_extension = file_extension.lower()
 
-    for char in file_name:
+    for char in filename:
         if ord(char) in range(65, 91):
             letters += char
         elif ord(char) in range(48, 58):
             numbers += char
 
+    letters = letters.upper()
     number = int(numbers)
     return f"{letters}{delim}{number:03}{file_extension}"
 
 def download_subtitlecat(process_directory, process_title, process_language):
     process_directory = process_directory + process_title + "/"
     process_title = fix_file_code(process_title)
-
     my_logger.info("DLS - Searching SubtitleCat for " + process_title + ".")
-
-    # Create the HTML session
     session = HTMLSession()
     process_subtitleavailable = False
 
@@ -82,36 +83,39 @@ def download_subtitlecat(process_directory, process_title, process_language):
 
     for table_level1_entry in table_level1_entries:
         table_level1_entry_url = (list(table_level1_entry[0])[0])
+
         if re.search(process_title, table_level1_entry_url, re.IGNORECASE):
             response_level2 = session.get(table_level1_entry_url)
             table_level2 = response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
-            for table_level2_entry in table_level2.absolute_links:
-                if re.search(process_language, table_level2_entry, re.IGNORECASE):
-                    subtitle_url = table_level2_entry
-            try:
-                if re.search(process_language, subtitle_url, re.IGNORECASE):
-                    subtitle_url_check = (requests.head(subtitle_url).status_code)
-                    if subtitle_url_check==200:
-                        process_subtitleavailable = True
-                        my_logger.debug("DLS - Subtitle_URL " + subtitle_url + ".")
-                        # Split out the filename
-                        if subtitle_url.find('/'):
-                            subtitle_filename = ((subtitle_url.rsplit('/', 1)[1]).lower())
-                        my_logger.info("DLS - Downloading " + subtitle_filename + ".")
-                        subtitle_download = requests.get(subtitle_url, allow_redirects=True)
+            if table_level2 is not None:
+                for table_level2_entry in table_level2.absolute_links:
+                    if re.search(process_language, table_level2_entry, re.IGNORECASE):
+                        subtitle_url = table_level2_entry
+                try:
+                    if re.search(process_language, subtitle_url, re.IGNORECASE):
+                        subtitle_url_check = (requests.head(subtitle_url).status_code)
+                        if subtitle_url_check==200:
+                            process_subtitleavailable = True
+                            my_logger.debug("DLS - Subtitle_URL " + subtitle_url + ".")
+                            # Split out the filename
+                            if subtitle_url.find('/'):
+                                subtitle_filename = ((subtitle_url.rsplit('/', 1)[1]).lower())
+                            my_logger.info("DLS - Downloading " + subtitle_filename + ".")
+                            subtitle_download = requests.get(subtitle_url, allow_redirects=True)
 
-                        new_subtitle_filename = re.sub(process_title, process_title.upper() + "-(SC)", subtitle_filename, flags=re.IGNORECASE)
-                        
-                        open(process_directory + new_subtitle_filename, 'wb').write(subtitle_download.content)
-                        time.sleep(10)
-            except:
-                pass
+                            new_subtitle_filename = re.sub(process_title, process_title.upper() + "-(SC)", subtitle_filename, flags=re.IGNORECASE)
+                            
+                            open(process_directory + new_subtitle_filename, 'wb').write(subtitle_download.content)
+                            time.sleep(5)
+                except:
+                    pass
 
     return process_subtitleavailable
 
 def download_metadata(process_directory, process_title, process_extension, process_subtitle_available):
     process_title = fix_file_code(process_title)
     metadata = my_javlibrary.get_video(process_title)
+
     if metadata is not None:
         release_date = (metadata.release_date).strftime("%Y-%m-%d")
         my_logger.info("GMD - Downloading metadata for " + process_title + ".")  
@@ -140,9 +144,18 @@ def send_data_to_database(process_metadata, process_location, process_subtitles_
                             ) values (%s, %s, %s, %s, %s, %s, %s, %s)
                             on duplicate key update score = values(score), location = values(location), subtitles = values(subtitles) """)
     
-    my_insert_sql_genre = "INSERT IGNORE INTO genre (code, description, uid) VALUES (%s, %s, %s)"
-    my_insert_sql_actor = "INSERT IGNORE INTO actor (code, name, uid) VALUES (%s, %s, %s)"
-
+    my_insert_sql_genre = ("""insert into genre (code
+                            , description
+                            , uid) VALUES (%s, %s, %s)
+                            on duplicate key update description = values(description), uid = values(uid) """)
+    
+    my_insert_sql_actor_link = ("""insert into actor_link (code
+                            , name
+                            , uid) VALUES (%s, %s, %s)
+                            on duplicate key update name = values(name), uid = values(uid) """)
+    
+    my_insert_sql_actor = "insert ignore into actor (name) VALUES (%s)"
+                 
     my_cursor.execute(my_insert_sql_titles, (process_metadata.code, process_metadata.name, process_metadata.studio, process_metadata.image, process_metadata.score, process_metadata.release_date, process_location, process_subtitles_avail))
 
     for g in process_metadata.genres:
@@ -153,21 +166,27 @@ def send_data_to_database(process_metadata, process_location, process_subtitles_
     for a in process_metadata.actresses:
         hash_input = (process_metadata.code + a).encode()
         hash_output = hashlib.md5(hash_input).hexdigest()
-        my_cursor.execute(my_insert_sql_actor, (process_metadata.code, a, hash_output))
+        my_cursor.execute(my_insert_sql_actor_link, (process_metadata.code, a, hash_output))
+        my_cursor.execute(my_insert_sql_actor, (a,))
 
     my_connection.commit()
 
-def move_down_level(process_directory, process_file, process_extension):
-    file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
-    process_title = fix_file_code(file_without_extension)
-    source_file = process_directory + process_title + "/" + process_title + process_extension
-    destination_file = process_directory + process_title + process_extension
-    if os.path.exists(source_file):
+def move_down_level(process_file):
+    #file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
+    
+    folder_list_1 = os.listdir(BASE_DIRECTORY + process_file)
+    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in TARGET_EXTENSIONS)]
+
+    for filename in folder_list_2:
+    
+        #process_title = fix_file_code(file_without_extension)
+        source_file = BASE_DIRECTORY + process_file + "/" + filename
+        destination_file = BASE_DIRECTORY + filename
+        pass
+
         my_logger.info("MDL - Moving " + source_file + " down a level.")
-        try:
-            os.rename(source_file, destination_file)
-        except:
-            pass
+        os.rename(source_file, destination_file)
+
 
 def get_console_handler():
    console_handler = logging.StreamHandler(sys.stdout)
@@ -187,6 +206,18 @@ def get_logger():
    #logger.addHandler(get_syslog_handler())
    return logger
 
+def get_list_of_files():
+    folder_list_1 = os.listdir(BASE_DIRECTORY)
+    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in TARGET_EXTENSIONS)]
+    folder_list_3 = []
+
+    for file in folder_list_2:
+        filename, file_extension = os.path.splitext(os.path.basename(file))
+        if(my_javlibrary.search(filename)):
+            folder_list_3.append(file)
+
+    return folder_list_3
+
 if __name__ == "__main__":
 
     my_connection = mysql.connector.connect( 
@@ -203,27 +234,27 @@ if __name__ == "__main__":
 
     my_logger.info("======================================================================================")
 
-    start_dir = os.listdir(BASE_DIRECTORY)
-
-    # Moves the files down level so they get rescanned.
-    for file in start_dir:
-        if os.path.isdir(BASE_DIRECTORY + file):
-            move_down_level(BASE_DIRECTORY, file, TARGET_EXTENSION)
+    # scanned_directory = os.listdir(BASE_DIRECTORY)
+    # # Moves the files down level so they get rescanned.
+    # for full_filename in scanned_directory:
+    #     if os.path.isdir(BASE_DIRECTORY + full_filename):
+    #         filename, file_extension = os.path.splitext(os.path.basename(full_filename))
+    #         move_down_level(filename)
 
     my_logger.info("======================================================================================")
 
-    time.sleep(10)
-    start_dir = os.listdir(BASE_DIRECTORY)
-
+    scanned_directory = get_list_of_files()
     # Scan through the folder
-    for file in start_dir:
-        if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
-            my_logger.info("+++++ " + file + " +++++")
-            to_be_scraped = move_to_directory(BASE_DIRECTORY, file, TARGET_EXTENSION, TARGET_LANGUAGE)
-            subtitle_available = download_subtitlecat(BASE_DIRECTORY, to_be_scraped, TARGET_LANGUAGE)
-            download_metadata(BASE_DIRECTORY, to_be_scraped, TARGET_EXTENSION, subtitle_available)
-            my_logger.info("======================================================================================")
-            pass
+    for full_filename in scanned_directory:
+        #if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
+        filename, file_extension = os.path.splitext(os.path.basename(full_filename))
+
+        my_logger.info("+++++ " + filename + " +++++")
+        to_be_scraped = move_to_directory(BASE_DIRECTORY, filename, file_extension, TARGET_LANGUAGE)
+        subtitle_available = download_subtitlecat(BASE_DIRECTORY, to_be_scraped, TARGET_LANGUAGE)
+        download_metadata(BASE_DIRECTORY, to_be_scraped, file_extension, subtitle_available)
+
+        my_logger.info("======================================================================================")
 
     my_cursor.close()
 
