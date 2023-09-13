@@ -20,7 +20,7 @@ TARGET_LANGUAGE = "en.srt"
 ## if it can't be found, don't move it - just skip
 ## multiple file extensions?  (MP4, MKV, AVI)
 #  If it doesn't exist, create an actor row. Needs Testing - seems to be working - test a bit more.
-#  Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. (line 43)
+#  Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. (line 43)  Right now, it is stripping the target language so be careful.
 
 def move_to_directory(process_directory, process_file, process_extension, process_language):
     process_result = False
