@@ -5,10 +5,10 @@ from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
 BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
-TARGET_DIRECTORY = BASE_DIRECTORY
+TARGET_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/abcdefgh/"
 TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
-REDO_FILES = True
+REDO_FILES = False
 
 ## add a rerun option + re-get json - done by creating a move down a level function
 #? and some logic to check we're not nesting deeper and deeper
@@ -28,7 +28,8 @@ REDO_FILES = True
 #  Add some more checks, especially things which can go wrong destructively.  example?
 #  Probably need to do a bit of tidying up with filename fixing now that we have the more advanced fix_file_code function.
 ## Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
-#
+#  Check subtitle flag gets checked when going to a different target.
+#  Turn the whole thing into a module and have a few wrapper scripts.
 
 def move_to_directory(process_file, process_extension):
     process_result = False
@@ -137,7 +138,7 @@ def search_for_title(input_string, delimiter = "-"):
     return results
 
 def download_subtitlecat(process_title):
-    process_directory = BASE_DIRECTORY + process_title + "/"
+    process_directory = TARGET_DIRECTORY + process_title + "/"
     process_title = fix_file_code(process_title)
     session = HTMLSession()
     process_subtitleavailable = False
@@ -197,7 +198,7 @@ def download_metadata(process_title, process_extension, process_subtitle_availab
         metadata_json = json.dumps(metadata_array, indent=4)
 
         my_logger.info("MET - Write metadata for " + process_title + " to local json.")
-        with open(BASE_DIRECTORY + process_title + "/" + process_title + ".json", "w") as outfile:
+        with open(TARGET_DIRECTORY + process_title + "/" + process_title + ".json", "w") as outfile:
             outfile.write(metadata_json)
 
         my_logger.info("MET - Write metadata for " + process_title + " to database.")
