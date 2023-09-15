@@ -8,9 +8,10 @@ BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
+REDO_FILES = True
 
 ## add a rerun option + re-get json - done by creating a move down a level function
-#  and some logic to check we're not nesting deeper and deeper
+#? and some logic to check we're not nesting deeper and deeper
 ## how about putting all the jsons in a central folder too? - done
 ## send results to a database - done
 ## logging for output - done
@@ -20,13 +21,13 @@ TARGET_LANGUAGE = "en.srt"
 ## check if incumbent subs exist, so may the subs_avaiable setting True regardless of SC. - done
 ## if it can't be found, don't move it - just skip
 ## multiple file extensions?  (MP4, MKV, AVI)
-#  If it doesn't exist, create an actor row. Needs Testing - seems to be working - test a bit more.
-#  Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. Right now, it is stripping the target language so be careful. - done?  if it works, code can be easier.
-#  Add a 'file to the right place' option.  i.e. a source and destination constant.
-#  Check TARGET_DIRECTORY exists
-#  Need to do a bit of tidying up with filename fixing now that we have the more advanced fix_file_code function.
-#  Change the name of fix_file_code
-#  Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
+## If it doesn't exist, create an actor row. Needs Testing - seems to be working - test a bit more.
+## Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. Right now, it is stripping the target language so be careful. - done?  if it works, code can be easier.
+#  Add a 'file to the right place' option.  i.e. a source and destination constant. - need to test
+## Check TARGET_DIRECTORY exists
+#  Add some more checks, especially things which can go wrong destructively.  example?
+#  Probably need to do a bit of tidying up with filename fixing now that we have the more advanced fix_file_code function.
+## Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
 
 def move_to_directory(process_file, process_extension):
     process_result = False
@@ -34,7 +35,7 @@ def move_to_directory(process_file, process_extension):
     destination_file_without_extension = (fix_file_code(re.sub(process_extension, '', process_file, flags=re.IGNORECASE)))
 
     # Create a folder with the same name as the extension if it doesn't exist
-    destination_directory = BASE_DIRECTORY + destination_file_without_extension
+    destination_directory = TARGET_DIRECTORY + destination_file_without_extension
     if not os.path.exists(destination_directory):
         os.makedirs(destination_directory)
 
@@ -54,12 +55,10 @@ def move_to_directory(process_file, process_extension):
     my_logger.debug("MOV - Moving " + process_file + process_extension + " from " + BASE_DIRECTORY + ".")
     my_logger.info("MOV - Moved " + process_file + process_extension + " to " + destination_directory + "/.")
     process_result = destination_file_without_extension
-    
-    # seems to be some duplication above...
 
     return process_result
 
-def fix_file_code(input_string, deliminator = "-"):
+def fix_file_code(input_string, delimiter = "-"):
     letters = ""
     numbers = ""
     suffix = ""
@@ -78,7 +77,7 @@ def fix_file_code(input_string, deliminator = "-"):
         if ord(char) in range(64, 91):
             letters = letters + char
             counter = counter + 1
-        if char == deliminator:
+        if char == delimiter:
                 counter = counter + 1
                 break
         if (ord(char) in range(47, 58)):
@@ -100,9 +99,9 @@ def fix_file_code(input_string, deliminator = "-"):
 
     number = int(numbers)
 
-    return f"{letters}{deliminator}{number:03}{suffix}{file_extension}"
+    return f"{letters}{delimiter}{number:03}{suffix}{file_extension}"
 
-def search_for_title(input_string, deliminator = "-"):
+def search_for_title(input_string, delimiter = "-"):
     filename, file_extension = os.path.splitext(input_string)
     filename = filename.upper()
     file_extension = file_extension.lower()
@@ -111,7 +110,7 @@ def search_for_title(input_string, deliminator = "-"):
 
     results = []
 
-    filename = re.sub(deliminator, '', filename, flags=re.IGNORECASE)
+    filename = re.sub(delimiter, '', filename, flags=re.IGNORECASE)
 
 
     filename_length = len(filename)
@@ -193,7 +192,7 @@ def download_metadata(process_title, process_extension, process_subtitle_availab
         release_date = (metadata.release_date).strftime("%Y-%m-%d")
         my_logger.info("MET - Downloading metadata for " + process_title + ".")  
         
-        metadata_array = {"Code": metadata.code, "Name": metadata.name, "Actor": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "ReleaseDate": release_date, "Location": BASE_DIRECTORY + process_title + "/" + process_title + process_extension, "Subtitles": process_subtitle_available}
+        metadata_array = {"Code": metadata.code, "Name": metadata.name, "Actor": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "ReleaseDate": release_date, "Location": TARGET_DIRECTORY + process_title + "/" + process_title + process_extension, "Subtitles": process_subtitle_available}
         metadata_json = json.dumps(metadata_array, indent=4)
 
         my_logger.info("MET - Write metadata for " + process_title + " to local json.")
@@ -201,7 +200,7 @@ def download_metadata(process_title, process_extension, process_subtitle_availab
             outfile.write(metadata_json)
 
         my_logger.info("MET - Write metadata for " + process_title + " to database.")
-        send_data_to_database(metadata, (BASE_DIRECTORY + process_title + "/" + process_title + process_extension), (process_subtitle_available))
+        send_data_to_database(metadata, (TARGET_DIRECTORY + process_title + "/" + process_title + process_extension), (process_subtitle_available))
     else:
         my_logger.info("MET - No metadata for " + process_title + ".")
 
@@ -259,17 +258,16 @@ def move_down_level(process_file):
         my_logger.info("MOV - Moving " + source_file + " up a level.")
         os.rename(source_file, destination_file)
 
-
 def get_console_handler():
    console_handler = logging.StreamHandler(sys.stdout)
    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
    #console_handler.setFormatter(logging.Formatter("%(message)s"))
    return console_handler
 
-# def get_syslog_handler():
-#    syslog_handler = logging.handlers.SysLogHandler(address=(LOGHOST, 514))
-#    syslog_handler.setFormatter(logging.Formatter("RJMediaScraper %(message)s"))
-#    return syslog_handler
+def get_syslog_handler():
+   syslog_handler = logging.handlers.SysLogHandler(address=(LOGHOST, 514))
+   syslog_handler.setFormatter(logging.Formatter("RJMediaScraper %(message)s"))
+   return syslog_handler
 
 def get_logger():
    logger = logging.getLogger()
@@ -304,14 +302,17 @@ if __name__ == "__main__":
     my_cursor = my_connection.cursor()
     my_logger = get_logger()
 
-    my_logger.info("================================================================================================")
-
-    scanned_directory = os.listdir(BASE_DIRECTORY)
-    # Moves the files down level so they get rescanned.
-    for full_filename in scanned_directory:
-        if os.path.isdir(BASE_DIRECTORY + full_filename):
-            filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-            move_down_level(filename)
+    if not os.path.exists(TARGET_DIRECTORY):
+        my_logger.critical(TARGET_DIRECTORY + " does not exist.  Terminating.")
+        exit()
+    
+    if REDO_FILES:
+        my_logger.info("================================================================================================")
+        scanned_directory = os.listdir(BASE_DIRECTORY)
+        for full_filename in scanned_directory:
+            if os.path.isdir(BASE_DIRECTORY + full_filename):
+                filename, file_extension = os.path.splitext(os.path.basename(full_filename))
+                move_down_level(filename)
 
     my_logger.info("================================================================================================")
 
