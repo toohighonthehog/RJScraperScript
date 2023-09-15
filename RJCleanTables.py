@@ -14,6 +14,8 @@ if __name__ == "__main__":
 
     my_sql_delete = "DELETE FROM actor;"
     my_cursor.execute(my_sql_delete)
+    my_sql_delete = "DELETE FROM actor_link;"
+    my_cursor.execute(my_sql_delete)
     my_sql_delete = "DELETE FROM genre;"
     my_cursor.execute(my_sql_delete)
     my_sql_delete = "DELETE FROM titles;"

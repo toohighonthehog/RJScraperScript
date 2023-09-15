@@ -4,7 +4,7 @@ from requests_html import HTMLSession
 from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
-BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
 TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
 
@@ -20,7 +20,7 @@ TARGET_LANGUAGE = "en.srt"
 ## if it can't be found, don't move it - just skip
 ## multiple file extensions?  (MP4, MKV, AVI)
 #  If it doesn't exist, create an actor row. Needs Testing - seems to be working - test a bit more.
-#  Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. (line 43)  Right now, it is stripping the target language so be careful.
+#  Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. (line 43)  Right now, it is stripping the target language so be careful. - done?  if it works, code can be easier.
 #  Add a 'file to the right place' option.  i.e. a source and destination constant.
 
 def move_to_directory(process_directory, process_file, process_extension, process_language):
@@ -48,22 +48,82 @@ def move_to_directory(process_directory, process_file, process_extension, proces
     
     return process_result
 
-def fix_file_code(input_string, delim = "-"):
+def fix_file_code(input_string, deliminator = "-"):
     letters = ""
     numbers = ""
+    suffix = ""
     filename, file_extension = os.path.splitext(input_string)
-    #filename = filename.upper()
+    filename_original = filename
+    filename = filename.upper()
     file_extension = file_extension.lower()
 
-    for char in filename:
-        if ord(char) in range(65, 91):
-            letters += char
-        elif ord(char) in range(48, 58):
-            numbers += char
+    counter = 0
+    filename_length = len(filename)
+    
+    # get letters
+    while counter < filename_length:
+        char = filename[counter]
+        pass
+        if ord(char) in range(64, 91):
+            letters = letters + char
+            counter = counter + 1
+        if char == deliminator:
+                counter = counter + 1
+                break
+        if (ord(char) in range(47, 58)):
+                break
 
-    letters = letters.upper()
+    while counter < filename_length:
+        char = filename[counter]
+        pass
+        if ord(char) in range(47, 58):
+            numbers = numbers + char
+            counter = counter + 1
+        else:
+            break
+    
+    while counter < filename_length:
+        char = filename_original[counter]
+        counter = counter + 1
+        suffix = suffix + char
+
     number = int(numbers)
-    return f"{letters}{delim}{number:03}{file_extension}"
+
+    return f"{letters}{deliminator}{number:03}{suffix}{file_extension}"
+
+def search_for_title(input_string, deliminator = "-"):
+    filename, file_extension = os.path.splitext(input_string)
+    filename = filename.upper()
+    file_extension = file_extension.lower()
+    pattern1 = r'^[A-Za-z]{4}\d{3}$'
+    pattern2 = r'^[A-Za-z]{3}\d{3}$'
+
+    results = []
+
+    filename = re.sub(deliminator, '', filename, flags=re.IGNORECASE)
+
+
+    filename_length = len(filename)
+
+    # Search for 7 character codes.
+    counter = 0
+    while counter + 6 < filename_length:
+        input_string = filename[counter:counter + 7]
+        if (re.match(pattern1, input_string)):
+            if my_javlibrary.search(input_string):
+                results.append(filename[counter:counter + 7])
+        counter = counter + 1
+
+    # Search for 6 character codes.
+    counter = 0
+    while counter + 5 < filename_length:
+        input_string = filename[counter:counter + 6]
+        if (re.match(pattern2, input_string)):
+            if my_javlibrary.search(input_string):
+                results.append(filename[counter:counter + 6])
+        counter = counter + 1
+
+    return results
 
 def download_subtitlecat(process_directory, process_title, process_language):
     process_directory = process_directory + process_title + "/"
@@ -211,7 +271,7 @@ def get_list_of_files():
     folder_list_1 = os.listdir(BASE_DIRECTORY)
     folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in TARGET_EXTENSIONS)]
     folder_list_3 = []
-
+    pass
     for file in folder_list_2:
         filename, file_extension = os.path.splitext(os.path.basename(file))
         if(my_javlibrary.search(filename)):
@@ -235,12 +295,12 @@ if __name__ == "__main__":
 
     my_logger.info("======================================================================================")
 
-    # scanned_directory = os.listdir(BASE_DIRECTORY)
-    # # Moves the files down level so they get rescanned.
-    # for full_filename in scanned_directory:
-    #     if os.path.isdir(BASE_DIRECTORY + full_filename):
-    #         filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-    #         move_down_level(filename)
+    scanned_directory = os.listdir(BASE_DIRECTORY)
+    # Moves the files down level so they get rescanned.
+    for full_filename in scanned_directory:
+        if os.path.isdir(BASE_DIRECTORY + full_filename):
+            filename, file_extension = os.path.splitext(os.path.basename(full_filename))
+            move_down_level(filename)
 
     my_logger.info("======================================================================================")
 
