@@ -28,6 +28,7 @@ REDO_FILES = True
 #  Add some more checks, especially things which can go wrong destructively.  example?
 #  Probably need to do a bit of tidying up with filename fixing now that we have the more advanced fix_file_code function.
 ## Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
+#
 
 def move_to_directory(process_file, process_extension):
     process_result = False
