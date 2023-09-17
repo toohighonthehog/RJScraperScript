@@ -1,4 +1,4 @@
-import os, re
+import os, re, time
 from javscraper import *
 my_javlibrary = JAVLibrary()
 
@@ -51,22 +51,21 @@ def search_for_title(input_string, delimiter = "-"):
     filename, file_extension = os.path.splitext(input_string)
     filename = filename.upper()
     file_extension = file_extension.lower()
-    pattern1 = r'^[A-Za-z]{5}\d{3}$'
-    pattern2 = r'^[A-Za-z]{4}\d{3}$'
-    pattern3 = r'^[A-Za-z]{3}\d{3}$'
+    pattern8 = r'^[A-Za-z]{5}\d{3}$'
+    pattern7 = r'^[A-Za-z]{4}\d{3}$'
+    pattern6 = r'^[A-Za-z]{3}\d{3}$'
+    pattern5 = r'^[A-Za-z]{2}\d{3}$'
 
     results = []
-
     filename = re.sub(delimiter, '', filename, flags=re.IGNORECASE)
-
     filename_length = len(filename)
 
     # Search for 8 character codes.
     counter = 0
     while counter + 7 < filename_length:
         input_string = filename[counter:counter + 8]
-        if (re.match(pattern1, input_string)):
-            if my_javlibrary.search(input_string):
+        if (re.match(pattern8, input_string)):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 8])
         counter = counter + 1    
     
@@ -74,8 +73,8 @@ def search_for_title(input_string, delimiter = "-"):
     counter = 0
     while counter + 6 < filename_length:
         input_string = filename[counter:counter + 7]
-        if (re.match(pattern2, input_string)):
-            if my_javlibrary.search(input_string):
+        if (re.match(pattern7, input_string)):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 7])
         counter = counter + 1
 
@@ -83,9 +82,18 @@ def search_for_title(input_string, delimiter = "-"):
     counter = 0
     while counter + 5 < filename_length:
         input_string = filename[counter:counter + 6]
-        if (re.match(pattern3, input_string)):
-            if my_javlibrary.search(input_string):
+        if (re.match(pattern6, input_string)):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 6])
+        counter = counter + 1
+
+    # Search for 5 character codes.
+    counter = 0
+    while counter + 4 < filename_length:
+        input_string = filename[counter:counter + 5]
+        if (re.match(pattern5, input_string)):
+            if my_javlibrary_new_search(input_string):
+                results.append(filename[counter:counter + 5])
         counter = counter + 1
 
     results = remove_substrings(results)
@@ -110,10 +118,30 @@ def remove_substrings(strings):
     
     return result
 
-options = search_for_title("MIAD283")
-print (options)
+def my_javlibrary_new_search(function_input_string):
+    function_count = 0
+    result = []
+    while len(result) == 0 and function_count <= 6:
+        result = my_javlibrary.search(function_input_string)
+        time.sleep(0.25)
+        function_count = function_count + 1
+    return result
 
-print(my_javlibrary.search("DOCP044")) 
+def my_javlibrary_new_getvideo(function_input_string):
+    function_count = 0
+    result = ""
+    while result == "" and function_count <= 6:
+        result = my_javlibrary.get_video(function_input_string)
+        time.sleep(0.25)
+        function_count = function_count + 1
+    return result
+
+title = "DOCP090"
+
+print (my_javlibrary_new_search(title))
+print (my_javlibrary_new_getvideo(title))
+print (search_for_title(title))
+
 #print (my_javlibrary.get_video ("MIAD283"))
 # options = search_for_title("hjd2048.com-1129tek097-h264.mp4")
 # print (options)

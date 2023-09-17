@@ -4,7 +4,7 @@ from requests_html import HTMLSession
 from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
-BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Series/"
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
@@ -26,15 +26,15 @@ REDO_FILES = False
 ## Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. Right now, it is stripping the target language so be careful. - done?  if it works, code can be easier.
 #t Add a 'file to the right place' option.  i.e. a source and destination constant. - need to test
 ## Check TARGET_DIRECTORY exists
-#3 Add some more checks, especially things which can go wrong destructively.  example?
+#3 Add some more checks, especially things which can go wrong destructively.  examples?
 #3 Probably need to do a bit of tidying up with filename fixing now that we have the more advanced fix_file_code function.
 ## Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
 #t Check subtitle flag gets checked when going to a different target.
 #9 Turn the whole thing into a module and have a few wrapper scripts.
 #t Make existing subtitles rename to match the main file.  Maybe it already works.
-#1 Add an affirmative statement that there has been a single, good match.
-#1 Add a recheck for failed downloads (i.e. try 3 times then give a warning).  Make it more resilient and try to look up less. or put them into a wrapper function with resilience added.
-#1 Add link to results.  As a table (as they can give multiple results?) or just the first result?
+#t Add an affirmative statement that there has been a single, good match.
+## Add a recheck for failed downloads (i.e. try 3 times then give a warning).  Make it more resilient and try to look up less. or put them into a wrapper function with resilience added.
+#t Add link to results.  As a table (as they can give multiple results?) or just the first result?
 
 def move_to_directory(process_file, process_extension):
     process_result = False
@@ -127,7 +127,7 @@ def search_for_title(input_string, delimiter = "-"):
     while counter + 7 < filename_length:
         input_string = filename[counter:counter + 8]
         if (re.match(pattern8, input_string)):
-            if my_javlibrary.search(input_string):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 8])
         counter = counter + 1    
     
@@ -136,7 +136,7 @@ def search_for_title(input_string, delimiter = "-"):
     while counter + 6 < filename_length:
         input_string = filename[counter:counter + 7]
         if (re.match(pattern7, input_string)):
-            if my_javlibrary.search(input_string):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 7])
         counter = counter + 1
 
@@ -145,7 +145,7 @@ def search_for_title(input_string, delimiter = "-"):
     while counter + 5 < filename_length:
         input_string = filename[counter:counter + 6]
         if (re.match(pattern6, input_string)):
-            if my_javlibrary.search(input_string):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 6])
         counter = counter + 1
 
@@ -154,13 +154,31 @@ def search_for_title(input_string, delimiter = "-"):
     while counter + 4 < filename_length:
         input_string = filename[counter:counter + 5]
         if (re.match(pattern5, input_string)):
-            if my_javlibrary.search(input_string):
+            if my_javlibrary_new_search(input_string):
                 results.append(filename[counter:counter + 5])
         counter = counter + 1
 
     results = remove_substrings(results)
 
     return results
+
+def my_javlibrary_new_search(function_input_string):
+    function_count = 0
+    result = []
+    while len(result) == 0 and function_count <= 6:
+        result = my_javlibrary.search(function_input_string)
+        time.sleep(0.25)
+        function_count = function_count + 1
+    return result
+
+def my_javlibrary_new_getvideo(function_input_string):
+    function_count = 0
+    result = ""
+    while result == "" and function_count <= 6:
+        result = my_javlibrary.get_video(function_input_string)
+        time.sleep(0.25)
+        function_count = function_count + 1
+    return result
 
 def remove_substrings(strings):
     # Sort the strings by length in descending order
@@ -231,7 +249,8 @@ def download_subtitlecat(process_title):
 
 def download_metadata(process_title, process_extension, process_subtitle_available):
     process_title = fix_file_code(process_title)
-    metadata = my_javlibrary.get_video(process_title)
+    metadata = my_javlibrary_new_getvideo(process_title)
+    metadata_urls = my_javlibrary_new_search(process_title)
 
     if metadata is not None:
         release_date = (metadata.release_date).strftime("%Y-%m-%d")
@@ -245,11 +264,11 @@ def download_metadata(process_title, process_extension, process_subtitle_availab
             outfile.write(metadata_json)
 
         my_logger.info("MET - Write metadata for " + process_title + " to database.")
-        send_data_to_database(metadata, (TARGET_DIRECTORY + process_title + "/" + process_title + process_extension), (process_subtitle_available))
+        send_data_to_database(metadata, metadata_urls, (TARGET_DIRECTORY + process_title + "/" + process_title + process_extension), (process_subtitle_available))
     else:
         my_logger.info("MET - No metadata for " + process_title + ".")
 
-def send_data_to_database(process_metadata, process_location, process_subtitles_avail):
+def send_data_to_database(process_metadata, process_metadata_urls, process_location, process_subtitles_avail):
     my_insert_sql_titles = ("""insert into titles (code
                             ,name
                             ,studio
@@ -272,6 +291,11 @@ def send_data_to_database(process_metadata, process_location, process_subtitles_
                             , uid) VALUES (%s, %s, %s)
                             on duplicate key update name = values(name), uid = values(uid) """)
     
+    my_insert_sql_title_urls = ("""insert into urls (code
+                        , url
+                        , uid) VALUES (%s, %s, %s)
+                        on duplicate key update url = values(url), uid = values(uid) """)
+    
     my_insert_sql_actor = "insert ignore into actor (name) VALUES (%s)"
                  
     my_cursor.execute(my_insert_sql_titles, (process_metadata.code, process_metadata.name, process_metadata.studio, process_metadata.image, process_metadata.score, process_metadata.release_date, process_location, process_subtitles_avail, ARBITRARY_PRATE))
@@ -286,6 +310,11 @@ def send_data_to_database(process_metadata, process_location, process_subtitles_
         hash_output = hashlib.md5(hash_input).hexdigest()
         my_cursor.execute(my_insert_sql_actor_link, (process_metadata.code, a, hash_output))
         my_cursor.execute(my_insert_sql_actor, (a,))
+
+    for u in process_metadata_urls:
+        hash_input = (process_metadata.code + u).encode()
+        hash_output = hashlib.md5(hash_input).hexdigest()
+        my_cursor.execute(my_insert_sql_title_urls, (process_metadata.code, u, hash_output))
 
     my_connection.commit()
 
@@ -310,10 +339,10 @@ def get_console_handler():
    #console_handler.setFormatter(logging.Formatter("%(message)s"))
    return console_handler
 
-def get_syslog_handler():
-   syslog_handler = logging.handlers.SysLogHandler(address=(LOGHOST, 514))
-   syslog_handler.setFormatter(logging.Formatter("RJMediaScraper %(message)s"))
-   return syslog_handler
+# def get_syslog_handler():
+#    syslog_handler = logging.handlers.SysLogHandler(address=(LOGHOST, 514))
+#    syslog_handler.setFormatter(logging.Formatter("RJMediaScraper %(message)s"))
+#    return syslog_handler
 
 def get_logger():
    logger = logging.getLogger()
@@ -329,7 +358,7 @@ def get_list_of_files():
 
     for file in folder_list_2:
         filename, file_extension = os.path.splitext(os.path.basename(file))
-        #if(my_javlibrary.search(filename)):
+        #if(my_javlibrary_new_search(filename)):
         folder_list_3.append(file)
 
     return folder_list_3
@@ -374,8 +403,9 @@ if __name__ == "__main__":
             to_be_scraped = move_to_directory(filename, file_extension)
             subtitle_available = download_subtitlecat(to_be_scraped)
             download_metadata(to_be_scraped, file_extension, subtitle_available)
+            my_logger.info("+++++ " + filename + " +++++ (single match found).")
         else:
-            my_logger.info("Skipping.  Number of results : " + str(len(search_for_title(filename))))
+            my_logger.warning("+++++ " + filename + " +++++ (skipping. " + str(len(search_for_title(filename)) + " results found)."))
 
 
         my_logger.info("================================================================================================")
