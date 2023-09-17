@@ -4,12 +4,12 @@ from requests_html import HTMLSession
 from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
-BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
 ARBITRARY_PRATE = 0
-REDO_FILES = False
+REDO_FILES = True
 
 ## add a rerun option + re-get json - done by creating a move down a level function
 #? and some logic to check we're not nesting deeper and deeper
