@@ -35,6 +35,7 @@ REDO_FILES = True
 #t Add an affirmative statement that there has been a single, good match.
 ## Add a recheck for failed downloads (i.e. try 3 times then give a warning).  Make it more resilient and try to look up less. or put them into a wrapper function with resilience added.
 #t Add link to results.  As a table (as they can give multiple results?) or just the first result?
+#  Semi-modularize (so that the functions run when imported) - started
 
 def move_to_directory(process_file, process_extension):
     process_result = False
@@ -163,6 +164,7 @@ def search_for_title(input_string, delimiter = "-"):
     return results
 
 def my_javlibrary_new_search(function_input_string):
+    my_javlibrary = JAVLibrary()
     function_count = 0
     result = []
     while len(result) == 0 and function_count <= 6:
@@ -172,6 +174,7 @@ def my_javlibrary_new_search(function_input_string):
     return result
 
 def my_javlibrary_new_getvideo(function_input_string):
+    my_javlibrary = JAVLibrary()
     function_count = 0
     result = ""
     while result == "" and function_count <= 6:
