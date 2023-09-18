@@ -38,6 +38,18 @@ REDO_FILES = True
 #  Semi-modularize (so that the functions run when imported) - started
 
 
+# a single function to take a filename, positively identify it (with reasonalbe confident), and return the new filename / ID.
+# extensions?
+
+# a single function to move it + preexisting SRT.
+# a single function to look for subs, download them and move to target.
+# a single function to get its metadata
+# a single function to write the metadata to the database
+
+
+
+
+
 #region Main Functions
 def move_down_level(process_file):
     #file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
