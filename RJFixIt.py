@@ -4,7 +4,7 @@ from requests_html import HTMLSession
 from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
-BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 TARGET_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
@@ -37,6 +37,7 @@ REDO_FILES = True
 #t Add link to results.  As a table (as they can give multiple results?) or just the first result?
 #  Semi-modularize (so that the functions run when imported) - started
 
+#  how do we get the logging and databases into the functions?
 
 # a single function to take a filename, positively identify it (with reasonalbe confident), and return the new filename / ID.
 # extensions?
@@ -46,69 +47,68 @@ REDO_FILES = True
 # a single function to get its metadata
 # a single function to write the metadata to the database
 
-
-
-
-
 #region Main Functions
-def move_down_level(process_file):
+def move_down_level(function_base_directory, function_target_directory, function_process_file):
+    # no constants
     #file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
     
-    folder_list_1 = os.listdir(BASE_DIRECTORY + process_file)
+    folder_list_1 = os.listdir(function_base_directory + function_process_file)
     folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in TARGET_EXTENSIONS)]
 
     for filename in folder_list_2:
     
         #process_title = fix_file_code(file_without_extension)
-        source_file = BASE_DIRECTORY + process_file + "/" + filename
-        destination_file = TARGET_DIRECTORY + filename
+        source_file = function_base_directory + function_process_file + "/" + filename
+        destination_file = function_target_directory + filename
 
         my_logger.info("MOV - Moving " + source_file + " up a level.")
         os.rename(source_file, destination_file)
 
-def move_to_directory(process_file, process_extension):
+def move_to_directory(function_base_directory, function_target_directory, function_target_language, function_process_file, function_process_extension):
+    # no constants    
     process_result = False
-    source_file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
-    destination_file_without_extension = (fix_file_code(re.sub(process_extension, '', process_file, flags=re.IGNORECASE)))
+    source_file_without_extension = re.sub(function_process_extension, '', function_process_file, flags=re.IGNORECASE)
+    destination_file_without_extension = (fix_file_code(re.sub(function_process_extension, '', function_process_file, flags=re.IGNORECASE)))
     destination_file_without_extension = (search_for_title(destination_file_without_extension))[0]
     destination_file_without_extension = (fix_file_code(destination_file_without_extension))
 
     # Create a folder with the same name as the extension if it doesn't exist
-    destination_directory = TARGET_DIRECTORY + destination_file_without_extension
+    destination_directory = function_target_directory + destination_file_without_extension
     if not os.path.exists(destination_directory):
         os.makedirs(destination_directory)
 
     # Move the file to the folder
-    os.rename(BASE_DIRECTORY + process_file + process_extension, destination_directory + "/" + fix_file_code(destination_file_without_extension + process_extension))
+    os.rename(function_base_directory + function_process_file + function_process_extension, destination_directory + "/" + fix_file_code(destination_file_without_extension + function_process_extension))
 
-    file_list = os.listdir(BASE_DIRECTORY)
+    file_list = os.listdir(function_base_directory)
     
     for file in file_list:
-        if (file.startswith(source_file_without_extension) and file.endswith(TARGET_LANGUAGE)):
-                os.rename(BASE_DIRECTORY + file, destination_directory + "/" + fix_file_code(file))
+        if (file.startswith(source_file_without_extension) and file.endswith(function_target_language)):
+                os.rename(function_base_directory + file, destination_directory + "/" + fix_file_code(file))
                 #shutil.move(process_directory + file, destination_directory)
-                my_logger.debug("MOV - Moving " + file + " from " + BASE_DIRECTORY + ".")
+                my_logger.debug("MOV - Moving " + file + " from " + function_base_directory + ".")
                 my_logger.info("MOV - Moved " + file + " to " + destination_directory + "/.")
 
-    my_logger.debug("MOV - Moving " + process_file + process_extension + " from " + BASE_DIRECTORY + ".")
-    my_logger.info("MOV - Moved " + process_file + process_extension + " to " + destination_directory + "/.")
+    my_logger.debug("MOV - Moving " + function_process_file + function_process_extension + " from " + function_base_directory + ".")
+    my_logger.info("MOV - Moved " + function_process_file + function_process_extension + " to " + destination_directory + "/.")
     process_result = destination_file_without_extension
 
     return process_result
 
-def download_subtitlecat(process_title):
-    process_directory = TARGET_DIRECTORY + process_title + "/"
-    process_title = fix_file_code(process_title)
+def download_subtitlecat(function_target_directory, function_target_language, function_process_title):
+    # no constants
     session = HTMLSession()
+    process_directory = function_target_directory + function_process_title + "/"
+    function_process_title = fix_file_code(function_process_title)
     process_subtitleavailable = False
 
-    if any(file.endswith(TARGET_LANGUAGE) for file in os.listdir(process_directory)):
+    if any(file.endswith(function_target_language) for file in os.listdir(process_directory)):
         my_logger.debug("SUB - Existing subtitles found.")
         process_subtitleavailable = True
 
-    my_logger.info("SUB - Searching SubtitleCat for " + process_title + ".")
+    my_logger.info("SUB - Searching SubtitleCat for " + function_process_title + ".")
 
-    url_level1 = 'https://www.subtitlecat.com/index.php?search=' + process_title
+    url_level1 = 'https://www.subtitlecat.com/index.php?search=' + function_process_title
     response_level1 = session.get(url_level1)
 
     table_level1 = response_level1.html.find('table')[0]
@@ -117,15 +117,15 @@ def download_subtitlecat(process_title):
     for table_level1_entry in table_level1_entries:
         table_level1_entry_url = (list(table_level1_entry[0])[0])
 
-        if re.search(process_title, table_level1_entry_url, re.IGNORECASE):
+        if re.search(function_process_title, table_level1_entry_url, re.IGNORECASE):
             response_level2 = session.get(table_level1_entry_url)
             table_level2 = response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
             if table_level2 is not None:
                 for table_level2_entry in table_level2.absolute_links:
-                    if re.search(TARGET_LANGUAGE, table_level2_entry, re.IGNORECASE):
+                    if re.search(function_target_language, table_level2_entry, re.IGNORECASE):
                         subtitle_url = table_level2_entry
                 try:
-                    if re.search(TARGET_LANGUAGE, subtitle_url, re.IGNORECASE):
+                    if re.search(function_target_language, subtitle_url, re.IGNORECASE):
                         subtitle_url_check = (requests.head(subtitle_url).status_code)
                         if subtitle_url_check==200:
                             process_subtitleavailable = True
@@ -136,7 +136,7 @@ def download_subtitlecat(process_title):
                             my_logger.info("SUB - Downloading " + subtitle_filename + ".")
                             subtitle_download = requests.get(subtitle_url, allow_redirects=True)
 
-                            new_subtitle_filename = re.sub(process_title, process_title.upper() + "-(SC)", subtitle_filename, flags=re.IGNORECASE)
+                            new_subtitle_filename = re.sub(function_process_title, function_process_title.upper() + "-(SC)", subtitle_filename, flags=re.IGNORECASE)
                             
                             open(process_directory + new_subtitle_filename, 'wb').write(subtitle_download.content)
                             time.sleep(5)
@@ -145,28 +145,30 @@ def download_subtitlecat(process_title):
 
     return process_subtitleavailable
 
-def download_metadata(process_title, process_extension, process_subtitle_available):
-    process_title = fix_file_code(process_title)
-    metadata = my_javlibrary_new_getvideo(process_title)
-    metadata_urls = my_javlibrary_new_search(process_title)
+def download_metadata(function_target_directory, function_process_title, process_extension, process_subtitle_available):
+    # no metadata
+    function_process_title = fix_file_code(function_process_title)
+    metadata = my_javlibrary_new_getvideo(function_process_title)
+    metadata_urls = my_javlibrary_new_search(function_process_title)
 
     if metadata is not None:
         release_date = (metadata.release_date).strftime("%Y-%m-%d")
-        my_logger.info("MET - Downloading metadata for " + process_title + ".")  
+        my_logger.info("MET - Downloading metadata for " + function_process_title + ".")  
         
-        metadata_array = {"Code": metadata.code, "Name": metadata.name, "Actor": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "ReleaseDate": release_date, "Location": TARGET_DIRECTORY + process_title + "/" + process_title + process_extension, "Subtitles": process_subtitle_available}
+        metadata_array = {"Code": metadata.code, "Name": metadata.name, "Actor": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "ReleaseDate": release_date, "Location": function_target_directory + function_process_title + "/" + function_process_title + process_extension, "Subtitles": process_subtitle_available}
         metadata_json = json.dumps(metadata_array, indent=4)
 
-        my_logger.info("MET - Write metadata for " + process_title + " to local json.")
-        with open(TARGET_DIRECTORY + process_title + "/" + process_title + ".json", "w") as outfile:
+        my_logger.info("MET - Write metadata for " + function_process_title + " to local json.")
+        with open(function_target_directory + function_process_title + "/" + function_process_title + ".json", "w") as outfile:
             outfile.write(metadata_json)
 
-        my_logger.info("MET - Write metadata for " + process_title + " to database.")
-        send_data_to_database(metadata, metadata_urls, (TARGET_DIRECTORY + process_title + "/" + process_title + process_extension), (process_subtitle_available))
+        my_logger.info("MET - Write metadata for " + function_process_title + " to database.")
+        send_data_to_database(metadata, metadata_urls, (function_target_directory + function_process_title + "/" + function_process_title + process_extension), (process_subtitle_available))
     else:
-        my_logger.info("MET - No metadata for " + process_title + ".")
+        my_logger.info("MET - No metadata for " + function_process_title + ".")
 
 def send_data_to_database(process_metadata, process_metadata_urls, process_location, process_subtitles_avail):
+    # No constants
     my_insert_sql_titles = ("""insert into titles (code
                             ,name
                             ,studio
@@ -190,9 +192,9 @@ def send_data_to_database(process_metadata, process_metadata_urls, process_locat
                             on duplicate key update name = values(name), uid = values(uid) """)
     
     my_insert_sql_title_urls = ("""insert into urls (code
-                        , url
-                        , uid) VALUES (%s, %s, %s)
-                        on duplicate key update url = values(url), uid = values(uid) """)
+                            , url
+                            , uid) VALUES (%s, %s, %s)
+                            on duplicate key update url = values(url), uid = values(uid) """)
     
     my_insert_sql_actor = "insert ignore into actor (name) VALUES (%s)"
                  
@@ -219,6 +221,7 @@ def send_data_to_database(process_metadata, process_metadata_urls, process_locat
 
 #region Wrapped Scraper Functions
 def my_javlibrary_new_search(function_input_string):
+    # No constants
     my_javlibrary = JAVLibrary()
     function_count = 0
     result = []
@@ -229,6 +232,7 @@ def my_javlibrary_new_search(function_input_string):
     return result
 
 def my_javlibrary_new_getvideo(function_input_string):
+    # No constants
     my_javlibrary = JAVLibrary()
     function_count = 0
     result = ""
@@ -241,6 +245,7 @@ def my_javlibrary_new_getvideo(function_input_string):
 
 #region Primary Data Functions
 def fix_file_code(input_string, delimiter = "-"):
+    # No constants
     letters = ""
     numbers = ""
     suffix = ""
@@ -283,8 +288,9 @@ def fix_file_code(input_string, delimiter = "-"):
 
     return f"{letters}{delimiter}{number:03}{suffix}{file_extension}"
 
-def search_for_title(input_string, delimiter = "-"):
-    filename, file_extension = os.path.splitext(input_string)
+def search_for_title(function_input_string, function_delimiter = "-"):
+    # No constants
+    filename, file_extension = os.path.splitext(function_input_string)
     filename = filename.upper()
     file_extension = file_extension.lower()
     pattern8 = r'^[A-Za-z]{5}\d{3}$'
@@ -293,45 +299,44 @@ def search_for_title(input_string, delimiter = "-"):
     pattern5 = r'^[A-Za-z]{2}\d{3}$'
 
     results = []
-    filename = re.sub(delimiter, '', filename, flags=re.IGNORECASE)
+    filename = re.sub(function_delimiter, '', filename, flags=re.IGNORECASE)
     filename_length = len(filename)
 
     # Search for 8 character codes.
     counter = 0
     while counter + 7 < filename_length:
-        input_string = filename[counter:counter + 8]
-        if (re.match(pattern8, input_string)):
-            if my_javlibrary_new_search(input_string):
+        function_input_string = filename[counter:counter + 8]
+        if (re.match(pattern8, function_input_string)):
+            if my_javlibrary_new_search(function_input_string):
                 results.append(filename[counter:counter + 8])
         counter = counter + 1    
     
     # Search for 7 character codes.
     counter = 0
     while counter + 6 < filename_length:
-        input_string = filename[counter:counter + 7]
-        if (re.match(pattern7, input_string)):
-            if my_javlibrary_new_search(input_string):
+        function_input_string = filename[counter:counter + 7]
+        if (re.match(pattern7, function_input_string)):
+            if my_javlibrary_new_search(function_input_string):
                 results.append(filename[counter:counter + 7])
         counter = counter + 1
 
     # Search for 6 character codes.
     counter = 0
     while counter + 5 < filename_length:
-        input_string = filename[counter:counter + 6]
-        if (re.match(pattern6, input_string)):
-            if my_javlibrary_new_search(input_string):
+        function_input_string = filename[counter:counter + 6]
+        if (re.match(pattern6, function_input_string)):
+            if my_javlibrary_new_search(function_input_string):
                 results.append(filename[counter:counter + 6])
         counter = counter + 1
 
     # Search for 5 character codes.
     counter = 0
     while counter + 4 < filename_length:
-        input_string = filename[counter:counter + 5]
-        if (re.match(pattern5, input_string)):
-            if my_javlibrary_new_search(input_string):
+        function_input_string = filename[counter:counter + 5]
+        if (re.match(pattern5, function_input_string)):
+            if my_javlibrary_new_search(function_input_string):
                 results.append(filename[counter:counter + 5])
         counter = counter + 1
-
     results = remove_substrings(results)
 
     return results
@@ -339,44 +344,43 @@ def search_for_title(input_string, delimiter = "-"):
 
 #region General Purpose Functions
 def get_console_handler():
-   console_handler = logging.StreamHandler(sys.stdout)
-   console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
-   #console_handler.setFormatter(logging.Formatter("%(message)s"))
-   return console_handler
+    # No constants
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
+    #console_handler.setFormatter(logging.Formatter("%(message)s"))
+    return console_handler
 
 def get_logger():
-   logger = logging.getLogger()
-   logger.setLevel(logging.INFO)
-   logger.addHandler(get_console_handler())
-   #logger.addHandler(get_syslog_handler())
-   return logger
+    # No constants
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.addHandler(get_console_handler())
+    #logger.addHandler(get_syslog_handler())
+    return logger
 
-def remove_substrings(strings):
+def remove_substrings(function_strings):
+    # No constants
     # Sort the strings by length in descending order
-    strings.sort(key=len, reverse=True)
-    
-    # Initialize a list to store non-substring strings
+    function_strings.sort(key=len, reverse=True)
     result = []
-    
     # Iterate through the sorted strings
-    for s in strings:
+    for s in function_strings:
         # Check if the current string is a substring of any previously added string
         is_substring = any(s in r for r in result)
-        
         # If it's not a substring of any previous string, add it to the result
         if not is_substring:
             result.append(s)
     
     return result
 
-def get_list_of_files():
-    folder_list_1 = os.listdir(BASE_DIRECTORY)
-    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in TARGET_EXTENSIONS)]
+def get_list_of_files(function_base_directory, function_target_extensions):
+    # No constants
+    folder_list_1 = os.listdir(function_base_directory)
+    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in function_target_extensions)]
     folder_list_3 = []
 
     for file in folder_list_2:
         filename, file_extension = os.path.splitext(os.path.basename(file))
-        #if(my_javlibrary_new_search(filename)):
         folder_list_3.append(file)
 
     return folder_list_3
@@ -406,26 +410,24 @@ if __name__ == "__main__":
         for full_filename in scanned_directory:
             if os.path.isdir(BASE_DIRECTORY + full_filename):
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-                move_down_level(filename)
+                move_down_level(BASE_DIRECTORY, TARGET_DIRECTORY, filename)
 
     my_logger.info("================================================================================================")
 
-    scanned_directory = get_list_of_files()
+    scanned_directory = get_list_of_files(BASE_DIRECTORY, TARGET_EXTENSIONS)
     # Scan through the folder
     for full_filename in scanned_directory:
         #if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
 
         filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-        my_logger.info("+++++ " + filename + " +++++")
+        my_logger.info("+++++ " + filename + file_extension + " +++++")
         if len(search_for_title(filename)) == 1:
-
-            to_be_scraped = move_to_directory(filename, file_extension)
-            subtitle_available = download_subtitlecat(to_be_scraped)
-            download_metadata(to_be_scraped, file_extension, subtitle_available)
+            to_be_scraped = move_to_directory(BASE_DIRECTORY, TARGET_DIRECTORY, TARGET_LANGUAGE, filename, file_extension)
+            subtitle_available = download_subtitlecat(TARGET_DIRECTORY, TARGET_LANGUAGE, to_be_scraped)
+            download_metadata(TARGET_DIRECTORY, to_be_scraped, file_extension, subtitle_available)
             my_logger.info("+++++ " + filename + " +++++ (single match found).")
         else:
             my_logger.warning("+++++ " + filename + " +++++ (skipping. " + str(len(search_for_title(filename)) + " results found)."))
-
 
         my_logger.info("================================================================================================")
 
