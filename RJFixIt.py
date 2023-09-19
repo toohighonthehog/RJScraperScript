@@ -404,8 +404,8 @@ if __name__ == "__main__":
         port=3306, 
         database="Multimedia" 
     )
-        
-    my_javlibrary = JAVLibrary()
+
+    # where are these used?
     my_cursor = my_connection.cursor()
     my_logger = get_logger()
 
