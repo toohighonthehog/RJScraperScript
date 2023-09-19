@@ -36,6 +36,9 @@ REDO_FILES = True
 ## Add a recheck for failed downloads (i.e. try 3 times then give a warning).  Make it more resilient and try to look up less. or put them into a wrapper function with resilience added.
 #t Add link to results.  As a table (as they can give multiple results?) or just the first result?
 #  Semi-modularize (so that the functions run when imported) - started
+#  merge metadata and metadata_urls into a single object (makes it easier maybe?)
+#  variables in functions should start with 'function' for attributes and 'process' for internal variables.  Also tidy up everything else.
+#  each function should return something even if just True/False - add something useful
 
 #  how do we get the logging and databases into the functions?
 
@@ -63,6 +66,8 @@ def move_down_level(function_base_directory, function_target_directory, function
 
         my_logger.info("MOV - Moving " + source_file + " up a level.")
         os.rename(source_file, destination_file)
+
+        return True
 
 def move_to_directory(function_base_directory, function_target_directory, function_target_language, function_process_file, function_process_extension):
     # no constants    
@@ -158,7 +163,7 @@ def download_metadata(function_target_directory, function_process_title, process
         metadata_array = {"Code": metadata.code, "Name": metadata.name, "Actor": metadata.actresses, "Studio": metadata.studio, "Image": metadata.image, "Genres": metadata.genres, "Score": metadata.score, "ReleaseDate": release_date, "Location": function_target_directory + function_process_title + "/" + function_process_title + process_extension, "Subtitles": process_subtitle_available}
         metadata_json = json.dumps(metadata_array, indent=4)
 
-        my_logger.info("MET - Write metadata for " + function_process_title + " to local json.")
+        my_logger.debug("MET - Write metadata for " + function_process_title + " to local json.")
         with open(function_target_directory + function_process_title + "/" + function_process_title + ".json", "w") as outfile:
             outfile.write(metadata_json)
 
@@ -166,6 +171,8 @@ def download_metadata(function_target_directory, function_process_title, process
         send_data_to_database(metadata, metadata_urls, (function_target_directory + function_process_title + "/" + function_process_title + process_extension), (process_subtitle_available))
     else:
         my_logger.info("MET - No metadata for " + function_process_title + ".")
+    
+    return metadata, metadata_urls
 
 def send_data_to_database(process_metadata, process_metadata_urls, process_location, process_subtitles_avail):
     # No constants
@@ -217,6 +224,8 @@ def send_data_to_database(process_metadata, process_metadata_urls, process_locat
         my_cursor.execute(my_insert_sql_title_urls, (process_metadata.code, u, hash_output))
 
     my_connection.commit()
+    return True
+
 #endregion
 
 #region Wrapped Scraper Functions
@@ -420,14 +429,14 @@ if __name__ == "__main__":
         #if os.path.isfile(BASE_DIRECTORY + file) and file.lower().endswith(TARGET_EXTENSION):
 
         filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-        my_logger.info("+++++ " + filename + file_extension + " +++++")
         if len(search_for_title(filename)) == 1:
+            my_logger.info("+++++ " + filename + file_extension + " +++++ (single match found).")
             to_be_scraped = move_to_directory(BASE_DIRECTORY, TARGET_DIRECTORY, TARGET_LANGUAGE, filename, file_extension)
             subtitle_available = download_subtitlecat(TARGET_DIRECTORY, TARGET_LANGUAGE, to_be_scraped)
             download_metadata(TARGET_DIRECTORY, to_be_scraped, file_extension, subtitle_available)
-            my_logger.info("+++++ " + filename + " +++++ (single match found).")
+
         else:
-            my_logger.warning("+++++ " + filename + " +++++ (skipping. " + str(len(search_for_title(filename)) + " results found)."))
+            my_logger.warning("+++++ " + filename + file_extension + " +++++ (skipping. " + str(len(search_for_title(filename)) + " results found)."))
 
         my_logger.info("================================================================================================")
 
