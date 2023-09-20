@@ -1,6 +1,6 @@
 import os, logging
 import shutil
-from RJFixIt import *
+from mod_rjscanfix import *
 
 BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
 TARGET_DIRECTORY = BASE_DIRECTORY

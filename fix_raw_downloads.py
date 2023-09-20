@@ -1,19 +1,18 @@
-import os, logging
-import shutil
-from RJFixIt import *
+import os, shutil
+from mod_rjscanfix import *
 
-# need to find a way to deal with 2 parters
+# need to find a way to deal with 2 parters.  Until then, do them manually.
 
 BASE_DIRECTORY = "/mnt/multimedia/~Downloads/qBitTorrent.filing/"
 TARGET_DIRECTORY = "/mnt/multimedia/~Downloads/filing/"
 TARGET_EXENSIONS = [".mkv",".mp4",".avi"]
 
-def move_files_by_extension(source_dir, dest_dir, extensions):
-    for root, _, files in os.walk(source_dir):
+def move_files_by_extension(function_source_dir, function_destination_dir, function_extensions):
+    for root, _, files in os.walk(function_source_dir):
         for file in files:
-            if any(file.endswith(ext) for ext in extensions):
+            if any(file.endswith(ext) for ext in function_extensions):
                 source_file_path = os.path.join(root, file)
-                destination_file_path = os.path.join(dest_dir, file)
+                destination_file_path = os.path.join(function_destination_dir, file)
 
                 # Ensure the destination directory exists
                 os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
@@ -40,7 +39,7 @@ for full_filename in scanned_directory:
             os.rename(TARGET_DIRECTORY + full_filename, TARGET_DIRECTORY + new_filename)
 
     else:
-        my_logger.warning("+++++ " + full_filename + " +++++ (skipping. " + str(len(fixed_filename)) + " results found).")
+        my_logger.warning(full_filename + " (skipping. " + str(len(fixed_filename)) + " results found).")
 
 # go to destination
 # iterate each file

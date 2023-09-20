@@ -1,6 +1,6 @@
 import os, re, time
 from javscraper import *
-from RJFixIt import *
+from mod_rjscanfix import *
 
 title = "hhd800.com@AUKG-513"
 
