@@ -1,4 +1,4 @@
-import sys, os, re, requests, json, logging, time, md5
+import sys, os, re, requests, json, logging, time, hashlib
 import mysql.connector
 from requests_html import HTMLSession
 from javscraper import *
@@ -40,6 +40,7 @@ REDO_FILES = True
 #  variables in functions should start with 'function' for attributes and 'process' for internal variables.  Also tidy up everything else.
 #  each function should return something even if just True/False - add something useful
 #  how do we get the logging and databases into the functions?
+#  A bit more resilience for failed lookups
 
 # a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
 # a single function to move it + preexisting SRT.
