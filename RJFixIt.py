@@ -1,4 +1,4 @@
-import sys, os, re, requests, json, logging, time, hashlib
+import sys, os, re, requests, json, logging, time, md5
 import mysql.connector
 from requests_html import HTMLSession
 from javscraper import *
@@ -12,7 +12,6 @@ ARBITRARY_PRATE = 0
 REDO_FILES = True
 
 ## add a rerun option + re-get json - done by creating a move down a level function
-#? and some logic to check we're not nesting deeper and deeper
 ## how about putting all the jsons in a central folder too? - done
 ## send results to a database - done
 ## logging for output - done
@@ -31,6 +30,7 @@ REDO_FILES = True
 ## Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
 #t Check subtitle flag gets checked when going to a different target.
 #9 Turn the whole thing into a module and have a few wrapper scripts.
+#? and some logic to check we're not nesting deeper and deeper
 #t Make existing subtitles rename to match the main file.  Maybe it already works.
 #t Add an affirmative statement that there has been a single, good match.
 ## Add a recheck for failed downloads (i.e. try 3 times then give a warning).  Make it more resilient and try to look up less. or put them into a wrapper function with resilience added.
@@ -39,12 +39,9 @@ REDO_FILES = True
 #  merge metadata and metadata_urls into a single object (makes it easier maybe?)
 #  variables in functions should start with 'function' for attributes and 'process' for internal variables.  Also tidy up everything else.
 #  each function should return something even if just True/False - add something useful
-
 #  how do we get the logging and databases into the functions?
 
-# a single function to take a filename, positively identify it (with reasonalbe confident), and return the new filename / ID.
-# extensions?
-
+# a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
 # a single function to move it + preexisting SRT.
 # a single function to look for subs, download them and move to target.
 # a single function to get its metadata

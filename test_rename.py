@@ -1,11 +1,10 @@
 import os
 import shutil
-from RJFixIt import *
+#from RJFixIt import *
 
-source_directory = "/path/to/source_directory"
-destination_directory = "/path/to/destination_directory"
-
-file_extensions = [".txt"]
+source_directory = "/home/rjohnson/test/"
+destination_directory = "/home/rjohnson/test2/"
+file_extensions = [".txt",".gif"]
 
 def move_files_by_extension(source_dir, dest_dir, extensions):
     for root, _, files in os.walk(source_dir):
@@ -22,8 +21,8 @@ def move_files_by_extension(source_dir, dest_dir, extensions):
                 print(f"Moved: {source_file_path} to {destination_file_path}")
 
 # Call the function to perform the file moves
-#move_files_by_extension(source_directory, destination_directory, file_extensions)
+move_files_by_extension(source_directory, destination_directory, file_extensions)
 
-title = "DOCP094"
-
-print (my_javlibrary_new_search(title))
+# go to destination
+# iterate each file
+# run the search_for_files function and rename (or display) that.
