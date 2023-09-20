@@ -1,5 +1,5 @@
 import os, shutil
-from mod_rjscanfix import *
+from module_rjscanfix import *
 
 # need to find a way to deal with 2 parters.  Until then, do them manually.
 
