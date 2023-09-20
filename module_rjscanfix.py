@@ -1,3 +1,8 @@
+import os, re, requests, hashlib, time, json, logging, shutil
+from requests_html import HTMLSession
+import mysql.connector
+from javscraper import *
+
 ## add a rerun option + re-get json - done by creating a move down a level function
 ## how about putting all the jsons in a central folder too? - done
 ## send results to a database - done
@@ -36,12 +41,12 @@
 # a single function to write the metadata to the database
 
 #region Main Functions
-def move_down_level(function_base_directory, function_target_directory, function_process_file):
+def move_down_level(function_base_directory, function_target_directory, function_process_file, function_base_extensions):
     # no constants
     #file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
     
     folder_list_1 = os.listdir(function_base_directory + function_process_file)
-    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in TARGET_EXTENSIONS)]
+    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in function_base_extensions)]
 
     for filename in folder_list_2:
     
@@ -135,7 +140,7 @@ def download_subtitlecat(function_target_directory, function_target_language, fu
 
     return process_subtitleavailable
 
-def download_metadata(function_target_directory, function_process_title, process_extension, process_subtitle_available):
+def download_metadata(function_target_directory, function_process_title, process_extension, process_subtitle_available, process_arbitrary_prate):
     # no metadata
     function_process_title = fix_file_code(function_process_title)
     metadata = my_javlibrary_new_getvideo(function_process_title)
@@ -153,13 +158,13 @@ def download_metadata(function_target_directory, function_process_title, process
             outfile.write(metadata_json)
 
         my_logger.info("MET - Write metadata for " + function_process_title + " to database.")
-        send_data_to_database(metadata, metadata_urls, (function_target_directory + function_process_title + "/" + function_process_title + process_extension), (process_subtitle_available))
+        send_data_to_database(metadata, metadata_urls, (function_target_directory + function_process_title + "/" + function_process_title + process_extension), (process_subtitle_available), process_arbitrary_prate)
     else:
         my_logger.info("MET - No metadata for " + function_process_title + ".")
     
     return metadata, metadata_urls
 
-def send_data_to_database(process_metadata, process_metadata_urls, process_location, process_subtitles_avail):
+def send_data_to_database(process_metadata, process_metadata_urls, process_location, process_subtitles_avail, process_arbitrary_prate):
     # No constants
     my_insert_sql_titles = ("""insert into titles (code
                             ,name
@@ -190,7 +195,7 @@ def send_data_to_database(process_metadata, process_metadata_urls, process_locat
     
     my_insert_sql_actor = "insert ignore into actor (name) VALUES (%s)"
                  
-    my_cursor.execute(my_insert_sql_titles, (process_metadata.code, process_metadata.name, process_metadata.studio, process_metadata.image, process_metadata.score, process_metadata.release_date, process_location, process_subtitles_avail, ARBITRARY_PRATE))
+    my_cursor.execute(my_insert_sql_titles, (process_metadata.code, process_metadata.name, process_metadata.studio, process_metadata.image, process_metadata.score, process_metadata.release_date, process_location, process_subtitles_avail, process_arbitrary_prate))
 
     for g in process_metadata.genres:
         hash_input = (process_metadata.code + g).encode()
@@ -210,6 +215,20 @@ def send_data_to_database(process_metadata, process_metadata_urls, process_locat
 
     my_connection.commit()
     return True
+
+def move_files_by_extension(function_source_dir, function_destination_dir, function_extensions):
+    for root, _, files in os.walk(function_source_dir):
+        for file in files:
+            if any(file.endswith(ext) for ext in function_extensions):
+                source_file_path = os.path.join(root, file)
+                destination_file_path = os.path.join(function_destination_dir, file)
+
+                # Ensure the destination directory exists
+                os.makedirs(os.path.dirname(destination_file_path), exist_ok=True)
+
+                # Move the file to the destination directory
+                shutil.move(source_file_path, destination_file_path)
+                print(f"Moved: {source_file_path} to {destination_file_path}")
 
 #endregion
 
@@ -367,10 +386,10 @@ def remove_substrings(function_strings):
     
     return result
 
-def get_list_of_files(function_base_directory, function_target_extensions):
+def get_list_of_files(function_base_directory, function_base_extensions):
     # No constants
     folder_list_1 = os.listdir(function_base_directory)
-    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in function_target_extensions)]
+    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in function_base_extensions)]
     folder_list_3 = []
 
     for file in folder_list_2:
@@ -378,6 +397,8 @@ def get_list_of_files(function_base_directory, function_target_extensions):
         folder_list_3.append(file)
 
     return folder_list_3
+
+
 #endregion
 
 if __name__ == "__main__":
