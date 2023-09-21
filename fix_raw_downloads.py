@@ -1,4 +1,3 @@
-#import os, shutil
 from module_rjscanfix import *
 
 # need to find a way to deal with 2 parters.  Until then, do them manually.
@@ -9,7 +8,9 @@ BASE_EXTENSIONS = [".mkv",".mp4",".avi"]
 
 my_logger = get_logger()
 
-scanned_directory = get_list_of_files(TARGET_DIRECTORY, BASE_EXTENSIONS)
+scanned_directory = get_list_of_files(f_base_directory = BASE_DIRECTORY, \
+                                      f_base_extensions = BASE_EXTENSIONS)
+
 # Scan through the folder
 for full_filename in scanned_directory:
     filename, file_extension = os.path.splitext(os.path.basename(full_filename))
