@@ -35,7 +35,8 @@ from javscraper import *
 #  how do we get the logging and databases into the functions?
 #  A bit more resilience for failed lookups
 #  we need to get f_metadata_urls written to JSON.
-#  Make the 'get an confirmed name' process faster and more consistent.
+#  Make the 'get an confirmed name' process faster and more consistent.  Seems to not do the 6 thing when running on the fix_flat.
+## Send verbose logs to a file
 
 # a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
 # a single function to move it + preexisting SRT.
@@ -405,18 +406,24 @@ def search_for_title(f_input_string, f_delimiter = "-"):
 def get_console_handler():
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
-    #console_handler.setFormatter(logging.Formatter("%(message)s"))
+    console_handler.setLevel(logging.INFO)
     return console_handler
+
+def get_file_handler():
+    file_handler = logging.FileHandler("./log.log", mode='w')
+    file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
+    file_handler.setLevel(logging.DEBUG)
+    return file_handler
 
 def get_logger():
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logger.addHandler(get_console_handler())
+    logger.addHandler(get_file_handler())
     #logger.addHandler(get_syslog_handler())
     return logger
 
 def remove_substrings(f_strings):
-    
     # Sort the strings by length in descending order
     f_strings.sort(key=len, reverse=True)
     result = []
@@ -427,7 +434,6 @@ def remove_substrings(f_strings):
         # If it's not a substring of any previous string, add it to the result
         if not is_substring:
             result.append(s)
-    
     return result
 
 def get_list_of_files(f_base_directory, f_base_extensions):

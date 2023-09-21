@@ -1,0 +1,289 @@
+2023-09-21 22:30:38 - INFO - ================================================================================================
+2023-09-21 22:30:38 - INFO - MOV - Moving /mnt/multimedia/Other/RatedFinalJ/Censored/General/ABF-020/ABF-020.mp4 up a level.
+2023-09-21 22:30:51 - INFO - ================================================================================================
+2023-09-21 22:30:51 - DEBUG - Starting new HTTPS connection (1): www.javlibrary.com:443
+2023-09-21 22:30:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ABF020 HTTP/1.1" 200 None
+2023-09-21 22:30:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=BF020 HTTP/1.1" 200 None
+2023-09-21 22:30:52 - INFO - +++++ ABF-020.mp4 +++++ (single match found).
+2023-09-21 22:30:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ABF020 HTTP/1.1" 200 None
+2023-09-21 22:30:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=BF020 HTTP/1.1" 200 None
+2023-09-21 22:30:52 - DEBUG - MOV - Moving ABF-020.mp4 from /mnt/multimedia/Other/RatedFinalJ/Censored/General/.
+2023-09-21 22:30:52 - INFO - MOV - Moved ABF-020.mp4 to /mnt/multimedia/Other/RatedFinalJ/Censored/General/ABF-020/.
+2023-09-21 22:30:52 - DEBUG - SUB - Existing subtitles found.
+2023-09-21 22:30:52 - INFO - SUB - Searching SubtitleCat for ABF-020.
+2023-09-21 22:30:52 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:30:52 - DEBUG - https://www.subtitlecat.com:443 "GET /index.php?search=ABF-020 HTTP/1.1" 200 None
+2023-09-21 22:30:53 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/532/ABF-020-V2%20AZER.html HTTP/1.1" 200 None
+2023-09-21 22:30:53 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:30:53 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/532/ABF-020-V2%20AZER-en.srt HTTP/1.1" 200 0
+2023-09-21 22:30:53 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/532/ABF-020-V2 AZER-en.srt.
+2023-09-21 22:30:53 - INFO - SUB - Downloading abf-020-v2 azer-en.srt.
+2023-09-21 22:30:53 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:30:53 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/532/ABF-020-V2%20AZER-en.srt HTTP/1.1" 200 71961
+2023-09-21 22:30:59 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/532/ABF-020%20AZER.html HTTP/1.1" 200 None
+2023-09-21 22:30:59 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:30:59 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/532/ABF-020%20AZER-en.srt HTTP/1.1" 200 0
+2023-09-21 22:30:59 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/532/ABF-020 AZER-en.srt.
+2023-09-21 22:30:59 - INFO - SUB - Downloading abf-020 azer-en.srt.
+2023-09-21 22:30:59 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:00 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/532/ABF-020%20AZER-en.srt HTTP/1.1" 200 95664
+2023-09-21 22:31:05 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/533/ABF-020%20%5BZH%5D.html HTTP/1.1" 200 None
+2023-09-21 22:31:05 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:06 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/533/ABF-020%20%5BZH%5D-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:06 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/533/ABF-020 [ZH]-en.srt.
+2023-09-21 22:31:06 - INFO - SUB - Downloading abf-020 [zh]-en.srt.
+2023-09-21 22:31:06 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:06 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/533/ABF-020%20%5BZH%5D-en.srt HTTP/1.1" 200 67473
+2023-09-21 22:31:11 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/533/ABF-020.html HTTP/1.1" 200 None
+2023-09-21 22:31:11 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:11 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/533/ABF-020-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:11 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/533/ABF-020-en.srt.
+2023-09-21 22:31:11 - INFO - SUB - Downloading abf-020-en.srt.
+2023-09-21 22:31:11 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:12 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/533/ABF-020-en.srt HTTP/1.1" 200 67938
+2023-09-21 22:31:17 - INFO - MET - Search for metadata for ABF-020.
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ABF-020 HTTP/1.1" 200 None
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/?v=javmenqf4e HTTP/1.1" 200 None
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ABF-020 HTTP/1.1" 200 None
+2023-09-21 22:31:18 - INFO - MET - Metadata downloaded for ABF-020.
+2023-09-21 22:31:18 - INFO - MET - Write metadata for ABF-020 to database.
+2023-09-21 22:31:18 - INFO - MET - Write metadata for ABF-020 to json.
+2023-09-21 22:31:18 - INFO - ================================================================================================
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN280 HTTP/1.1" 302 None
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:19 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:21 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:22 - INFO - +++++ ADN-280.mp4 +++++ (single match found).
+2023-09-21 22:31:22 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN280 HTTP/1.1" 302 None
+2023-09-21 22:31:22 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:22 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:22 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:23 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:24 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:25 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN280 HTTP/1.1" 200 None
+2023-09-21 22:31:26 - DEBUG - MOV - Moving ADN-280.mp4 from /mnt/multimedia/Other/RatedFinalJ/Censored/General/.
+2023-09-21 22:31:26 - INFO - MOV - Moved ADN-280.mp4 to /mnt/multimedia/Other/RatedFinalJ/Censored/General/ADN-280/.
+2023-09-21 22:31:26 - DEBUG - SUB - Existing subtitles found.
+2023-09-21 22:31:26 - INFO - SUB - Searching SubtitleCat for ADN-280.
+2023-09-21 22:31:26 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:27 - DEBUG - https://www.subtitlecat.com:443 "GET /index.php?search=ADN-280 HTTP/1.1" 200 None
+2023-09-21 22:31:27 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/237/ADN-280-C.html HTTP/1.1" 200 None
+2023-09-21 22:31:27 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:27 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/237/ADN-280-C-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:27 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/237/ADN-280-C-en.srt.
+2023-09-21 22:31:27 - INFO - SUB - Downloading adn-280-c-en.srt.
+2023-09-21 22:31:27 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:28 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/237/ADN-280-C-en.srt HTTP/1.1" 200 64805
+2023-09-21 22:31:33 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/240/ADN-280%20eng.html HTTP/1.1" 200 None
+2023-09-21 22:31:33 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:33 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/240/ADN-280%20eng-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:33 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/240/ADN-280 eng-en.srt.
+2023-09-21 22:31:33 - INFO - SUB - Downloading adn-280 eng-en.srt.
+2023-09-21 22:31:33 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:34 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/240/ADN-280%20eng-en.srt HTTP/1.1" 200 63887
+2023-09-21 22:31:39 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/299/ADN-280%20%5B2020-12-07%5D%20%E4%BA%8C%E5%AE%AE%E3%81%B2%E3%81%8B%E3%82%8A%20-%20%E4%BA%BA%E5%A6%BB%E3%82%92%E8%99%9C%E3%81%AB%E3%81%99%E3%82%8B%E5%AF%9D%E5%8F%96%E3%82%89%E3%82%8C%E3%83%9E%E3%83%83%E3%82%B5%E3%83%BC%E3%82%B8.html HTTP/1.1" 200 None
+2023-09-21 22:31:39 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:39 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/301/ADN-280%20%5B2020-12-07%5D%20%E4%BA%8C%E5%AE%AE%E3%81%B2%E3%81%8B%E3%82%8A%20-%20%E4%BA%BA%E5%A6%BB%E3%82%92%E8%99%9C%E3%81%AB%E3%81%99%E3%82%8B%E5%AF%9D%E5%8F%96%E3%82%89%E3%82%8C%E3%83%9E%E3%83%83%E3%82%B5%E3%83%BC%E3%82%B8-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:39 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/301/ADN-280 [2020-12-07] 二宮ひかり - 人妻を虜にする寝取られマッサージ-en.srt.
+2023-09-21 22:31:39 - INFO - SUB - Downloading adn-280 [2020-12-07] 二宮ひかり - 人妻を虜にする寝取られマッサージ-en.srt.
+2023-09-21 22:31:39 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:40 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/301/ADN-280%20%5B2020-12-07%5D%20%E4%BA%8C%E5%AE%AE%E3%81%B2%E3%81%8B%E3%82%8A%20-%20%E4%BA%BA%E5%A6%BB%E3%82%92%E8%99%9C%E3%81%AB%E3%81%99%E3%82%8B%E5%AF%9D%E5%8F%96%E3%82%89%E3%82%8C%E3%83%9E%E3%83%83%E3%82%B5%E3%83%BC%E3%82%B8-en.srt HTTP/1.1" 200 65267
+2023-09-21 22:31:45 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/308/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy.html HTTP/1.1" 200 None
+2023-09-21 22:31:45 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:45 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/308/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:45 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/308/ADN-280 kor 마사지 av-jamak  Chrishy-en.srt.
+2023-09-21 22:31:45 - INFO - SUB - Downloading adn-280 kor 마사지 av-jamak  chrishy-en.srt.
+2023-09-21 22:31:45 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:45 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/308/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy-en.srt HTTP/1.1" 200 84076
+2023-09-21 22:31:51 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/308/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy%20fix.html HTTP/1.1" 200 None
+2023-09-21 22:31:51 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:51 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/308/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy%20fix-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:51 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/308/ADN-280 kor 마사지 av-jamak  Chrishy fix-en.srt.
+2023-09-21 22:31:51 - INFO - SUB - Downloading adn-280 kor 마사지 av-jamak  chrishy fix-en.srt.
+2023-09-21 22:31:51 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:51 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/308/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy%20fix-en.srt HTTP/1.1" 200 84079
+2023-09-21 22:31:56 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/415/ADN-280%20A%20Cuckolding%20Massage%20That%20Captured%20A%20Married%20Woman%20%E2%80%93%20PornDQ%20%E2%80%93%20Watch%20Free%20HD%20Porn%20Videos.html HTTP/1.1" 200 None
+2023-09-21 22:31:57 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:57 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/419/ADN-280%20A%20Cuckolding%20Massage%20That%20Captured%20A%20Married%20Woman%20%E2%80%93%20PornDQ%20%E2%80%93%20Watch%20Free%20HD%20Porn%20Videos-en.srt HTTP/1.1" 200 0
+2023-09-21 22:31:57 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/419/ADN-280 A Cuckolding Massage That Captured A Married Woman – PornDQ – Watch Free HD Porn Videos-en.srt.
+2023-09-21 22:31:57 - INFO - SUB - Downloading adn-280 a cuckolding massage that captured a married woman – porndq – watch free hd porn videos-en.srt.
+2023-09-21 22:31:57 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:31:57 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/419/ADN-280%20A%20Cuckolding%20Massage%20That%20Captured%20A%20Married%20Woman%20%E2%80%93%20PornDQ%20%E2%80%93%20Watch%20Free%20HD%20Porn%20Videos-en.srt HTTP/1.1" 200 63891
+2023-09-21 22:32:02 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/534/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy-zh-TW.html HTTP/1.1" 200 None
+2023-09-21 22:32:02 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:03 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/534/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy-zh-TW-en.srt HTTP/1.1" 200 0
+2023-09-21 22:32:03 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/534/ADN-280 kor 마사지 av-jamak  Chrishy-zh-TW-en.srt.
+2023-09-21 22:32:03 - INFO - SUB - Downloading adn-280 kor 마사지 av-jamak  chrishy-zh-tw-en.srt.
+2023-09-21 22:32:03 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:04 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/534/ADN-280%20kor%20%EB%A7%88%EC%82%AC%EC%A7%80%20av-jamak%20%20Chrishy-zh-TW-en.srt HTTP/1.1" 200 86874
+2023-09-21 22:32:09 - INFO - MET - Search for metadata for ADN-280.
+2023-09-21 22:32:11 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN-280 HTTP/1.1" 302 None
+2023-09-21 22:32:13 - DEBUG - https://www.javlibrary.com:443 "GET /en/?v=javmezj2ym HTTP/1.1" 200 None
+2023-09-21 22:32:13 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN-280 HTTP/1.1" 302 None
+2023-09-21 22:32:13 - INFO - MET - Metadata downloaded for ADN-280.
+2023-09-21 22:32:13 - INFO - MET - Write metadata for ADN-280 to database.
+2023-09-21 22:32:13 - INFO - MET - Write metadata for ADN-280 to json.
+2023-09-21 22:32:14 - INFO - ================================================================================================
+2023-09-21 22:32:14 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN295 HTTP/1.1" 302 None
+2023-09-21 22:32:14 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:14 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:14 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:15 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:16 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:17 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:18 - INFO - +++++ ADN-295.mp4 +++++ (single match found).
+2023-09-21 22:32:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN295 HTTP/1.1" 302 None
+2023-09-21 22:32:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:18 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:19 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:21 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN295 HTTP/1.1" 200 None
+2023-09-21 22:32:22 - DEBUG - MOV - Moving ADN-295.mp4 from /mnt/multimedia/Other/RatedFinalJ/Censored/General/.
+2023-09-21 22:32:22 - INFO - MOV - Moved ADN-295.mp4 to /mnt/multimedia/Other/RatedFinalJ/Censored/General/ADN-295/.
+2023-09-21 22:32:22 - DEBUG - SUB - Existing subtitles found.
+2023-09-21 22:32:22 - INFO - SUB - Searching SubtitleCat for ADN-295.
+2023-09-21 22:32:22 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:23 - DEBUG - https://www.subtitlecat.com:443 "GET /index.php?search=ADN-295 HTTP/1.1" 200 None
+2023-09-21 22:32:23 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/251/adn-295.html HTTP/1.1" 200 None
+2023-09-21 22:32:23 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:24 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/251/adn-295-en.srt HTTP/1.1" 200 0
+2023-09-21 22:32:24 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/251/adn-295-en.srt.
+2023-09-21 22:32:24 - INFO - SUB - Downloading adn-295-en.srt.
+2023-09-21 22:32:24 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:24 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/251/adn-295-en.srt HTTP/1.1" 200 69155
+2023-09-21 22:32:30 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/252/ADN-295%20eng.html HTTP/1.1" 200 None
+2023-09-21 22:32:30 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:30 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/252/ADN-295%20eng-en.srt HTTP/1.1" 200 0
+2023-09-21 22:32:30 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/252/ADN-295 eng-en.srt.
+2023-09-21 22:32:30 - INFO - SUB - Downloading adn-295 eng-en.srt.
+2023-09-21 22:32:30 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:30 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/252/ADN-295%20eng-en.srt HTTP/1.1" 200 68375
+2023-09-21 22:32:36 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/299/ADN-295%20%5B2021-02-07%5D%20%E4%BA%8C%E5%AE%AE%E3%81%B2%E3%81%8B%E3%82%8A%20-%20%E5%A4%AB%E3%81%AE%E6%B5%AE%E6%B0%97%E3%82%92%E7%9F%A5%E3%81%A3%E3%81%9F%E7%A7%81%E3%81%AF%E3%83%91%E3%83%BC%E3%83%88%E5%85%88%E3%81%AE%E5%BA%97%E9%95%B7%E3%81%A8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%AF%E3%82%B9%E3%81%AB%E6%BA%BA%E3%82%8C%E3%80%81%E6%B0%97%E6%8C%81%E3%81%A1%E8%89%AF%E9%81%8E%E3%81%8E%E3%81%A6%E3%82%84%E3%82%81%E3%82%89%E3%82%8C%E3%81%AA%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%97%E3%81%BE%E3%81%A3%E3%81%9F%E3%80%82.html HTTP/1.1" 200 None
+2023-09-21 22:32:36 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:36 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/301/ADN-295%20%5B2021-02-07%5D%20%E4%BA%8C%E5%AE%AE%E3%81%B2%E3%81%8B%E3%82%8A%20-%20%E5%A4%AB%E3%81%AE%E6%B5%AE%E6%B0%97%E3%82%92%E7%9F%A5%E3%81%A3%E3%81%9F%E7%A7%81%E3%81%AF%E3%83%91%E3%83%BC%E3%83%88%E5%85%88%E3%81%AE%E5%BA%97%E9%95%B7%E3%81%A8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%AF%E3%82%B9%E3%81%AB%E6%BA%BA%E3%82%8C%E3%80%81%E6%B0%97%E6%8C%81%E3%81%A1%E8%89%AF%E9%81%8E%E3%81%8E%E3%81%A6%E3%82%84%E3%82%81%E3%82%89%E3%82%8C%E3%81%AA%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%97%E3%81%BE%E3%81%A3%E3%81%9F%E3%80%82-en.srt HTTP/1.1" 200 0
+2023-09-21 22:32:36 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/301/ADN-295 [2021-02-07] 二宮ひかり - 夫の浮気を知った私はパート先の店長とのセックスに溺れ、気持ち良過ぎてやめられなくなってしまった。-en.srt.
+2023-09-21 22:32:36 - INFO - SUB - Downloading adn-295 [2021-02-07] 二宮ひかり - 夫の浮気を知った私はパート先の店長とのセックスに溺れ、気持ち良過ぎてやめられなくなってしまった。-en.srt.
+2023-09-21 22:32:36 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:36 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/301/ADN-295%20%5B2021-02-07%5D%20%E4%BA%8C%E5%AE%AE%E3%81%B2%E3%81%8B%E3%82%8A%20-%20%E5%A4%AB%E3%81%AE%E6%B5%AE%E6%B0%97%E3%82%92%E7%9F%A5%E3%81%A3%E3%81%9F%E7%A7%81%E3%81%AF%E3%83%91%E3%83%BC%E3%83%88%E5%85%88%E3%81%AE%E5%BA%97%E9%95%B7%E3%81%A8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%AF%E3%82%B9%E3%81%AB%E6%BA%BA%E3%82%8C%E3%80%81%E6%B0%97%E6%8C%81%E3%81%A1%E8%89%AF%E9%81%8E%E3%81%8E%E3%81%A6%E3%82%84%E3%82%81%E3%82%89%E3%82%8C%E3%81%AA%E3%81%8F%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%97%E3%81%BE%E3%81%A3%E3%81%9F%E3%80%82-en.srt HTTP/1.1" 200 67593
+2023-09-21 22:32:42 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/312/ADN-295%20%EC%A0%90%EC%9E%A5%EA%B3%BC%20%EB%B6%88%EB%A5%9C.html HTTP/1.1" 200 None
+2023-09-21 22:32:42 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:42 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/312/ADN-295%20%EC%A0%90%EC%9E%A5%EA%B3%BC%20%EB%B6%88%EB%A5%9C-en.srt HTTP/1.1" 200 0
+2023-09-21 22:32:42 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/312/ADN-295 점장과 불륜-en.srt.
+2023-09-21 22:32:42 - INFO - SUB - Downloading adn-295 점장과 불륜-en.srt.
+2023-09-21 22:32:42 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:42 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/312/ADN-295%20%EC%A0%90%EC%9E%A5%EA%B3%BC%20%EB%B6%88%EB%A5%9C-en.srt HTTP/1.1" 200 87858
+2023-09-21 22:32:47 - INFO - MET - Search for metadata for ADN-295.
+2023-09-21 22:32:47 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN-295 HTTP/1.1" 302 None
+2023-09-21 22:32:47 - DEBUG - https://www.javlibrary.com:443 "GET /en/?v=javmezyk2m HTTP/1.1" 200 None
+2023-09-21 22:32:47 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ADN-295 HTTP/1.1" 302 None
+2023-09-21 22:32:48 - INFO - MET - Metadata downloaded for ADN-295.
+2023-09-21 22:32:48 - INFO - MET - Write metadata for ADN-295 to database.
+2023-09-21 22:32:48 - INFO - MET - Write metadata for ADN-295 to json.
+2023-09-21 22:32:48 - INFO - ================================================================================================
+2023-09-21 22:32:48 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=AFS063 HTTP/1.1" 302 None
+2023-09-21 22:32:48 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:48 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:48 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:49 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:49 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:50 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:52 - INFO - +++++ AFS-063.mp4 +++++ (single match found).
+2023-09-21 22:32:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=AFS063 HTTP/1.1" 302 None
+2023-09-21 22:32:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:52 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:53 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:53 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:54 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=FS063 HTTP/1.1" 200 None
+2023-09-21 22:32:56 - DEBUG - MOV - Moving AFS-063.mp4 from /mnt/multimedia/Other/RatedFinalJ/Censored/General/.
+2023-09-21 22:32:56 - INFO - MOV - Moved AFS-063.mp4 to /mnt/multimedia/Other/RatedFinalJ/Censored/General/AFS-063/.
+2023-09-21 22:32:56 - INFO - SUB - Searching SubtitleCat for AFS-063.
+2023-09-21 22:32:56 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:32:56 - DEBUG - https://www.subtitlecat.com:443 "GET /index.php?search=AFS-063 HTTP/1.1" 200 None
+2023-09-21 22:32:56 - INFO - MET - Search for metadata for AFS-063.
+2023-09-21 22:32:56 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=AFS-063 HTTP/1.1" 302 None
+2023-09-21 22:32:56 - DEBUG - https://www.javlibrary.com:443 "GET /en/?v=javmefyery HTTP/1.1" 200 None
+2023-09-21 22:32:56 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=AFS-063 HTTP/1.1" 302 None
+2023-09-21 22:32:56 - INFO - MET - Metadata downloaded for AFS-063.
+2023-09-21 22:32:56 - INFO - MET - Write metadata for AFS-063 to database.
+2023-09-21 22:32:56 - INFO - MET - Write metadata for AFS-063 to json.
+2023-09-21 22:32:57 - INFO - ================================================================================================
+2023-09-21 22:32:57 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ALDN162 HTTP/1.1" 302 None
+2023-09-21 22:32:57 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:32:57 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:32:57 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:32:57 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:32:58 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:32:59 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:01 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:01 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:01 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:01 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:02 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:03 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:05 - INFO - +++++ ALDN-162.mp4 +++++ (single match found).
+2023-09-21 22:33:05 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ALDN162 HTTP/1.1" 302 None
+2023-09-21 22:33:05 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:05 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:05 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:05 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:06 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:07 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN162 HTTP/1.1" 200 None
+2023-09-21 22:33:09 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:09 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:09 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:09 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:10 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:11 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN162 HTTP/1.1" 200 None
+2023-09-21 22:33:13 - DEBUG - MOV - Moving ALDN-162.mp4 from /mnt/multimedia/Other/RatedFinalJ/Censored/General/.
+2023-09-21 22:33:13 - INFO - MOV - Moved ALDN-162.mp4 to /mnt/multimedia/Other/RatedFinalJ/Censored/General/ALDN-162/.
+2023-09-21 22:33:13 - DEBUG - SUB - Existing subtitles found.
+2023-09-21 22:33:13 - INFO - SUB - Searching SubtitleCat for ALDN-162.
+2023-09-21 22:33:13 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:33:13 - DEBUG - https://www.subtitlecat.com:443 "GET /index.php?search=ALDN-162 HTTP/1.1" 200 None
+2023-09-21 22:33:13 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/488/ALDN-162.html HTTP/1.1" 200 None
+2023-09-21 22:33:14 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:33:14 - DEBUG - https://www.subtitlecat.com:443 "HEAD /subs/488/ALDN-162-en.srt HTTP/1.1" 200 0
+2023-09-21 22:33:14 - DEBUG - SUB - Subtitle_URL https://www.subtitlecat.com/subs/488/ALDN-162-en.srt.
+2023-09-21 22:33:14 - INFO - SUB - Downloading aldn-162-en.srt.
+2023-09-21 22:33:14 - DEBUG - Starting new HTTPS connection (1): www.subtitlecat.com:443
+2023-09-21 22:33:14 - DEBUG - https://www.subtitlecat.com:443 "GET /subs/488/ALDN-162-en.srt HTTP/1.1" 200 60295
+2023-09-21 22:33:19 - INFO - MET - Search for metadata for ALDN-162.
+2023-09-21 22:33:19 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ALDN-162 HTTP/1.1" 302 None
+2023-09-21 22:33:19 - DEBUG - https://www.javlibrary.com:443 "GET /en/?v=javmen3asu HTTP/1.1" 200 None
+2023-09-21 22:33:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ALDN-162 HTTP/1.1" 302 None
+2023-09-21 22:33:20 - INFO - MET - Metadata downloaded for ALDN-162.
+2023-09-21 22:33:20 - INFO - MET - Write metadata for ALDN-162 to database.
+2023-09-21 22:33:20 - INFO - MET - Write metadata for ALDN-162 to json.
+2023-09-21 22:33:20 - INFO - ================================================================================================
+2023-09-21 22:33:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ALDN202 HTTP/1.1" 302 None
+2023-09-21 22:33:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:20 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:21 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:21 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:22 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:24 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:24 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:24 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:25 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:25 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:26 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:28 - INFO - +++++ ALDN-202.mp4 +++++ (single match found).
+2023-09-21 22:33:28 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=ALDN202 HTTP/1.1" 302 None
+2023-09-21 22:33:28 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:28 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:28 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:29 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:29 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:30 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=LDN202 HTTP/1.1" 200 None
+2023-09-21 22:33:32 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:32 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:32 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:33 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:33 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
+2023-09-21 22:33:34 - DEBUG - https://www.javlibrary.com:443 "GET /en/vl_searchbyid.php?keyword=DN202 HTTP/1.1" 200 None
