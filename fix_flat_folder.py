@@ -1,10 +1,7 @@
-#import sys, os, re, requests, json, logging, time, hashlib
 from module_rjscanfix import *
-#import mysql.connector
-#from requests_html import HTMLSession
-#from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
+
 BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 BASE_EXTENSIONS = [".mkv", ".mp4", ".avi"]
