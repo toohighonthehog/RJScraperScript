@@ -5,7 +5,7 @@ from module_rjscanfix import *
 #from javscraper import *
 
 # Define the directory you want to start the search + the file extension + language suffix
-BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"
+BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 BASE_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"

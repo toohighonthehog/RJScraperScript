@@ -1,5 +1,6 @@
 import os, re, requests, hashlib, time, json, logging, shutil, sys
 from requests_html import HTMLSession
+from datetime import datetime
 import mysql.connector
 from javscraper import *
 
@@ -34,6 +35,7 @@ from javscraper import *
 #  how do we get the logging and databases into the functions?
 #  A bit more resilience for failed lookups
 #  we need to get f_metadata_urls written to JSON.
+#  Make the 'get an confirmed name' process faster and more consistent.
 
 # a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
 # a single function to move it + preexisting SRT.
@@ -149,9 +151,26 @@ def download_metadata(f_target_directory, f_process_title, f_process_extension, 
     r_metadata_urls = my_javlibrary_new_search(f_process_title)
 
     if metadata is not None:
-        release_date = (metadata.release_date).strftime("%Y-%m-%d")
+        file_location = f_target_directory + f_process_title + "/" + f_process_title + f_process_extension
+        release_date = (metadata.release_date).strftime("%Y-%m-%d %H:%M:%S")
+        added_date = str((f"{datetime.now():%Y-%m-%d %H:%M:%S}"))
+        file_date = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(file_location)))
+
         f_my_logger.info("MET - Metadata downloaded for " + f_process_title + ".")          
-        r_metadata_array = {'code': metadata.code, "name": metadata.name, "actors": metadata.actresses, "studio": metadata.studio, "image": metadata.image, "genres": metadata.genres, "score": metadata.score, "releasedate": release_date, "location": f_target_directory + f_process_title + "/" + f_process_title + f_process_extension, "subtitles": f_process_subtitle_available, "prate": f_process_arbitrary_prate}
+        r_metadata_array = {'code': metadata.code, \
+                            "name": metadata.name, \
+                            "actors": metadata.actresses, \
+                            "studio": metadata.studio, \
+                            "image": metadata.image, \
+                            "genres": metadata.genres, \
+                            "score": metadata.score, \
+                            "release_date": release_date, \
+                            "added_date": added_date, \
+                            "file_date": file_date, \
+                            "location": file_location, \
+                            "subtitles": f_process_subtitle_available, \
+                            "prate": f_process_arbitrary_prate}
+        
         # metadata_json = json.dumps(metadata_array, indent=4)
         # f_my_logger.debug("MET - Write metadata for " + f_process_title + " to local json.")
         # with open(f_target_directory + f_process_title + "/" + f_process_title + ".json", "w") as outfile:
@@ -181,11 +200,13 @@ def send_data_to_database(f_metadata_array, f_metadata_urls, f_my_logger, f_my_c
                             ,image
                             ,score
                             ,release_date
+                            ,added_date
+                            ,file_date
                             ,location
                             ,subtitles
                             ,prate
-                            ) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                            on duplicate key update score = values(score), location = values(location), subtitles = values(subtitles) """)
+                            ) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            on duplicate key update name = values(name), studio = values(studio), score = values(score), image = values(image), release_date = values(release_date), added_date = values(added_date), file_date = values(file_date), location = values(location), subtitles = values(subtitles) """)
     
     my_insert_sql_genre = ("""insert into genre (code
                             , description
@@ -204,7 +225,18 @@ def send_data_to_database(f_metadata_array, f_metadata_urls, f_my_logger, f_my_c
     
     my_insert_sql_actor = "insert ignore into actor (name) VALUES (%s)"
                  
-    f_my_cursor.execute(my_insert_sql_titles, (f_metadata_array['code'], f_metadata_array['name'], f_metadata_array['studio'], f_metadata_array['image'], f_metadata_array['score'], f_metadata_array['releasedate'], f_metadata_array['location'], f_metadata_array['subtitles'], f_metadata_array['prate']))
+    f_my_cursor.execute(my_insert_sql_titles, \
+                       (f_metadata_array['code'], \
+                        f_metadata_array['name'], \
+                        f_metadata_array['studio'], \
+                        f_metadata_array['image'], \
+                        f_metadata_array['score'], \
+                        f_metadata_array['release_date'], \
+                        f_metadata_array['added_date'], \
+                        f_metadata_array['file_date'], \
+                        f_metadata_array['location'], \
+                        f_metadata_array['subtitles'], \
+                        f_metadata_array['prate']))
 
     for g in f_metadata_array['genres']:
         hash_input = (f_metadata_array['code'] + g).encode()
@@ -247,9 +279,12 @@ def my_javlibrary_new_search(f_input_string):
     my_javlibrary = JAVLibrary()
     count = 0
     result = []
-    while result == [] and count <= 6:
-        result = my_javlibrary.search(f_input_string)
-        time.sleep(0.25)
+    while result == [] and count <= 5:
+        try:
+            result = my_javlibrary.search(f_input_string)
+        except:
+            pass
+        time.sleep(0.25 * count)
         count = count + 1
     return result
 
@@ -258,9 +293,12 @@ def my_javlibrary_new_getvideo(f_input_string):
     my_javlibrary = JAVLibrary()
     count = 0
     result = ""
-    while result == "" and count <= 6:
-        result = my_javlibrary.get_video(f_input_string)
-        time.sleep(0.25)
+    while result == "" and count <= 5:
+        try:
+            result = my_javlibrary.get_video(f_input_string)
+        except:
+            pass
+        time.sleep(0.25 * count)
         count = count + 1
     return result
 #endregion

@@ -20,6 +20,8 @@ if __name__ == "__main__":
     my_cursor.execute(my_sql_delete)
     my_sql_delete = "DELETE FROM titles;"
     my_cursor.execute(my_sql_delete)
- 
+    my_sql_delete = "DELETE FROM urls;"
+    my_cursor.execute(my_sql_delete)
+
     my_connection.commit()
     my_cursor.close()
