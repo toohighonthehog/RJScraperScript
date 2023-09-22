@@ -38,6 +38,11 @@ from javscraper import *
 #  Make the 'get an confirmed name' process faster and more consistent.  Seems to not do the 6 thing when running on the fix_flat.
 ## Send verbose logs to a file
 #  Reliable recovery from failure (i.e. what to do with a half done file?) make the move the last step?
+#       Create a stub record as early as possible?
+#       Then populate at the end.
+#  Need to make faster.
+#       Differentiate between lookup failure and an affirmative null result.
+
 
 # a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
 # a single function to move it + preexisting SRT.

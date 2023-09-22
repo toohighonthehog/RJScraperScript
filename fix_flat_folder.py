@@ -2,12 +2,24 @@ from module_rjscanfix import *
 
 # Define the directory you want to start the search + the file extension + language suffix
 
+BASE_DIRECTORIES = [{'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0}]
+
 BASE_DIRECTORY = "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"
 TARGET_DIRECTORY = BASE_DIRECTORY
 BASE_EXTENSIONS = [".mkv", ".mp4", ".avi"]
 TARGET_LANGUAGE = "en.srt"
 ARBITRARY_PRATE = 0
-REDO_FILES = True
+REDO_FILES = False
+
+pass
+
+exit
 
 if __name__ == "__main__":
 
