@@ -42,6 +42,7 @@ from javscraper import *
 #       Then populate at the end.
 #  Need to make faster.
 #       Differentiate between lookup failure and an affirmative null result.
+#  Log file to timestamped filename
 
 
 # a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
@@ -416,7 +417,7 @@ def get_console_handler():
     return console_handler
 
 def get_file_handler():
-    file_handler = logging.FileHandler("./log.log", mode='w')
+    file_handler = logging.FileHandler("./logs/log.log", mode='w')
     file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
     file_handler.setLevel(logging.DEBUG)
     return file_handler
