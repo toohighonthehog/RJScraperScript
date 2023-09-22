@@ -37,6 +37,7 @@ from javscraper import *
 #  we need to get f_metadata_urls written to JSON.
 #  Make the 'get an confirmed name' process faster and more consistent.  Seems to not do the 6 thing when running on the fix_flat.
 ## Send verbose logs to a file
+#  Reliable recovery from failure (i.e. what to do with a half done file?) make the move the last step?
 
 # a single function to take a filename, positively identify it (with reasonable confident), and return the new filename / ID.
 # a single function to move it + preexisting SRT.
