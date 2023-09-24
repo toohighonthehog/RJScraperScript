@@ -18,9 +18,9 @@ if __name__ == "__main__":
     my_cursor.execute(my_sql_delete)
     my_sql_delete = "DELETE FROM genre;"
     my_cursor.execute(my_sql_delete)
-    my_sql_delete = "DELETE FROM titles;"
+    my_sql_delete = "DELETE FROM title;"
     my_cursor.execute(my_sql_delete)
-    my_sql_delete = "DELETE FROM urls;"
+    my_sql_delete = "DELETE FROM url;"
     my_cursor.execute(my_sql_delete)
 
     my_connection.commit()
