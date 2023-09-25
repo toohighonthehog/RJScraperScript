@@ -15,17 +15,18 @@ BASE_EXTENSIONS = [".srt"]
 if __name__ == "__main__":
     my_logger = get_logger()
 
-# Add a move/copy option to the below, with MOVE as default
 # #   stage 1 - move all the useful files to the store
-#     move_files_by_extension(f_source_dir = BASE_DIRECTORY, \
-#                             f_destination_dir = INTERMEDIATE_DIRECTORY, \
-#                             f_extensions = BASE_EXTENSIONS)
+    transfer_files_by_extension(f_source_dir = BASE_DIRECTORY, \
+                                f_destination_dir = INTERMEDIATE_DIRECTORY, \
+                                f_extensions = BASE_EXTENSIONS, \
+                                f_my_logger = my_logger, \
+                                f_processmode = PROCESS)
 
 #     exit
 
     # stage 2 - fix all the filenames
     scanned_directory = get_list_of_files(f_base_directory = INTERMEDIATE_DIRECTORY, \
-                                        f_base_extensions = BASE_EXTENSIONS)
+                                          f_base_extensions = BASE_EXTENSIONS)
 
     # Scan through the folder
     for full_filename in scanned_directory:
@@ -37,7 +38,9 @@ if __name__ == "__main__":
             if (full_filename != new_filename):
                 my_logger.info(full_filename + " becomes " + new_filename + ".")
                 if (PROCESS == "MOVE"):
-                    os.rename(INTERMEDIATE_DIRECTORY + full_filename, TARGET_DIRECTORY + new_filename)
+                    # Test this.
+                    shutil.move(full_filename, TARGET_DIRECTORY + new_filename)
+                    # os.rename(INTERMEDIATE_DIRECTORY + full_filename, TARGET_DIRECTORY + new_filename)
                 if (PROCESS == "COPY"):
                     shutil.copy(full_filename, TARGET_DIRECTORY + new_filename)
                 
