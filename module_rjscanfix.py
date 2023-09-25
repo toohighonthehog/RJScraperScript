@@ -128,6 +128,7 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
     url_level1 = 'https://www.subtitlecat.com/index.php?search=' + f_process_title
     response_level1 = session.get(url_level1)
 
+    #see to get a few errors on this line below.
     table_level1 = response_level1.html.find('table')[0]
     table_level1_entries = [[c.absolute_links for c in row.find('td')][:1] for row in table_level1.find('tr')][1:]
 
@@ -262,7 +263,8 @@ def send_data_to_database(f_metadata_array, f_metadata_url, f_my_logger, f_my_cu
                             on duplicate key update url = values(url), uid = values(uid) """)
     
     my_insert_sql_actor = "insert ignore into actor (name) VALUES (%s)"
-                 
+
+    # we seem to get the occassional (random?) incorrect date/time value for filedate here
     f_my_cursor.execute(my_insert_sql_title, \
                        (f_metadata_array['code'], \
                         f_metadata_array['name'], \
