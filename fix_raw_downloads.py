@@ -1,22 +1,30 @@
 from module_rjscanfix import *
+import os, shutil
+
+PROCESS = "COPY"
 
 # need to find a way to deal with 2 parters.  Until then, do them manually.
 
-BASE_DIRECTORY = "/mnt/multimedia/~Downloads/filing/"
-TARGET_DIRECTORY = "/mnt/multimedia/~Downloads/fixed/"
-BASE_EXTENSIONS = [".mkv",".mp4",".avi"]
+
+BASE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/1. Raw Subs/"
+INTERMEDIATE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/2. Dumped Subs/"
+TARGET_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/3. Fixed Subs/"
+BASE_EXTENSIONS = [".srt"]
 #BASE_EXTENSIONS = [".txt"]
 
 if __name__ == "__main__":
     my_logger = get_logger()
 
-    # stage 1 - move all the useful files to the store
-    # move_files_by_extension(f_source_dir = BASE_DIRECTORY, \
-    #                         f_destination_dir = TARGET_DIRECTORY, \
-    #                         f_extensions = BASE_EXTENSIONS)
+# Add a move/copy option to the below, with MOVE as default
+# #   stage 1 - move all the useful files to the store
+#     move_files_by_extension(f_source_dir = BASE_DIRECTORY, \
+#                             f_destination_dir = INTERMEDIATE_DIRECTORY, \
+#                             f_extensions = BASE_EXTENSIONS)
+
+#     exit
 
     # stage 2 - fix all the filenames
-    scanned_directory = get_list_of_files(f_base_directory = TARGET_DIRECTORY, \
+    scanned_directory = get_list_of_files(f_base_directory = INTERMEDIATE_DIRECTORY, \
                                         f_base_extensions = BASE_EXTENSIONS)
 
     # Scan through the folder
@@ -28,7 +36,11 @@ if __name__ == "__main__":
             new_filename = fix_file_code(fixed_filename[0]) + file_extension
             if (full_filename != new_filename):
                 my_logger.info(full_filename + " becomes " + new_filename + ".")
-                os.rename(TARGET_DIRECTORY + full_filename, TARGET_DIRECTORY + new_filename)
+                if (PROCESS == "MOVE"):
+                    os.rename(INTERMEDIATE_DIRECTORY + full_filename, TARGET_DIRECTORY + new_filename)
+                if (PROCESS == "COPY"):
+                    shutil.copy(full_filename, TARGET_DIRECTORY + new_filename)
+                
             else:
                 my_logger.info(full_filename + " already correct.")
         else:

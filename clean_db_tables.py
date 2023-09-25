@@ -7,7 +7,7 @@ if __name__ == "__main__":
         password="5Nf%GB6r10bD", 
         host="diskstation.hachiko.int", 
         port=3306, 
-        database="Multimedia" 
+        database="Multimedia-Dev" 
     )
     
     my_cursor = my_connection.cursor()
