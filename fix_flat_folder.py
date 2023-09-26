@@ -82,10 +82,14 @@ if __name__ == "__main__":
                         f_process_title = to_be_scraped, \
                         f_my_logger = my_logger)
 
-                    
+                    # Get repo subs
+                        #TARGET_DIRECTORY
+                        #subtitle_available
+                        #process_title
+                        #my logger
 
                     metadata_array, metadata_url = download_metadata(f_process_title = to_be_scraped, \
-                        f_process_subtitle_available = subtitle_available, \
+                        f_process_subtitle_available = subtitle_available, \                        
                         f_process_arbitrary_prate = ARBITRARY_PRATE, \
                         f_my_logger = my_logger )
                     
