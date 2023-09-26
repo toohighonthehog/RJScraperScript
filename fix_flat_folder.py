@@ -1,5 +1,6 @@
 from module_rjscanfix import *
-#x
+
+#  https://colab.research.google.com/github/richardjj27/WhisperWithVAD
 #  BASE_DIRECTORY vs TARGET_DIRECTORY...  a bit confused.
 
 # task:
