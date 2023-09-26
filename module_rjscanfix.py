@@ -42,7 +42,7 @@ from javscraper import *
 ##      or do the invasive tasks last
 ## Need to make faster.
 ##       Differentiate between lookup failure and an affirmative null result.
-##  Log file to timestamped filename
+#  Log file to timestamped filename
 ## if a strict <filename>-<target langugage> file doesn't already exist copy the largest srt to make it.
 ## get rid of pointless pass commands.
 ## Removed unused variables (especially from functions)
@@ -114,6 +114,9 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
     p_directory = f_target_directory + f_process_title + "/"
 
     # this needs to be moved to, maybe?
+    # 0 - no subs
+    # 1 - SC Subs
+    # 2 - Found Subs
     p_subtitleavailable = False
 
     if not os.path.exists(p_directory):
@@ -406,7 +409,7 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     # Search for 8 character codes.
     p_counter = 0
     while p_counter + 7 < p_filename_length:
-        f_input_string = p_filename[counter:counter + 8]
+        f_input_string = p_filename[p_counter:p_counter + 8]
         #print(f_input_string)
         if (re.match(p_pattern8, f_input_string)):
             if my_javlibrary_new_search(f_input_string):
@@ -415,22 +418,22 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     
     # Search for 7 character codes.
     p_counter = 0
-    while counter + 6 < p_filename_length:
+    while p_counter + 6 < p_filename_length:
         f_input_string = p_filename[p_counter:p_counter + 7]
         #print(f_input_string)
         if (re.match(p_pattern7, f_input_string)):
             if my_javlibrary_new_search(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 7])
-        counter = counter + 1
+        p_counter = p_counter + 1
 
     # Search for 6 character codes.
     p_counter = 0
-    while counter + 5 < p_filename_length:
-        f_input_string = p_filename[counter:counter + 6]
+    while p_counter + 5 < p_filename_length:
+        f_input_string = p_filename[p_counter:p_counter + 6]
         #print(f_input_string)
         if (re.match(p_pattern6, f_input_string)):
             if my_javlibrary_new_search(f_input_string):
-                p_results.append(p_filename[counter:counter + 6])
+                p_results.append(p_filename[p_counter:p_counter + 6])
         p_counter = p_counter + 1
 
     # Search for 5 character codes.
@@ -440,7 +443,7 @@ def search_for_title(f_input_string, f_delimiter = "-"):
         #print(f_input_string)
         if (re.match(p_pattern5, f_input_string)):
             if my_javlibrary_new_search(f_input_string):
-                p_results.append(p_filename[counter:counter + 5])
+                p_results.append(p_filename[p_counter:p_counter + 5])
         p_counter = p_counter + 1
     p_results = remove_substrings(p_results)
 
