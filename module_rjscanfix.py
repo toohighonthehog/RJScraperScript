@@ -42,7 +42,7 @@ from javscraper import *
 ##      or do the invasive tasks last
 ## Need to make faster.
 ##       Differentiate between lookup failure and an affirmative null result.
-#  Log file to timestamped filename
+#+ Log file to timestamped filename
 ## if a strict <filename>-<target langugage> file doesn't already exist copy the largest srt to make it.
 ## get rid of pointless pass commands.
 ## Removed unused variables (especially from functions)
@@ -54,59 +54,70 @@ def move_down_level(f_base_directory, f_target_directory, f_process_file, f_base
     
     #file_without_extension = re.sub(process_extension, '', process_file, flags=re.IGNORECASE)
     
-    folder_list_1 = os.listdir(f_base_directory + f_process_file)
-    folder_list_2 = [file for file in folder_list_1 if any(file.endswith(ext) for ext in f_base_extensions)]
+    p_folder_list_1 = os.listdir(f_base_directory + f_process_file)
+    p_folder_list_2 = [p_file for p_file in p_folder_list_1 if any(p_file.endswith(ext) for ext in f_base_extensions)]
 
-    for filename in folder_list_2:
+    for p_filename in p_folder_list_2:
     
         #process_title = fix_file_code(file_without_extension)
-        source_file = f_base_directory + f_process_file + "/" + filename
-        destination_file = f_target_directory + filename
+        p_source_file = f_base_directory + f_process_file + "/" + p_filename
+        p_destination_file = f_target_directory + p_filename
 
-        f_my_logger.info("MOV - Moving " + source_file + " up a level.")
-        os.rename(source_file, destination_file)
+        f_my_logger.info("MOV - Moving " + p_source_file + " up a level.")
+        pass
+        # shutil.move(p_source_file_path, p_destination_file_path)
+        os.rename(p_source_file, p_destination_file)
 
         return True
 
 def move_to_directory(f_base_directory, f_target_directory, f_target_language, f_process_file, f_process_extension, f_my_logger, f_metadata_array):
     p_result = False
-    file_match_list = search_for_title(f_process_file)
+    p_file_match_list = search_for_title(f_process_file)
 
-    if len(file_match_list) == 1:
-        file_match = fix_file_code(file_match_list[0])
-        destination_directory = f_target_directory + file_match
-        if not os.path.exists(destination_directory):
-            os.makedirs(destination_directory)
-        os.rename(f_base_directory + f_process_file + f_process_extension, destination_directory + "/" + file_match + f_process_extension)
-        f_metadata_array.update({'location': destination_directory + "/" + file_match + f_process_extension})
+    if len(p_file_match_list) == 1:
+        p_file_match = fix_file_code(p_file_match_list[0])
+        p_destination_directory = f_target_directory + p_file_match
+        if not os.path.exists(p_destination_directory):
+            os.makedirs(p_destination_directory)
 
-        f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(destination_directory + "/" + file_match + f_process_extension)))})
+        pass
+
+        # shutil.move(p_source_file_path, p_destination_file_path)
+        os.rename(f_base_directory + f_process_file + f_process_extension, p_destination_directory + "/" + p_file_match + f_process_extension)
+       
+        f_metadata_array.update({'location': p_destination_directory + "/" + p_file_match + f_process_extension})
+
+        f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(p_destination_directory + "/" + p_file_match + f_process_extension)))})
         #f_metadata_array[location]
-        prefixes = [fix_file_code(file_match, ""), fix_file_code(file_match, "-")]
-        file_list = []
+        p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
+        p_file_list = []
 
  #if os.path.isfile(entry_path):
 
-        for filename in os.listdir(f_base_directory):
-            for prefix in prefixes:
-                if filename.upper().startswith(prefix):
-                    if os.path.isfile(os.path.join(f_base_directory, filename)):
-                        file_list.append(filename)
+        for p_filename in os.listdir(f_base_directory):
+            for p_prefix in p_prefixes:
+                if p_filename.upper().startswith(p_prefix):
+                    if os.path.isfile(os.path.join(f_base_directory, p_filename)):
+                        p_file_list.append(p_filename)
 
         # move other existing files
-        for file in file_list:
+        for file in p_file_list:
             if (file.endswith(f_target_language)):
-
-                os.rename(f_base_directory + file, destination_directory + "/" + fix_file_code(file, "-"))
+                pass
+                # shutil.move(p_source_file_path, p_destination_file_path)
+                os.rename(f_base_directory + file, p_destination_directory + "/" + fix_file_code(file, "-"))
                 f_my_logger.debug("MOV - Moving " + file + " from " + f_base_directory + ".")
-                f_my_logger.info("MOV - Moved " + file + " to " + destination_directory + "/.")
+                f_my_logger.info("MOV - Moved " + file + " to " + p_destination_directory + "/.")
                 f_metadata_array.update({'subtitles': True})
 
         f_my_logger.debug("MOV - Moving " + f_process_file + f_process_extension + " from " + f_base_directory + ".")
-        f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + destination_directory + "/.")
-        p_result = file_match
+        f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + p_destination_directory + "/.")
+        p_result = p_file_match
 
     return f_metadata_array, p_result
+
+def get_localsubtitle(f_target_directory, f_process_title, f_subtitle_available, f_my_logger):
+    pass
 
 def download_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_session = HTMLSession()
@@ -149,10 +160,10 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
                 try:
                     if re.search(f_target_language, p_subtitle_url, re.IGNORECASE):
                         
-                        count = 0
-                        while count < 5:
+                        p_count = 0
+                        while p_count < 5:
                             p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
-                            count = count + 1
+                            p_count = p_count + 1
                             if p_subtitle_url_check == 200:
                                 process_subtitleavailable = True
                                 f_my_logger.debug("SUB - Subtitle_URL " + p_subtitle_url + ".")
@@ -185,7 +196,7 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
 
     return p_subtitleavailable
 
-def download_metadata(f_process_title, f_process_subtitle_available, f_process_arbitrary_prate, f_my_logger):
+def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_my_logger):
     f_my_logger.info("MET - Searching web for '" + f_process_title + "' metadata.")  
     f_process_title = fix_file_code(f_process_title)
     p_metadata = my_javlibrary_new_getvideo(f_process_title)
@@ -209,16 +220,8 @@ def download_metadata(f_process_title, f_process_subtitle_available, f_process_a
                             "added_date": p_added_date, \
                             "file_date": '', \
                             "location": '', \
-                            "subtitles": f_process_subtitle_available, \
-                            "prate": f_process_arbitrary_prate}
-        
-        # metadata_json = json.dumps(metadata_array, indent=4)
-        # f_my_logger.debug("MET - Write metadata for " + f_process_title + " to local json.")
-        # with open(f_target_directory + f_process_title + "/" + f_process_title + ".json", "w") as outfile:
-        #     outfile.write(metadata_json)
-
-        # f_my_logger.info("MET - Write metadata for " + f_process_title + " to database.")
-        # send_data_to_database(metadata, metadata_url, (f_target_directory + f_process_title + "/" + f_process_title + f_process_extension), (f_process_subtitle_available), f_process_arbitrary_prate, f_my_cursor)
+                            "subtitles": f_subtitle_available, \
+                            "prate": f_arbitrary_prate}
     else:
         f_my_logger.info("MET - No metadata found for '" + f_process_title + "'.")
     
@@ -227,9 +230,9 @@ def download_metadata(f_process_title, f_process_subtitle_available, f_process_a
 # we need to get f_metadata_url written too.
 def send_data_to_json(f_metadata_array, f_metadata_url, f_my_logger, f_json_filename):
     f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
-    metadata_json = json.dumps(f_metadata_array, indent=4)
+    p_metadata_json = json.dumps(f_metadata_array, indent=4)
     with open(f_json_filename, "w") as outfile:
-         outfile.write(metadata_json)
+         outfile.write(p_metadata_json)
 
 # def send_data_to_database(process_metadata, process_metadata_url, process_location, process_subtitles_avail, process_arbitrary_prate, f_my_logger, f_my_cursor):
 def send_data_to_database(f_metadata_array, f_metadata_url, f_my_logger, f_my_cursor):
@@ -458,7 +461,8 @@ def get_console_handler():
     return p_console_handler
 
 def get_file_handler():
-    p_file_handler = logging.FileHandler("./logs/log.log", mode='w')
+    p_file_handler = logging.FileHandler('{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
+    #p_file_handler = logging.FileHandler("./logs/log.log", mode='w')
     p_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
     p_file_handler.setLevel(logging.DEBUG)
     return p_file_handler
@@ -468,7 +472,6 @@ def get_logger():
     p_logger.setLevel(logging.DEBUG)
     p_logger.addHandler(get_console_handler())
     p_logger.addHandler(get_file_handler())
-    #logger.addHandler(get_syslog_handler())
     return p_logger
 
 def remove_substrings(f_strings):
@@ -484,8 +487,7 @@ def remove_substrings(f_strings):
             p_result.append(s)
     return p_result
 
-def get_list_of_files(f_base_directory, f_base_extensions):
-    
+def get_list_of_files(f_base_directory, f_base_extensions):    
     p_folder_list_1 = os.listdir(f_base_directory)
     p_folder_list_2 = [file for file in p_folder_list_1 if any(file.endswith(ext) for ext in f_base_extensions)]
     p_folder_list_3 = []
