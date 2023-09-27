@@ -48,6 +48,7 @@ from javscraper import *
 ## Removed unused variables (especially from functions)
 ## Add a move/copy option to the below, with MOVE as default to 'move_files_by_extension' function.  Rename it too.
 #  shutil.move instead of os.rename
+#  Standardize function argument order.
 
 #region Main Functions
 def move_down_level(f_base_directory, f_target_directory, f_process_file, f_base_extensions, f_my_logger):
