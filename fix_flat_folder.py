@@ -15,15 +15,16 @@ PROCESS_DIRECTORIES = [ \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 2}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 2}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 12, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 12, 'task': 2}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 2}]
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 0}]
 
 #PROCESS_DIRECTORIES = [{'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 0}]
 
-BASE_EXTENSIONS = [".mkv", ".mp4", ".avi"]
+BASE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
-SUBTITLE_REPOSITORY = "/mnt/multimedia/Other/..."
+SUBTITLE_REPOSITORY = "/mnt/multimedia/Other/X/SRT Files Project/3. Fixed Subs/"
 
 my_connection = mysql.connector.connect( 
     user="rjohnson", 
@@ -51,7 +52,6 @@ if __name__ == "__main__":
         my_logger.info("===== " + BASE_DIRECTORY + " " + ("=" * (93 - (len(BASE_DIRECTORY)))))
 
         if (PROCESS_TASK == 0 or PROCESS_TASK == 9):
-            my_logger.info("Undoing folder.")
             scanned_directory = os.listdir(BASE_DIRECTORY)
             for full_filename in scanned_directory:
                 if os.path.isdir(BASE_DIRECTORY + full_filename):
@@ -91,6 +91,7 @@ if __name__ == "__main__":
                                                                         f_arbitrary_prate = ARBITRARY_PRATE, \
                                                                         f_my_logger = my_logger)
                     
+                    pass
                                                                     
                     metadata_array, process_file_name = move_to_directory(f_base_directory = BASE_DIRECTORY, \
                         f_target_directory = TARGET_DIRECTORY, \
@@ -99,11 +100,15 @@ if __name__ == "__main__":
                         f_process_extension = file_extension, \
                         f_my_logger = my_logger, \
                         f_metadata_array = metadata_array)
-                    
+
+                    pass
+
                     send_data_to_database(f_metadata_array = metadata_array, \
                         f_metadata_url = metadata_url, \
                         f_my_logger = my_logger, \
                         f_my_cursor = my_cursor) ; my_connection.commit()
+
+                    pass
 
                     send_data_to_json(f_metadata_array = metadata_array, \
                         f_metadata_url = metadata_url, \

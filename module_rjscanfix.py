@@ -42,13 +42,15 @@ from javscraper import *
 ##      or do the invasive tasks last
 ## Need to make faster.
 ##       Differentiate between lookup failure and an affirmative null result.
-#+ Log file to timestamped filename
+## Log file to timestamped filename
 ## if a strict <filename>-<target langugage> file doesn't already exist copy the largest srt to make it.
+## Now retrieves subtitles from a local store if they exist and appends a (LR) suffix.
 ## get rid of pointless pass commands.
 ## Removed unused variables (especially from functions)
 ## Add a move/copy option to the below, with MOVE as default to 'move_files_by_extension' function.  Rename it too.
 #  shutil.move instead of os.rename
 #  Standardize function argument order.
+#  Check to see what is searched for matches what is found HUNT014 > HUNT146, for example
 
 #region Main Functions
 def move_down_level(f_base_directory, f_target_directory, f_process_file, f_base_extensions, f_my_logger):
@@ -85,11 +87,15 @@ def move_to_directory(f_base_directory, f_target_directory, f_target_language, f
 
         # shutil.move(p_source_file_path, p_destination_file_path)
         os.rename(f_base_directory + f_process_file + f_process_extension, p_destination_directory + "/" + p_file_match + f_process_extension)
-       
-        f_metadata_array.update({'location': p_destination_directory + "/" + p_file_match + f_process_extension})
 
-        f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(p_destination_directory + "/" + p_file_match + f_process_extension)))})
-        #f_metadata_array[location]
+        if f_metadata_array['prate'] >= 0:     
+            f_metadata_array.update({'location': p_destination_directory + "/" + p_file_match + f_process_extension})
+            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(p_destination_directory + "/" + p_file_match + f_process_extension)))})
+        else:
+            f_metadata_array.update({'added_date': None})
+            f_metadata_array.update({'file_date': None})
+            f_metadata_array.update({'location_date': None})
+        
         p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
         p_file_list = []
 
@@ -117,8 +123,15 @@ def move_to_directory(f_base_directory, f_target_directory, f_target_language, f
 
     return f_metadata_array, p_result
 
-def get_localsubtitle(f_target_directory, f_process_title, f_subtitle_available, f_my_logger):
+def get_localsubtitle(f_subtitle_repository, f_target_directory, f_process_title, f_subtitle_available, f_my_logger):
+    p_process_title = fix_file_code(f_process_title)
+    if (os.path.isfile(f_subtitle_repository + p_process_title + ".srt")):
+        f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " locally.")
+        shutil.copy(f_subtitle_repository + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
+        if f_subtitle_available == 0:
+            f_subtitle_available = 2
     pass
+    return f_subtitle_available
 
 def download_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_session = HTMLSession()
@@ -204,6 +217,8 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
     p_metadata_array = []
     p_metadata_url = my_javlibrary_new_search(f_process_title)
 
+    pass
+
     if p_metadata is not None:
         p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d %H:%M:%S")
         p_added_date = str((f"{datetime.now():%Y-%m-%d %H:%M:%S}"))
@@ -219,8 +234,8 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "score": p_metadata.score, \
                             "release_date": p_release_date, \
                             "added_date": p_added_date, \
-                            "file_date": '', \
-                            "location": '', \
+                            "file_date": None, \
+                            "location": None, \
                             "subtitles": f_subtitle_available, \
                             "prate": f_arbitrary_prate}
     else:
@@ -349,6 +364,7 @@ def my_javlibrary_new_getvideo(f_input_string):
             pass
         time.sleep(0.25 * p_count)
         p_count = p_count + 1
+    pass    
     return p_result
 #endregion
 
@@ -462,7 +478,7 @@ def get_console_handler():
     return p_console_handler
 
 def get_file_handler():
-    p_file_handler = logging.FileHandler('{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
+    p_file_handler = logging.FileHandler('./logs/{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
     #p_file_handler = logging.FileHandler("./logs/log.log", mode='w')
     p_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
     p_file_handler.setLevel(logging.DEBUG)
