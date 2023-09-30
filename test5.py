@@ -7,8 +7,12 @@ prefix = "HUNT"
 
 p_my_javlibrary = JAVLibrary()
 
-print (p_my_javlibrary.get_video("HUNT014"))
-print (p_my_javlibrary.get_video("HUNT146"))
+print (my_javlibrary_new_getvideo("MKON-004"))
+#print (my_javlibrary_new_getvideo("CP-014"))
+#print (search_for_title("DOCP014"))
+# print (p_my_javlibrary.get_video("JUL-021"))
+# print (p_my_javlibrary.get_video("MIAD-283"))
+#print (p_my_javlibrary.get_video("HUNT146"))
 #print (p_my_javlibrary.get_video("MIAD283"))
 
 # while count < 999:
