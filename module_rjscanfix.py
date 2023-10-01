@@ -57,6 +57,13 @@ from javscraper import *
 #  Standardise DIRECTORY and PATH.
 #  Standardise FILENAME in the functions
 #  Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
+#  Subtitle status.  Simplify and just do a one time check in ...
+#   probably remove most of subtitle_available variable.
+#       0 - missing
+#       9 - exist and match target language
+#       1 - exist but don't match target language
+# Add an entry for unknown files which strictly match the *-nnn format
+#       
 
 #region Main Functions
 def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_source_extensions, f_my_logger):
@@ -103,11 +110,6 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
     p_process_title = fix_file_code(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
 
-    # 0 - no subs
-    # 1 - SubtitleCat Subs
-    # 2 - Found Subs
-
-    # Check to see if subtitles already exist.
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
         f_my_logger.debug("SUB - Existing subtitles found.")
         f_subtitle_available = 1
@@ -117,17 +119,17 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
     p_url_level1 = 'https://www.subtitlecat.com/index.php?search=' + p_process_title
     p_response_level1 = p_session.get(p_url_level1)
 
-    p_count = 0
-    while p_count < 5:
+    p_counter = 0
+    while p_counter < 5:
         try:
             p_table_level1 = p_response_level1.html.find('table')[0]
             break
         except:
-            p_count = p_count + 1
-            f_my_logger.warning("URL - SubtitleCat not responding.  Try " + p_count + "/5.")
-            time.sleep(1)
+            p_counter += 1
+            f_my_logger.warning("URL - SubtitleCat not responding.  Try " + str(p_counter) + " of 5.")
+            time.sleep(15)
     
-    if p_count >= 5:
+    if p_counter >= 5:
         f_my_logger.critical("URL - SubtitleCat connection failed.  Terminating")
         exit()
 
@@ -149,7 +151,7 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
                         p_count = 0
                         while p_count < 5:
                             p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
-                            p_count = p_count + 1
+                            p_count += 1
                             if p_subtitle_url_check == 200:
                                 f_subtitle_available = 1
                                 f_my_logger.debug("SUB - Subtitle_URL " + p_subtitle_url + ".")
@@ -167,6 +169,8 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
 
     return f_subtitle_available
 
+# determine the subtitle status only here...
+# remove from elsewhere.
 def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_subtitle_available, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
@@ -398,7 +402,7 @@ def my_javlibrary_new_search(f_input_string):
             p_count = 6
         except:
             time.sleep(0.25 * p_count)
-        p_count = p_count + 1
+        p_count += 1
 
         if my_javlibrary_new_getvideo(f_input_string) == "":
             p_results = []
@@ -418,7 +422,7 @@ def my_javlibrary_new_getvideo(f_input_string):
         except:
             pass
         time.sleep(0.25 * p_count)
-        p_count = p_count + 1
+        p_count += 1
     
     if p_results != None:
         if p_count > 0:
@@ -452,11 +456,11 @@ def fix_file_code(f_input_string, f_delimiter = "-"):
 
         if ord(p_char) in range(64, 91):
             p_letters = p_letters + p_char
-            p_counter = p_counter + 1
+            p_counter +=  1
         if ord(p_char) in range(47, 58):
             break
         if ord(p_char) not in range(64, 91):
-            p_counter = p_counter + 1
+            p_counter += 1
             break
 
     # get numbers
@@ -467,11 +471,11 @@ def fix_file_code(f_input_string, f_delimiter = "-"):
             p_numbers = p_numbers + p_char
         else:
             break
-        p_counter = p_counter + 1
+        p_counter +=  1
 
     while p_counter < p_filename_length:
         p_char = p_filename_original[p_counter]
-        p_counter = p_counter + 1
+        p_counter += 1
         p_suffix = p_suffix + p_char
 
     p_number = int(p_numbers)
@@ -499,7 +503,7 @@ def search_for_title(f_input_string, f_delimiter = "-"):
         if (re.match(p_pattern8, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 8])
-        p_counter = p_counter + 1    
+        p_counter += 1    
     
     # Search for 7 character codes.
     p_counter = 0
@@ -509,7 +513,7 @@ def search_for_title(f_input_string, f_delimiter = "-"):
         if (re.match(p_pattern7, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 7])
-        p_counter = p_counter + 1
+        p_counter += 1
 
     # Search for 6 character codes.
     p_counter = 0
@@ -519,7 +523,7 @@ def search_for_title(f_input_string, f_delimiter = "-"):
         if (re.match(p_pattern6, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 6])
-        p_counter = p_counter + 1
+        p_counter += 1
 
     # Search for 5 character codes.
     p_counter = 0
@@ -529,7 +533,7 @@ def search_for_title(f_input_string, f_delimiter = "-"):
         if (re.match(p_pattern5, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 5])
-        p_counter = p_counter + 1
+        p_counter += 1
 
     pass
 

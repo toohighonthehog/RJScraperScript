@@ -2,23 +2,22 @@ from module_rjscanfix import *
 from os import system
 
 # task:
-#   0 = process as normal
-#   1 = just process
+#   0 = process as normal / full
+#   1 = just process / only new
 #     = skip
-#   9 = just undo
+#   9 = just undo / reset
 
 system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 1}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7, 'task': 1}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 1}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 12, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 2}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 2}]
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task':1}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 1}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 1}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 0}]
 
 #PROCESS_DIRECTORIES = [{'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 0}]
 
@@ -31,7 +30,7 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD", 
     host="diskstation.hachiko.int", 
     port=3306, 
-    database="Multimedia_Dev" 
+    database="Multimedia" 
 )
 
 my_cursor = my_connection.cursor()
@@ -58,11 +57,9 @@ if __name__ == "__main__":
 
         pass
 
-        if (PROCESS_TASK == 0 or PROCESS_TASK == 1 or PROCESS_TASK == 9):
-            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
-            my_logger.info("=======> Target: " + TARGET_DIRECTORY + " " + ("=" * (82 - (len(TARGET_DIRECTORY)))))
-
         if (PROCESS_TASK == 0 or PROCESS_TASK == 9):
+            my_logger.info("=== Reverting " + "=" * 86)
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for full_filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + full_filename):
@@ -76,6 +73,11 @@ if __name__ == "__main__":
             my_logger.info("=" * 100)
 
         pass
+
+        if (PROCESS_TASK == 0 or PROCESS_TASK == 1):
+            my_logger.info("=== Processing " + "=" * 85)
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+            my_logger.info("=======> Target: " + TARGET_DIRECTORY + " " + ("=" * (82 - (len(TARGET_DIRECTORY)))))
 
         if (PROCESS_TASK == 0 or PROCESS_TASK == 1):
             scanned_directory = get_list_of_files( \
@@ -98,6 +100,7 @@ if __name__ == "__main__":
                     my_logger.info("+++++ " + full_filename + " +++++ (single match found).")
 
                     pass
+
                     os.makedirs(TARGET_DIRECTORY + fix_file_code(filename), exist_ok=True)
         
                     subtitle_available = get_localsubtitle( \
@@ -127,6 +130,7 @@ if __name__ == "__main__":
                     
                     pass
                     
+                    # include something for unknown files which strictly fit the format.
                     metadata_array = download_metadata( \
                         f_process_title = to_be_scraped, \
                         f_subtitle_available = subtitle_available, \
