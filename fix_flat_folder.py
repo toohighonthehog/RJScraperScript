@@ -98,6 +98,8 @@ if __name__ == "__main__":
 
                 pass
 
+                # in this section, should we use "to_be_scraped" or "filename"
+
                 if to_be_scraped == fix_file_code(filename):
                     my_logger.info("+++++ " + full_filename + " " + ("+" * (93 - (len(full_filename)))))
 
@@ -139,6 +141,8 @@ if __name__ == "__main__":
                                                                     
                     pass
 
+                    # f_process_file - to_be_scraped?  or filename?
+
                     metadata_array, process_file_name = move_to_directory( \
                         f_source_directory = SOURCE_DIRECTORY, \
                         f_target_directory = TARGET_DIRECTORY, \
@@ -164,13 +168,26 @@ if __name__ == "__main__":
                 else:
                     pattern = r'^[A-Z]{2,4}-\d{3}(?:' + '|'.join(SOURCE_EXTENSIONS) + ')$'
                     if re.match(pattern, filename):
-                        #get_localsubtitles(
-                        #get_subtitlecat(
-                        #get_best_subtitle(
-                        #move_to_directory(
-
-                        # create a fresh metadata array
                         
+                        get_localsubtitles( \
+                        f_subtitle_general = SUBTITLE_GENERAL, \
+                        f_subtitle_whisper = SUBTITLE_WHISPER, \
+                        f_target_directory = TARGET_DIRECTORY, \
+                        f_process_title = filename, \
+                        f_my_logger = my_logger)
+
+                        subtitle_available = get_best_subtitle( \
+                        f_target_directory = TARGET_DIRECTORY, \
+                        f_target_language = TARGET_LANGUAGE, \
+                        f_process_title = filename, \
+                        f_my_logger = my_logger)
+
+                        subtitle_available = get_best_subtitle( \
+                        f_target_directory = TARGET_DIRECTORY, \
+                        f_target_language = TARGET_LANGUAGE, \
+                        f_process_title = filename, \
+                        f_my_logger = my_logger)
+
                         my_logger.info("+++++ " + full_filename + " " + ("+" * (93 - (len(full_filename)))))
 
                         pass
@@ -191,12 +208,32 @@ if __name__ == "__main__":
                             "location": TARGET_DIRECTORY + "/" + full_filename, \
                             "subtitles": subtitle_available, \
                             "prate": ARBITRARY_PRATE}
-                
-                        #send_to_database(
-                        # no match found, file is valid
-                        # no match found, file is non valid
+
+                        pass
+
+                        metadata_array, process_file_name = move_to_directory( \
+                            f_source_directory = SOURCE_DIRECTORY, \
+                            f_target_directory = TARGET_DIRECTORY, \
+                            f_target_language = TARGET_LANGUAGE, \
+                            f_process_file = filename, \
+                            f_process_extension = file_extension, \
+                            f_my_logger = my_logger, \
+                            f_metadata_array = metadata_array)
+
+                        pass
+
+                        send_to_database( \
+                            f_metadata_array = metadata_array, \
+                            f_my_logger = my_logger, \
+                            f_my_cursor = my_cursor) ; my_connection.commit()
+
+                            #send_to_database(
+                            # no match found, file is valid
+                            # no match found, file is non valid
                         my_logger.info("+++++ " + full_filename + " +++++ no match found but filename is valid.")
+    
                     else:
+                    
                         my_logger.warning("+++++ " + full_filename + " +++++ no match found.")
 
                 my_logger.info("=" * 100)
