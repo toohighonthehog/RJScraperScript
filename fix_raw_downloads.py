@@ -8,7 +8,7 @@ PROCESS = "COPY"
 
 BASE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/1. Raw Subs/"
 INTERMEDIATE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/2. Dumped Subs/"
-TARGET_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/3. Fixed Subs/"
+TARGET_DIRECTORY = "/mnt/multimedia/Other/Other/RatedFinalJ/~SubtitleRepository/General/"
 BASE_EXTENSIONS = [".srt"]
 #BASE_EXTENSIONS = [".txt"]
 

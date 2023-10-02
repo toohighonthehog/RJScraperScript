@@ -10,20 +10,21 @@ from os import system
 system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task':1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 1}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 0}]
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task': 1}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 2}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 2}]
 
 #PROCESS_DIRECTORIES = [{'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 0}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
-SUBTITLE_REPOSITORY = "/mnt/multimedia/Other/X/SRT Files Project/3. Fixed Subs/"
+SUBTITLE_GENERAL = "/mnt/multimedia/Other/RatedFinalJ/~SubtitleRepository/General/"
+SUBTITLE_WHISPER = "/mnt/multimedia/Other/RatedFinalJ/~SubtitleRepository/Whisper/"
 
 my_connection = mysql.connector.connect( 
     user="rjohnson", 
@@ -95,28 +96,25 @@ if __name__ == "__main__":
                 pass
 
                 if to_be_scraped == fix_file_code(filename):
-                    subtitle_available = 0
-                    #to_be_scraped = fix_file_code(filename)
-                    my_logger.info("+++++ " + full_filename + " +++++ (single match found).")
+                    my_logger.info("+++++ " + full_filename + " " + ("+" * (93 - (len(full_filename)))))
 
                     pass
 
                     os.makedirs(TARGET_DIRECTORY + fix_file_code(filename), exist_ok=True)
         
-                    subtitle_available = get_localsubtitle( \
-                        f_subtitle_repository = SUBTITLE_REPOSITORY, \
+                    get_localsubtitles( \
+                        f_subtitle_general = SUBTITLE_GENERAL, \
+                        f_subtitle_whisper = SUBTITLE_WHISPER, \
                         f_target_directory = TARGET_DIRECTORY, \
                         f_process_title = to_be_scraped, \
-                        f_subtitle_available = subtitle_available, \
                         f_my_logger = my_logger)
 
                     pass
 
-                    subtitle_available = download_subtitlecat( \
+                    download_subtitlecat( \
                         f_target_directory = TARGET_DIRECTORY, \
                         f_target_language = TARGET_LANGUAGE, \
                         f_process_title = to_be_scraped, \
-                        f_subtitle_available = subtitle_available, \
                         f_my_logger = my_logger)
                     
                     pass
@@ -125,7 +123,6 @@ if __name__ == "__main__":
                         f_target_directory = TARGET_DIRECTORY, \
                         f_target_language = TARGET_LANGUAGE, \
                         f_process_title = to_be_scraped, \
-                        f_subtitle_available = subtitle_available, \
                         f_my_logger = my_logger)
                     
                     pass

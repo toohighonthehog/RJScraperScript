@@ -56,14 +56,14 @@ from javscraper import *
 #  Standardise on SOURCE (base) and TARGET (destination)
 #  Standardise DIRECTORY and PATH.
 #  Standardise FILENAME in the functions
-#  Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
-#  Subtitle status.  Simplify and just do a one time check in ...
-#   probably remove most of subtitle_available variable.
-#       0 - missing
-#       9 - exist and match target language
-#       1 - exist but don't match target language
+## Subtitle status.  Simplify and just do a one time check in ...
+##      0 - missing
+##      5 - exist but don't match target language (general)
+##      6 - exist but don't match target language (whisper)
+##      9 - exist and match target language
 # Add an entry for unknown files which strictly match the *-nnn format
-#       
+#  Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
+#+ Test whisper respository code.
 
 #region Main Functions
 def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_source_extensions, f_my_logger):
@@ -86,33 +86,34 @@ def get_list_of_files(f_source_directory, f_source_extensions):
     p_folder_list_2 = [filename for filename in p_folder_list_1 if any(filename.endswith(extension) for extension in f_source_extensions)]
     p_folder_list_3 = []
 
+    # I know there is a better way to do this...
     for p_filename in p_folder_list_2:
-        #filename, file_extension = os.path.splitext(os.path.basename(p_file))
         p_folder_list_3.append(f_source_directory + p_filename)
 
     return p_folder_list_3
 
-def get_localsubtitle(f_subtitle_repository, f_target_directory, f_process_title, f_subtitle_available, f_my_logger):
+def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_process_title, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
-
-    if (os.path.isfile(f_subtitle_repository + p_process_title + ".srt")):
-        f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " locally.")
+    
+    if (os.path.isfile(f_subtitle_general + p_process_title + ".srt")):
+        f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " in 'General'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_general + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
 
-        shutil.copy(f_subtitle_repository + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
-        if f_subtitle_available == 0:
-            f_subtitle_available = 2
+    if (os.path.isfile(f_subtitle_whisper + p_process_title + ".srt")):
+        f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " in 'Whisper'.")
+        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_whisper + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(WH).srt")
 
-    return f_subtitle_available
+    return True
 
-def download_subtitlecat(f_target_directory, f_target_language, f_process_title, f_subtitle_available, f_my_logger):
+def download_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_session = HTMLSession()
     p_process_title = fix_file_code(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
 
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
         f_my_logger.debug("SUB - Existing subtitles found.")
-        f_subtitle_available = 1
  
     f_my_logger.info("SUB - Searching SubtitleCat for '" + p_process_title + "'.")
 
@@ -153,7 +154,6 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
                             p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
                             p_count += 1
                             if p_subtitle_url_check == 200:
-                                f_subtitle_available = 1
                                 f_my_logger.debug("SUB - Subtitle_URL " + p_subtitle_url + ".")
                                 if p_subtitle_url.find('/'):
                                     p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
@@ -167,32 +167,41 @@ def download_subtitlecat(f_target_directory, f_target_language, f_process_title,
                 except:
                     pass
 
-    return f_subtitle_available
+    return True
 
 # determine the subtitle status only here...
 # remove from elsewhere.
-def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_subtitle_available, f_my_logger):
+def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
-    p_filelist = get_list_of_files(p_target_directory, [f_target_language])
+    p_filelist = get_list_of_files(p_target_directory, ['.srt'])
     p_biggest_filesize = 0
     p_biggest_filename = ""
+    p_subtitle_available = 0
 
     pass
 
     for p_filename in p_filelist:
-        if os.path.getsize(p_filename) > p_biggest_filesize:
+        if os.path.getsize(p_filename) > p_biggest_filesize and p_filename.endswith(f_target_language):
             p_biggest_filename = p_filename
             p_biggest_filesize = os.path.getsize(p_filename)
+
+        if p_filename.endswith ('.srt') and p_subtitle_available < 5:
+            p_subtitle_available = 5
+
+        if p_filename.endswith ('-(WH).srt') and p_subtitle_available < 6:
+            p_subtitle_available = 6
+
+        if p_filename.endswith(f_target_language):
+            p_subtitle_available = 9
 
     pass
 
     if (p_biggest_filesize > 0) and not (os.path.isfile(p_target_directory + p_process_title + "-" + f_target_language)):
         f_my_logger.info("SUB - Creating " + p_process_title + "-" + f_target_language + " as default subtitle file.")  
         shutil.copy(p_biggest_filename, (p_target_directory + p_process_title + "-" + f_target_language))
-        f_subtitle_available = 1
         
-    return f_subtitle_available
+    return p_subtitle_available
 
 def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
