@@ -107,7 +107,7 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
 
     return True
 
-def download_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
+def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_session = HTMLSession()
     p_process_title = fix_file_code(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
@@ -283,7 +283,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 # we need to get f_metadata_url written too.
 
 # def send_data_to_database(process_metadata, process_metadata_url, process_location, process_subtitles_avail, process_arbitrary_prate, f_my_logger, f_my_cursor):
-def send_data_to_database(f_metadata_array, f_my_logger, f_my_cursor):
+def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
     f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to database.")
     p_my_insert_sql_title = "\
         INSERT INTO title \
@@ -371,7 +371,7 @@ def send_data_to_database(f_metadata_array, f_my_logger, f_my_cursor):
 
     return True
 
-def send_data_to_json(f_metadata_array, f_my_logger, f_json_filename):
+def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
     f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
     p_metadata_json = json.dumps(f_metadata_array, indent=4)
     with open(f_json_filename, "w") as outfile:
