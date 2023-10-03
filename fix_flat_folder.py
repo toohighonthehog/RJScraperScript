@@ -32,7 +32,7 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD", 
     host="diskstation.hachiko.int", 
     port=3306, 
-    database="Multimedia_Dev" 
+    database="Multimedia" 
 )
 
 my_cursor = my_connection.cursor()
