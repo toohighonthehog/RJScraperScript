@@ -163,7 +163,7 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
         
     return p_subtitle_available
 
-def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_my_logger):
+def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_added_date, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
     p_metadata = my_javlibrary_new_getvideo(p_process_title)
     p_metadata_url = my_javlibrary_new_search(p_process_title)
@@ -173,7 +173,6 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
 
     if p_metadata is not None:
         p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
-        p_added_date = str((f"{datetime.now():%Y-%m-%d %H:%M:%S}"))
 
         f_my_logger.info("MET - Metadata downloaded for '" + p_process_title + "'.")          
         p_metadata_array = {"code": p_metadata.code, \
@@ -185,7 +184,7 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "url" : p_metadata_url, \
                             "score": p_metadata.score, \
                             "release_date": p_release_date, \
-                            "added_date": p_added_date, \
+                            "added_date": f_added_date, \
                             "file_date": None, \
                             "location": None, \
                             "subtitles": f_subtitle_available, \

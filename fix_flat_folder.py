@@ -11,19 +11,20 @@ from os import system
 system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 3}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 0}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 3}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 3}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task': 3}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 3}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 3}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 3}]
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 0}, \
+                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 0}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
 SUBTITLE_GENERAL = "/mnt/multimedia/Other/RatedFinalJ/~SubtitleRepository/General/"
 SUBTITLE_WHISPER = "/mnt/multimedia/Other/RatedFinalJ/~SubtitleRepository/Whisper/"
+BATCH_DATETIME = str(f"{datetime.now():%Y-%m-%d %H:%M:%S}")
 
 my_connection = mysql.connector.connect( 
     user="rjohnson", 
@@ -130,6 +131,7 @@ if __name__ == "__main__":
                         f_process_title = to_be_scraped, \
                         f_subtitle_available = subtitle_available, \
                         f_arbitrary_prate = ARBITRARY_PRATE, \
+                        f_added_date = BATCH_DATETIME, \
                         f_my_logger = my_logger)
                                                                     
                     pass

@@ -49,7 +49,7 @@ To do:
 ## Need to make faster.
 ##       Differentiate between lookup failure and an affirmative null result.
 ## Log file to timestamped filename
-## if a strict <filename>-<target langugage> file doesn't already exist copy the largest srt to make it.
+## if a strict <filename>-<target language> file doesn't already exist copy the largest srt to make it.
 ## Now retrieves subtitles from a local store if they exist and appends a (LR) suffix.
 ## Removed unused variables (especially from functions)
 ## Add a move/copy option to the below, with MOVE as default to 'move_files_by_extension' function.  Rename it too.
@@ -68,5 +68,9 @@ To do:
 ## Add an entry for unknown files which strictly match the *-nnn format
 ## Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
 #+ Test whisper respository code.
+#  add find duplicate check
+#  added date will be for the whole batch
+#  if we're adding something which already has a record with the same batch date/time, carry on as normal but with a warning.
+#  this will involve some queries of live data.  where else do we need to use this?
 
 Done:
