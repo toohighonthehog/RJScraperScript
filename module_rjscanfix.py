@@ -61,8 +61,8 @@ from javscraper import *
 ##      5 - exist but don't match target language (general)
 ##      6 - exist but don't match target language (whisper)
 ##      9 - exist and match target language
-# Add an entry for unknown files which strictly match the *-nnn format
-#  Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
+## Add an entry for unknown files which strictly match the *-nnn format
+## Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
 #+ Test whisper respository code.
 
 #region Main Functions
@@ -83,14 +83,13 @@ def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_
 
 def get_list_of_files(f_source_directory, f_source_extensions):    
     p_folder_list_1 = os.listdir(f_source_directory)
-    p_folder_list_2 = [filename for filename in p_folder_list_1 if any(filename.endswith(extension) for extension in f_source_extensions)]
-    p_folder_list_3 = []
+    p_folder_list_2 = [f_source_directory + filename for filename in p_folder_list_1 if any(filename.endswith(extension) for extension in f_source_extensions)]
+    #p_folder_list_3 = []
 
     # I know there is a better way to do this...
-    for p_filename in p_folder_list_2:
-        p_folder_list_3.append(f_source_directory + p_filename)
-
-    return p_folder_list_3
+    #for p_filename in p_folder_list_2:
+    #    p_folder_list_3.append(f_source_directory + p_filename)
+    return p_folder_list_2
 
 def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_process_title, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
@@ -212,7 +211,7 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
     f_my_logger.info("MET - Searching web for '" + p_process_title + "' metadata.")  
 
     if p_metadata is not None:
-        p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d %H:%M:%S")
+        p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
         p_added_date = str((f"{datetime.now():%Y-%m-%d %H:%M:%S}"))
 
         f_my_logger.info("MET - Metadata downloaded for '" + p_process_title + "'.")          
@@ -248,7 +247,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
         if f_metadata_array['prate'] >= 0:     
             f_metadata_array.update({'location': p_target_directory + "/" + p_file_match + f_process_extension})
-            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
+            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
         else:
             f_metadata_array.update({'added_date': None})
             f_metadata_array.update({'file_date': None})
@@ -276,9 +275,11 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
         f_my_logger.debug("MOV - Moving " + f_process_file + f_process_extension + " from " + f_source_directory + ".")
         f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + p_target_directory + "/.")
+        
+        # does this need to be returned??
         p_result = p_file_match
 
-    return f_metadata_array, p_result
+    return f_metadata_array
 
 # we need to get f_metadata_url written too.
 
