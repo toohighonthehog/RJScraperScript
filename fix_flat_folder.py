@@ -5,7 +5,7 @@ from os import system
 #   0 = process as normal / full
 #   1 = just process / only new
 #   2 = just process / only new + missing json
-#     = skip
+# 3-8 = skip
 #   9 = just undo / reset
 
 system('clear')
@@ -19,8 +19,6 @@ PROCESS_DIRECTORIES = [ \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 3}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 3}, \
                     {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 3}]
-
-#PROCESS_DIRECTORIES = [{'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/", 'prate': 0}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -96,8 +94,6 @@ if __name__ == "__main__":
 
                 pass
 
-                # in this section, should we use "to_be_scraped" or "filename"
-
                 if to_be_scraped == fix_file_code(filename):
                     my_logger.info("+++++ " + full_filename + " " + ("+" * (93 - (len(full_filename)))))
 
@@ -130,7 +126,6 @@ if __name__ == "__main__":
                     
                     pass
                     
-                    # include something for unknown files which strictly fit the format.
                     metadata_array = download_metadata( \
                         f_process_title = to_be_scraped, \
                         f_subtitle_available = subtitle_available, \
@@ -138,11 +133,6 @@ if __name__ == "__main__":
                         f_my_logger = my_logger)
                                                                     
                     pass
-
-                    # f_process_file - to_be_scraped?  or filename?
-                    # do we need to take 'process_file_name' as a returned value?
-                    # to_be_scraped seemts to work equally well.
-                    # where else if pfn use?
 
                     metadata_array = move_to_directory( \
                         f_source_directory = SOURCE_DIRECTORY, \
@@ -232,13 +222,7 @@ if __name__ == "__main__":
                     else:
                     
                         my_logger.warning("+++++ " + filename + file_extension + " +++++ no match found.")
-
                 my_logger.info("=" * 100)
 
     my_cursor.close()
     my_connection.disconnect()
-
-
-
-
-    

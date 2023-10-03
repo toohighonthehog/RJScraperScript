@@ -4,67 +4,6 @@ from datetime import datetime
 import mysql.connector
 from javscraper import *
 
-#  https://colab.research.google.com/github/richardjj27/WhisperWithVAD
-
-## add a rerun option + re-get json - done by creating a move down a level function
-## how about putting all the jsons in a central folder too? - done
-## send results to a database - done
-## logging for output - done
-## add subtitle available attribute - done
-## get date working in metadata
-## actress to actor - done
-## check if incumbent subs exist, so may the subs_avaiable setting True regardless of SC. - done
-## if it can't be found, don't move it - just skip
-## multiple file extensions?  (MP4, MKV, AVI)
-## If it doesn't exist, create an actor row. Needs Testing - seems to be working - test a bit more.
-## Fix/Rename the 'moved' subtitle file. Exclude TARGET_LANGUAGE or make the filename fix (-) only work with the first set of letters and numbers. Right now, it is stripping the target language so be careful. - done?  if it works, code can be easier.
-## Add a 'file to the right place' option.  i.e. a source and destination constant. - need to test
-## Check TARGET_DIRECTORY exists
-#3 Add some more checks, especially things which can go wrong destructively.  examples?
-## Probably need to do a bit of tidying up with filename fixing now that we have the more advanced fix_file_code function.
-## Add a switch on whether to run the 'move down level' function first.  Makes it eaiser than remarking out.
-## Check subtitle flag gets checked when going to a different target.
-## Turn the whole thing into a module and have a few wrapper scripts.
-#? and some logic to check we're not nesting deeper and deeper
-## Make existing subtitles rename to match the main file.  Maybe it already works.
-## Add an affirmative statement that there has been a single, good match.
-## Add a recheck for failed downloads (i.e. try 3 times then give a warning).  Make it more resilient and try to look up less. or put them into a wrapper function with resilience added.
-## Add link to results.  As a table (as they can give multiple results?) or just the first result?
-## Semi-modularize (so that the functions run when imported) - started
-#+ Variables in functions should start with 'f_' for attributes and 'p_' for internal variables.  Also tidy up everything else.
-## each function should return something even if just True/False - add something useful
-## how do we get the logging and databases into the functions?
-#  A bit more resilience for failed lookups.  We fail non-destructively now but it'd be nice to have some retries for URL lookups etc.
-## we need to get f_metadata_url written to JSON.
-## Make the 'get a confirmed name' process faster and more consistent.  Seems to not do the 6 thing when running on the fix_flat.
-## Send verbose logs to a file
-## Reliable recovery from failure (i.e. what to do with a half done file?) make the move the last step?
-##      Create a stub record as early as possible?
-##      Then populate at the end.
-##      or do the invasive tasks last
-## Need to make faster.
-##       Differentiate between lookup failure and an affirmative null result.
-## Log file to timestamped filename
-## if a strict <filename>-<target langugage> file doesn't already exist copy the largest srt to make it.
-## Now retrieves subtitles from a local store if they exist and appends a (LR) suffix.
-## Removed unused variables (especially from functions)
-## Add a move/copy option to the below, with MOVE as default to 'move_files_by_extension' function.  Rename it too.
-## shutil.move instead of os.rename
-## Standardize function argument order.
-## Check to see what is searched for matches what is found HUNT014 > HUNT146, for example
-## Move the functions into processed order.
-#  Standardise on SOURCE (base) and TARGET (destination)
-#  Standardise DIRECTORY and PATH.
-#  Standardise FILENAME in the functions
-## Subtitle status.  Simplify and just do a one time check in ...
-##      0 - missing
-##      5 - exist but don't match target language (general)
-##      6 - exist but don't match target language (whisper)
-##      9 - exist and match target language
-## Add an entry for unknown files which strictly match the *-nnn format
-## Do a cleanup of items which can't be found.  Most of the metadata will be blank for these.
-#+ Test whisper respository code.
-
 #region Main Functions
 def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_source_extensions, f_my_logger):
     p_folder_list_1 = os.listdir(f_source_directory + f_process_filename)
@@ -168,9 +107,31 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
 
     return True
 
-# determine the subtitle status only here...
-# remove from elsewhere.
+def transfer_files_by_extension(f_source_directory, f_target_directory, f_extensions, f_my_logger, f_processmode='MOVE'):
+    for root, _, files in os.walk(f_source_directory):
+        for filename in files:
+            if any(filename.endswith(ext) for ext in f_extensions):
+                p_source_directory = os.path.join(root, filename)
+                p_target_directory = os.path.join(f_target_directory, filename)
+
+                # Ensure the destination directory exists
+                os.makedirs(p_target_directory, exist_ok=True)
+
+                # Move the file to the destination directory
+                if (f_processmode == "MOVE"):                
+                    shutil.move(p_source_directory, p_target_directory)
+
+                # ...or copy.
+                if (f_processmode == "COPY"):                
+                    shutil.copy(p_source_directory, p_target_directory)
+
+                f_my_logger.info("MET - Transferred to " + p_target_directory + ".")
+    return True
+
+
 def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_my_logger):
+    # determine the subtitle status only here...
+    # remove from elsewhere.
     p_process_title = fix_file_code(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
     p_filelist = get_list_of_files(p_target_directory, ['.srt'])
@@ -381,26 +342,6 @@ def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
 #endregion
 
 #region Wrapped Scraper Functions
-def transfer_files_by_extension(f_source_directory, f_target_directory, f_extensions, f_my_logger, f_processmode='MOVE'):
-    for root, _, files in os.walk(f_source_directory):
-        for filename in files:
-            if any(filename.endswith(ext) for ext in f_extensions):
-                p_source_directory = os.path.join(root, filename)
-                p_target_directory = os.path.join(f_target_directory, filename)
-
-                # Ensure the destination directory exists
-                os.makedirs(p_target_directory, exist_ok=True)
-
-                # Move the file to the destination directory
-                if (f_processmode == "MOVE"):                
-                    shutil.move(p_source_directory, p_target_directory)
-
-                # ...or copy.
-                if (f_processmode == "COPY"):                
-                    shutil.copy(p_source_directory, p_target_directory)
-
-                f_my_logger.info("MET - Transferred to " + p_target_directory + ".")
-    return True
 
 def my_javlibrary_new_search(f_input_string):
     p_my_javlibrary = JAVLibrary()
@@ -449,6 +390,7 @@ def my_javlibrary_new_getvideo(f_input_string):
 
 #region Primary Data Functions
 def fix_file_code(f_input_string, f_delimiter = "-"):
+    # This can probably be simplified with some good regular expressions.
     p_letters = ""
     p_numbers = ""
     p_suffix = ""
@@ -456,7 +398,6 @@ def fix_file_code(f_input_string, f_delimiter = "-"):
     p_filename_original = p_filename
     p_filename = p_filename.upper()
     p_file_extension = p_file_extension.lower()
-
     p_counter = 0
     p_filename_length = len(p_filename)
     
@@ -492,7 +433,8 @@ def fix_file_code(f_input_string, f_delimiter = "-"):
 
     return f"{p_letters}{f_delimiter}{p_number:03}{p_suffix}{p_file_extension}"
 
-def search_for_title(f_input_string, f_delimiter = "-"): 
+def search_for_title(f_input_string, f_delimiter = "-"):
+    # This can probably be simplified with some good regular expressions.
     p_filename, p_file_extension = os.path.splitext(f_input_string)
     p_filename = p_filename.upper()
     p_file_extension = p_file_extension.lower()
@@ -500,7 +442,6 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     p_pattern7 = r'^[A-Za-z]{4}\d{3}$'
     p_pattern6 = r'^[A-Za-z]{3}\d{3}$'
     p_pattern5 = r'^[A-Za-z]{2}\d{3}$'
-
     p_results = []
     p_filename = re.sub(f_delimiter, '', p_filename, flags=re.IGNORECASE)
     p_filename_length = len(p_filename)
@@ -509,7 +450,6 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     p_counter = 0
     while p_counter + 7 < p_filename_length:
         f_input_string = p_filename[p_counter:p_counter + 8]
-        #print(f_input_string)
         if (re.match(p_pattern8, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 8])
@@ -519,7 +459,6 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     p_counter = 0
     while p_counter + 6 < p_filename_length:
         f_input_string = p_filename[p_counter:p_counter + 7]
-        #print(f_input_string)
         if (re.match(p_pattern7, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 7])
@@ -529,7 +468,6 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     p_counter = 0
     while p_counter + 5 < p_filename_length:
         f_input_string = p_filename[p_counter:p_counter + 6]
-        #print(f_input_string)
         if (re.match(p_pattern6, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 6])
@@ -539,7 +477,6 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     p_counter = 0
     while p_counter + 4 < p_filename_length:
         f_input_string = p_filename[p_counter:p_counter + 5]
-        #print(f_input_string)
         if (re.match(p_pattern5, f_input_string)):
             if my_javlibrary_new_getvideo(f_input_string):
                 p_results.append(p_filename[p_counter:p_counter + 5])
@@ -548,8 +485,6 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     pass
 
     p_results = remove_substrings(p_results)
-
-    pass
 
     return p_results
 #endregion
@@ -563,7 +498,6 @@ def get_console_handler():
 
 def get_file_handler():
     p_file_handler = logging.FileHandler('./logs/{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
-    #p_file_handler = logging.FileHandler("./logs/log.log", mode='w')
     p_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",datefmt="%Y-%m-%d %H:%M:%S"))
     p_file_handler.setLevel(logging.DEBUG)
     return p_file_handler
