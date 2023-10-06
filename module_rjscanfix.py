@@ -192,7 +192,8 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "file_date": None, \
                             "location": None, \
                             "subtitles": f_subtitle_available, \
-                            "prate": f_arbitrary_prate}
+                            "prate": f_arbitrary_prate, \
+                            "status": None}
     else:
         f_my_logger.info("MET - No metadata found for '" + p_process_title + "'.")
     
@@ -262,7 +263,8 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             file_date, \
             location, \
             subtitles, \
-            prate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
+            prate, \
+            status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
         ON DUPLICATE KEY UPDATE \
             name = values(name), \
             studio = values(studio), \
@@ -271,7 +273,8 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             release_date = values(release_date), \
             file_date = values(file_date), \
             location = values(location), \
-            subtitles = values(subtitles)"
+            subtitles = values(subtitles), \
+            status = values(status)"
 
     p_my_insert_sql_genre = "\
         INSERT INTO genre \
@@ -316,7 +319,8 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
                         f_metadata_array['file_date'], \
                         f_metadata_array['location'], \
                         f_metadata_array['subtitles'], \
-                        f_metadata_array['prate']))
+                        f_metadata_array['prate'], \
+                        f_metadata_array['status']))
 
     for g in f_metadata_array['genre']:
         p_hash_input = (f_metadata_array['code'] + g).encode()
@@ -490,6 +494,25 @@ def search_for_title(f_input_string, f_delimiter = "-"):
     p_results = remove_substrings(p_results)
 
     return p_results
+
+def get_db_array(f_my_cursor):
+    my_sql_query = "SELECT code, status FROM title WHERE status IS NOT NULL ORDER BY code"
+    f_my_cursor.execute (my_sql_query)
+
+    results = f_my_cursor.fetchall()
+    if (results == []):
+        results = [("xxx", 999)]
+
+    return results
+
+def value_in_list(f_list, f_value):
+    p_result = False
+    for i in f_list:
+        if f_value in i[0]:
+            p_result = True
+
+    return p_result
+
 #endregion
 
 #region General Purpose Functions
