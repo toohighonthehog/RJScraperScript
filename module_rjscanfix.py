@@ -108,24 +108,28 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     return True
 
 def transfer_files_by_extension(f_source_directory, f_target_directory, f_extensions, f_my_logger, f_processmode='MOVE'):
+    pass
     for root, _, files in os.walk(f_source_directory):
+        pass
         for filename in files:
+            pass
             if any(filename.endswith(ext) for ext in f_extensions):
-                p_source_directory = os.path.join(root, filename)
-                p_target_directory = os.path.join(f_target_directory, filename)
-
+                p_source_filename = os.path.join(root, filename)
+                #p_target_directory = os.path.join(f_target_directory, filename)
+               
                 # Ensure the destination directory exists
-                os.makedirs(p_target_directory, exist_ok=True)
-
+                #os.makedirs(p_target_directory, exist_ok=True)
+                pass
                 # Move the file to the destination directory
                 if (f_processmode == "MOVE"):                
-                    shutil.move(p_source_directory, p_target_directory)
+                    shutil.move(p_source_filename, f_target_directory)
 
                 # ...or copy.
-                if (f_processmode == "COPY"):                
-                    shutil.copy(p_source_directory, p_target_directory)
+                if (f_processmode == "COPY"):
+                    f_my_logger.info("MET - Transferring to " + f_target_directory + ".")
+                    shutil.copy(p_source_filename, f_target_directory)
 
-                f_my_logger.info("MET - Transferred to " + p_target_directory + ".")
+                f_my_logger.info("MET - Transferred to " + f_target_directory + ".")
     return True
 
 

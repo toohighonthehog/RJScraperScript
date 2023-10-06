@@ -1,26 +1,26 @@
 import os, mysql.connector, fnmatch
+from icecream import ic
 
 def get_file_array(f_folder_path, f_source_extensions):
-    file_list = []
+    file_list_1 = []
+    file_list_2 = []
     for root, dirs, files in os.walk(f_folder_path):
         print(root + " " * 50, end="\r")
         for extension in f_source_extensions:
             for file in fnmatch.filter(files, f"*{extension}"):
                 filename, file_extension = os.path.splitext(os.path.basename(file))
-                file_list.append((filename.upper(), os.path.join(root, file)))
+                file_list_1.append((filename.upper(), os.path.join(root, file)))
+                if (not file.endswith(".xxx")):
+                    file_list_2.append((filename.upper(), os.path.join(root, file)))
 
     print ("\n")
-    return sorted(file_list, key = take_first)
+    return sorted(file_list_1, key = take_first), sorted(file_list_2, key = take_first)
 
 def get_db_array(f_my_cursor):
-    db_list = []
-    my_sql_query = "SELECT * from title"
+    my_sql_query = "SELECT code, location FROM title WHERE location IS NOT NULL ORDER BY code"
     f_my_cursor.execute (my_sql_query)
-    results = f_my_cursor.fetchall()
-    for row in results:
-        db_list.append((row[0], row[8]))
-            
-    return sorted(db_list, key = take_first)
+
+    return f_my_cursor.fetchall()
 
 def get_duplicates(f_file_array):
     compare_file = ""
@@ -50,26 +50,29 @@ if __name__ == "__main__":
     )
     my_cursor = my_connection.cursor()
 
-    file_array = get_file_array(folder_path, SOURCE_EXTENSIONS)
+    file_array_1, file_array_2 = get_file_array(folder_path, SOURCE_EXTENSIONS)
     db_array = get_db_array(my_cursor)
-    duplicates = get_duplicates(file_array)
+    duplicates = get_duplicates(file_array_1)
 
-    file_array_set = set(file_array)
+    print (file_array_1)
+
+    file_array_1_set = set(file_array_1)
+    file_array_2_set = set(file_array_2)
     db_array_set = set (db_array)
     duplicates_set = set (duplicates)
 
     os.system('clear')
 
     print ("Duplicates")
-    print (duplicates)
+    ic (duplicates)
     print ()
 
     print ("Missing from DB") # move to parent
-    print (file_array_set.difference(db_array_set.union(duplicates_set)))
+    ic (file_array_2_set.difference(db_array_set.union(duplicates_set)))
     print ()
 
     print ("Missing from Filesystem")
-    print (db_array_set.difference(file_array_set))
+    ic (db_array_set.difference(file_array_1_set))
     print ()
 
     my_cursor.close()

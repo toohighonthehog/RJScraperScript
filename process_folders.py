@@ -3,23 +3,23 @@ import os
 
 # task:
 #   0 = process as normal / full
-#   1 = just process / only new / flagged
-#   2 = just process / only new + missing json / flagged.
-# 3-7 = skip
+#   1 = just process / only new + missing json / [flagged].
+#   2 = just process / only new / [flagged]/
+#   3 = just process [flagged]
 #   8 = scan to make sure files are where they're supposed to be.
 #   9 = just undo / reset
 
 os.system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'task': 0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
-                    {'task': 0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
-                    {'task': 0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
-                    {'task': 0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
-                    {'task': 0, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
-                    {'task': 0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
-                    {'task': 0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
-                    {'task': 0, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
+                    {'task': 1, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
+                    {'task': 1, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
+                    {'task': 1, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
+                    {'task': 1, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
+                    {'task': 1, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
+                    {'task': 1, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
+                    {'task': 1, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
+                    {'task': 1, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
         pass
 
-        if (PROCESS_TASK == 0 or PROCESS_TASK == 2 or PROCESS_TASK == 9):
+        if (PROCESS_TASK == 0 or PROCESS_TASK == 1 or PROCESS_TASK == 9):
             my_logger.info("=== Reverting (Mode:" + str(PROCESS_TASK) + ") " + "=" * 77)
             my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
                 pass
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
                     if ((PROCESS_TASK == 0 or PROCESS_TASK == 9) or
-                        (PROCESS_TASK == 2 and os.path.isfile(SOURCE_DIRECTORY + filename + "/" + filename + ".json") is False)):
+                        (PROCESS_TASK == 1 and os.path.isfile(SOURCE_DIRECTORY + filename + "/" + filename + ".json") is False)):
                             pass
                             move_up_level( \
                                 f_source_directory = SOURCE_DIRECTORY, \

@@ -4,9 +4,11 @@
 
 # Mount into WSL
 # sudo mount -t cifs -o username=xadmin //192.168.192.35/multimedia /mnt/multimedia
+# sudo mount -t cifs -o username=xadmin //192.168.192.35/vmwareshares /mnt/vmwareshares
 
 # Useful
 
+#  ffmpeg -i <source> -vn -acodec copy <destination>.aac
 #  https://colab.research.google.com/github/richardjj27/WhisperWithVAD
 
 To do:
