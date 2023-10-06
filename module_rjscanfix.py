@@ -30,7 +30,7 @@ def get_list_of_files(f_source_directory, f_source_extensions):
     #    p_folder_list_3.append(f_source_directory + p_filename)
     return p_folder_list_2
 
-def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_process_title, f_my_logger):
+def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
     
     if (os.path.isfile(f_subtitle_general + p_process_title + ".srt")):
@@ -42,6 +42,13 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
         f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " in 'Whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
         shutil.copy(f_subtitle_whisper + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(WH).srt")
+
+    pass
+
+    if (os.path.isfile(f_subtitle_whisper + p_process_title + "." + f_target_language)):
+        f_my_logger.info("SUB - Found " + p_process_title + "." + f_target_language + " in 'Whisper'.")
+        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_whisper + p_process_title + "." + f_target_language, f_target_directory + "/" + p_process_title + "/" + p_process_title + "-" + f_target_language)
 
     return True
 

@@ -11,19 +11,20 @@ import os
 os.system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'task': 2, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
-                    {'task': 2, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
-                    {'task': 2, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
-                    {'task': 2, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
+                    {'task': 3, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
+                    {'task': 3, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
+                    {'task': 3, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
+                    {'task': 3, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
                     {'task': 2, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
-                    {'task': 2, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
-                    {'task': 2, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
-                    {'task': 2, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
+                    {'task': 3, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
+                    {'task': 3, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
+                    {'task': 3, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
-SUBTITLE_GENERAL = "/mnt/multimedia/Other/RatedFinalJ/~SubtitleRepository/General/"
-SUBTITLE_WHISPER = "/mnt/multimedia/Other/RatedFinalJ/~SubtitleRepository/Whisper/"
+SUBTITLE_GENERAL = "/mnt/multimedia/Other/~Miscellaneous/~SubtitleRepository/General/"
+SUBTITLE_WHISPER = "/mnt/multimedia/Other/~Miscellaneous/~SubtitleRepository/Whisper/"
+
 BATCH_DATETIME = str(f"{datetime.now():%Y-%m-%d %H:%M:%S}")
 
 my_connection = mysql.connector.connect( 
@@ -111,6 +112,7 @@ if __name__ == "__main__":
                         f_subtitle_general = SUBTITLE_GENERAL, \
                         f_subtitle_whisper = SUBTITLE_WHISPER, \
                         f_target_directory = TARGET_DIRECTORY, \
+                        f_target_language = TARGET_LANGUAGE, \
                         f_process_title = to_be_scraped, \
                         f_my_logger = my_logger)
 
@@ -177,6 +179,7 @@ if __name__ == "__main__":
                         f_subtitle_general = SUBTITLE_GENERAL, \
                         f_subtitle_whisper = SUBTITLE_WHISPER, \
                         f_target_directory = TARGET_DIRECTORY, \
+                        f_target_language = TARGET_LANGUAGE, \
                         f_process_title = filename, \
                         f_my_logger = my_logger)
 
