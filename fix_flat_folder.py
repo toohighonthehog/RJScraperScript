@@ -1,24 +1,25 @@
 from module_rjscanfix import *
-from os import system
+import os
 
 # task:
 #   0 = process as normal / full
-#   1 = just process / only new
-#   2 = just process / only new + missing json
-# 3-8 = skip
+#   1 = just process / only new / flagged
+#   2 = just process / only new + missing json / flagged.
+# 3-7 = skip
+#   8 = scan to make sure files are where they're supposed to be.
 #   9 = just undo / reset
 
-system('clear')
+os.system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/", 'prate': 0, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/", 'prate': 7, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/", 'prate': 8, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/", 'prate': 9, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/", 'prate': 10, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Names/", 'prate': 0, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Series/", 'prate': 0, 'task': 0}, \
-                    {'base': "/mnt/multimedia/Other/RatedFinalJ/Request/", 'prate': -1, 'task': 0}]
+                    {'task': 0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
+                    {'task': 0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
+                    {'task': 0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
+                    {'task': 0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
+                    {'task': 0, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
+                    {'task': 0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
+                    {'task': 0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
+                    {'task': 0, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -140,7 +141,7 @@ if __name__ == "__main__":
                         f_source_directory = SOURCE_DIRECTORY, \
                         f_target_directory = TARGET_DIRECTORY, \
                         f_target_language = TARGET_LANGUAGE, \
-                        f_process_file = to_be_scraped, \
+                        f_process_file = filename, \
                         f_process_extension = file_extension, \
                         f_my_logger = my_logger, \
                         f_metadata_array = metadata_array)
@@ -206,13 +207,13 @@ if __name__ == "__main__":
                             "release_date": None, \
                             "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")), \
                             "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename))), \
-                            "location": full_filename, \
+                            "location": TARGET_DIRECTORY + filename + "/" + filename + file_extension, \
                             "subtitles": subtitle_available, \
                             "prate": ARBITRARY_PRATE}
 
                         pass
 
-                        shutil.move (SOURCE_DIRECTORY + filename + file_extension, TARGET_DIRECTORY +  filename + "/" + filename + file_extension)
+                        shutil.move (SOURCE_DIRECTORY + filename + file_extension, TARGET_DIRECTORY + filename + "/" + filename + file_extension)
 
                         pass
 

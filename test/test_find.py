@@ -16,7 +16,7 @@ print (match)
 # options = search_for_title("hjd2048.com-1129tek097-h264.mp4")
 # print (options)
 
-print(fix_file_code("MIAD-283.mp4",""))
+print(fix_file_code("BBAN025",""))
 # print(fix_file_code("DOCP-094.mp4"))
 # print(fix_file_code("DOCP094abc.mp4"))
 # print(fix_file_code("DOCP-094ABC.mp4"))

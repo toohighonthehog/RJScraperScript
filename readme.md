@@ -72,5 +72,11 @@ To do:
 #  added date will be for the whole batch
 #  if we're adding something which already has a record with the same batch date/time, carry on as normal but with a warning.
 #  this will involve some queries of live data.  where else do we need to use this?
+#  Create a 'scan for issues' option.
+#       Does a file exist for each record?
+#  Create a 'to be rescanned' flag.
+#  Tidy up the dedup script.  Make it a bit faster.
+#  Audit the data which is updated on a rescan.
+
 
 Done:
