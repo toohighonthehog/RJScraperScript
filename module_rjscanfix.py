@@ -39,14 +39,14 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
         shutil.copy(f_subtitle_general + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
 
     if (os.path.isfile(f_subtitle_whisper + p_process_title + ".srt")):
-        f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " in 'Whisper'.")
+        f_my_logger.info("SUB - Found " + p_process_title + ".srt" + " in 'whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
         shutil.copy(f_subtitle_whisper + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(WH).srt")
 
     pass
 
     if (os.path.isfile(f_subtitle_whisper + p_process_title + "." + f_target_language)):
-        f_my_logger.info("SUB - Found " + p_process_title + "." + f_target_language + " in 'Whisper'.")
+        f_my_logger.info("SUB - Found " + p_process_title + "." + f_target_language + " in 'whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
         shutil.copy(f_subtitle_whisper + p_process_title + "." + f_target_language, f_target_directory + "/" + p_process_title + "/" + p_process_title + "-" + f_target_language)
 
@@ -140,7 +140,7 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
     return True
 
 
-def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_my_logger):
+def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language, f_process_title, f_my_logger):
     # determine the subtitle status only here...
     # remove from elsewhere.
     p_process_title = fix_file_code(f_process_title)
@@ -151,6 +151,8 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
     p_subtitle_available = 0
 
     pass
+    
+
 
     for p_filename in p_filelist:
         if os.path.getsize(p_filename) > p_biggest_filesize and p_filename.endswith(f_target_language):
@@ -165,6 +167,8 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
 
         if p_filename.endswith(f_target_language):
             p_subtitle_available = 9
+
+
 
     pass
 
@@ -502,23 +506,78 @@ def search_for_title(f_input_string, f_delimiter = "-"):
 
     return p_results
 
+# change the name of this to specifically what it does.
 def get_db_array(f_my_cursor):
-    my_sql_query = "SELECT code, status FROM title WHERE status IS NOT NULL ORDER BY code"
-    f_my_cursor.execute (my_sql_query)
+    p_my_sql_query = "SELECT code, status, location FROM title WHERE status IS NOT NULL ORDER BY code"
+    f_my_cursor.execute (p_my_sql_query)
+    
+    p_results = f_my_cursor.fetchall()
+    if (p_results == []):
+        p_results = [("xxx", 999, "xxx")]
 
-    results = f_my_cursor.fetchall()
-    if (results == []):
-        results = [("xxx", 999)]
+    return p_results
 
-    return results
+def get_db_record(f_my_cursor, f_process_filename):
+    p_my_sql_query = "SELECT * FROM title WHERE code='" + f_process_filename + "'"
+    f_my_cursor.execute (p_my_sql_query)
+    
+    p_result = f_my_cursor.fetchone()
+    pass
+    return p_result
+
+def put_db_record(f_my_cursor, f_db_record):
+    p_my_insert_sql_title = "\
+    INSERT INTO title \
+        (code, \
+        name, \
+        studio, \
+        image, \
+        score, \
+        release_date, \
+        added_date, \
+        file_date, \
+        location, \
+        subtitles, \
+        prate, \
+        status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
+    ON DUPLICATE KEY UPDATE \
+        name = values(name), \
+        studio = values(studio), \
+        score = values(score), \
+        image = values(image), \
+        release_date = values(release_date), \
+        file_date = values(file_date), \
+        location = values(location), \
+        subtitles = values(subtitles), \
+        status = values(status)"
+    
+    f_my_cursor.execute(p_my_insert_sql_title, \
+                    (f_db_record[0], \
+                    f_db_record[1], \
+                    f_db_record[2], \
+                    f_db_record[3], \
+                    f_db_record[4], \
+                    f_db_record[5], \
+                    f_db_record[6], \
+                    f_db_record[7], \
+                    f_db_record[8], \
+                    f_db_record[9], \
+                    f_db_record[10], \
+                    f_db_record[11]))
+    
+    pass
 
 def value_in_list(f_list, f_value):
-    p_result = False
+    p_results = False
+    pass
     for i in f_list:
         if f_value in i[0]:
-            p_result = True
+            p_results = i
+            break
+        else:
+            p_results = (f_value, 0, None)
 
-    return p_result
+    return p_results
 
 #endregion
 

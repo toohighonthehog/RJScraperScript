@@ -1,24 +1,29 @@
 from module_rjscanfix import *
-import os
+import os, pathlib
+from icecream import ic
 
 # task:
 #+  0 = process as normal / full
 #+  1 = just process new + missing json + flagged
 #+  2 = just process new + flagged
-#?  8 = scan to make sure files are where they're supposed to be.
+#   4 = Just Scan (right now, only for whisper audio files - can be more)
+#+  7 = generate the ffmpeg script.
+#X  8 = scan to make sure files are where they're supposed to be.
 ##  9 = Just undo / reset.  Don't Scan
+
+# Test option 4 - make sure it is reliable on its own, and when it is run as part of a 0>2
 
 os.system('clear')
 
 PROCESS_DIRECTORIES = [ \
-                    {'task': 3, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
-                    {'task': 3, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
-                    {'task': 3, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
-                    {'task': 3, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
-                    {'task': 2, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
-                    {'task': 3, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
-                    {'task': 3, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
-                    {'task': 3, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
+                    {'task': 5, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
+                    {'task': 5, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
+                    {'task': 5, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
+                    {'task': 4, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
+                    {'task': 4, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
+                    {'task': 5, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"}, \
+                    {'task': 5, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
+                    {'task': 5, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -40,15 +45,17 @@ my_logger = get_logger()
 
 if __name__ == "__main__":
 
+    # Delete old Subtitle runner.sh file
+    pathlib.Path(SUBTITLE_WHISPER + "Audio/runner.sh").unlink(missing_ok=True)
+
     for PROCESS_DIRECTORY in PROCESS_DIRECTORIES:
         SOURCE_DIRECTORY = PROCESS_DIRECTORY['base']
         TARGET_DIRECTORY = SOURCE_DIRECTORY
         ARBITRARY_PRATE = PROCESS_DIRECTORY['prate']
         PROCESS_TASK = PROCESS_DIRECTORY['task']
-
+      
         if not os.path.exists(SOURCE_DIRECTORY):
             my_logger.critical(SOURCE_DIRECTORY + " does not exist.  Terminating.")
-            exit()
 
         pass
 
@@ -58,20 +65,21 @@ if __name__ == "__main__":
             exit()
 
         records_to_update = get_db_array(my_cursor)
-
         pass
 
+        # Do pre-scan/process preparations
         # Perform the scan process looking for metadata etc.
         if (PROCESS_TASK <= 2 or PROCESS_TASK == 9):
             my_logger.info("=== Reverting (Mode: " + str(PROCESS_TASK) + ") " + "=" * 76)
             my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
-                pass
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
+                    
+                    pass
                     if ((PROCESS_TASK == 0 or PROCESS_TASK == 9) or
                         (PROCESS_TASK == 1 and (os.path.isfile(SOURCE_DIRECTORY + filename + "/" + filename + ".json") is False) or (filename in records_to_update[0])) or
-                        (PROCESS_TASK == 2 and value_in_list(records_to_update, filename))):
+                        (PROCESS_TASK == 2 and value_in_list(records_to_update, filename)[1] == 1)):
                             pass
                             move_up_level( \
                                 f_source_directory = SOURCE_DIRECTORY, \
@@ -79,11 +87,37 @@ if __name__ == "__main__":
                                 f_process_filename = filename, \
                                 f_source_extensions = SOURCE_EXTENSIONS, \
                                 f_my_logger = my_logger)
+
             my_logger.info("=" * 100)
 
-        pass
+        if (PROCESS_TASK == 7 ):
+            my_logger.info("=== Process Whisper Tags" + "=" * 65)
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+            scanned_directory = os.listdir(SOURCE_DIRECTORY)
 
-        # exactly what does this do?
+            for filename in scanned_directory:
+                # ic (filename)
+                # ic (value_in_list(records_to_update, filename))
+            
+                pass
+
+                if (PROCESS_TASK == 3 and value_in_list(records_to_update, filename)[1] == 5):
+                    #######################
+                    # Do the subtitle thing here if the status attribute is 5.
+                    sub_record = (value_in_list(records_to_update, filename))
+                    #ic (value_in_list(update_status, title)[1])
+                    if ((sub_record[1]) == 5):
+                        pass
+                        source = (sub_record[2])# .replace('/mnt/', '/volume1/')
+                        destination = (SUBTITLE_WHISPER + "Audio/" + filename + ".mp3")# .replace('/mnt/', '/volume1/')
+                        #print ("ffmpeg -i " + source + " " + destination)
+
+                        with open(SUBTITLE_WHISPER + "Audio/runner.sh", 'a') as f:
+                            f.write("ffmpeg -i " + source + " " + destination + "\n")
+
+            my_logger.info("=" * 100)
+
+        # Do scans and processing.
         if (PROCESS_TASK <= 2):
             my_logger.info("=== Processing " + "=" * 85)
             my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
@@ -127,6 +161,7 @@ if __name__ == "__main__":
                     pass
 
                     subtitle_available = get_best_subtitle( \
+                        f_subtitle_whisper = SUBTITLE_WHISPER, \
                         f_target_directory = TARGET_DIRECTORY, \
                         f_target_language = TARGET_LANGUAGE, \
                         f_process_title = to_be_scraped, \
@@ -176,28 +211,29 @@ if __name__ == "__main__":
                         os.makedirs(TARGET_DIRECTORY + filename, exist_ok=True)
 
                         get_localsubtitles( \
-                        f_subtitle_general = SUBTITLE_GENERAL, \
-                        f_subtitle_whisper = SUBTITLE_WHISPER, \
-                        f_target_directory = TARGET_DIRECTORY, \
-                        f_target_language = TARGET_LANGUAGE, \
-                        f_process_title = filename, \
-                        f_my_logger = my_logger)
+                            f_subtitle_general = SUBTITLE_GENERAL, \
+                            f_subtitle_whisper = SUBTITLE_WHISPER, \
+                            f_target_directory = TARGET_DIRECTORY, \
+                            f_target_language = TARGET_LANGUAGE, \
+                            f_process_title = filename, \
+                            f_my_logger = my_logger)
 
                         pass
 
                         subtitle_available = get_subtitlecat( \
-                        f_target_directory = TARGET_DIRECTORY, \
-                        f_target_language = TARGET_LANGUAGE, \
-                        f_process_title = filename, \
-                        f_my_logger = my_logger)
+                            f_target_directory = TARGET_DIRECTORY, \
+                            f_target_language = TARGET_LANGUAGE, \
+                            f_process_title = filename, \
+                            f_my_logger = my_logger)
 
                         pass
 
                         subtitle_available = get_best_subtitle( \
-                        f_target_directory = TARGET_DIRECTORY, \
-                        f_target_language = TARGET_LANGUAGE, \
-                        f_process_title = filename, \
-                        f_my_logger = my_logger)
+                            f_subtitle_whisper = SUBTITLE_WHISPER, \
+                            f_target_directory = TARGET_DIRECTORY, \
+                            f_target_language = TARGET_LANGUAGE, \
+                            f_process_title = filename, \
+                            f_my_logger = my_logger)
 
                         # my_logger.info("+++++ " + full_filename + " " + ("+" * (93 - (len(full_filename)))))
 
@@ -233,6 +269,28 @@ if __name__ == "__main__":
                     
                         my_logger.warning("+++++ " + filename + file_extension + " +++++ no match found.")
                 my_logger.info("=" * 100)
+
+        if (PROCESS_TASK == 4 or PROCESS_TASK <= 2):
+            my_logger.info("=== Scanning " + "=" * 85)
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+            scanned_directory = os.listdir(SOURCE_DIRECTORY)
+            for filename in scanned_directory:
+                if os.path.isdir(SOURCE_DIRECTORY + filename):
+                    db_record = get_db_record(my_cursor, filename)
+                    subtitle_available = (db_record[9])
+                    pass
+                    if (subtitle_available == 0):
+                        if (os.path.isfile(SUBTITLE_WHISPER + "Audio/" + filename + ".mp3")):
+                            my_logger.info("SUB - Audio Found " + filename + ".mp3 in 'whisper'.")
+                            ic (type(db_record))
+                            db_record_list = list(db_record)
+                            db_record_list[9] = 1
+                            db_record = tuple(db_record_list)
+                            ic (db_record[9])
+                            put_db_record(my_cursor, db_record) # 528
+                            my_connection.commit()
+                            pass
+                    pass
 
     my_cursor.close()
     my_connection.disconnect()
