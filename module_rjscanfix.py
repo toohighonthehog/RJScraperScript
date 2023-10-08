@@ -220,7 +220,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
         os.makedirs(p_target_directory, exist_ok=True)
         shutil.move (f_source_directory + f_process_file + f_process_extension, p_target_directory + "/" + p_file_match + f_process_extension)
-
+        pass
         if f_metadata_array['prate'] >= 0:     
             f_metadata_array.update({'location': p_target_directory + "/" + p_file_match + f_process_extension})
             f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
