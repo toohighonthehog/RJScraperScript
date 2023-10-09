@@ -6,6 +6,7 @@ from javscraper import *
 
 #region Main Functions
 def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_source_extensions, f_my_logger):
+    # 09/10/2023 - how does this work?  All it needs to do is move back 1 file.  makedirs??
     p_folder_list_1 = os.listdir(f_source_directory + f_process_filename)
     p_folder_list_2 = [filename for filename in p_folder_list_1 if any(filename.endswith(ext) for ext in f_source_extensions)]
 
