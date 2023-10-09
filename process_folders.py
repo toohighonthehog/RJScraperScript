@@ -7,6 +7,7 @@ from icecream import ic
 #+  1 = just process new + missing json + flagged
 #+  2 = just process new + flagged
 #   4 = Just Scan (right now, only for whisper audio files - can be more)
+#   5 = Just use the DEFAULT_TASK value.
 #+  7 = generate the ffmpeg script.
 #X  8 = scan to make sure files are where they're supposed to be.
 ##  9 = Just undo / reset.  Don't Scan
@@ -16,6 +17,7 @@ from icecream import ic
 
 os.system('clear')
 
+DEFAULT_TASK = 7
 PROCESS_DIRECTORIES = [ \
                     {'task': 5, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
                     {'task': 5, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
@@ -26,7 +28,7 @@ PROCESS_DIRECTORIES = [ \
                     {'task': 5, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"}, \
                     {'task': 5, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
-DEFAULT_TASK = 7
+
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
 SUBTITLE_GENERAL = "/mnt/multimedia/Other/~Miscellaneous/~SubtitleRepository/General/"
