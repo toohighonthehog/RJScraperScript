@@ -3,35 +3,21 @@ import os, pathlib
 from icecream import ic
 
 # task:
-#+  0 = process as normal / full                               = 32 + 16 + 8 + 4
-#+  1 = just process new + missing json + flagged              =      16 + 8 + 4
-#+  2 = just process new + flagged                             =           8 + 4 
-#   4 = Just Scan (right now, only for whisper audio files - can be more)    = 2
-#   5 = Just use the DEFAULT_TASK value.                       = 64
-#+  7 = generate the ffmpeg script.                                          = 1
-
-##  9 = Just undo / reset.  Don't Scan                         = 32
-
 #   0 = Skip - do nothing
 #   1 = Generate the ffmpeg script.
 #   2 = Just Scan (right now, only for whisper audio files - can be more)
-
 #   4 = Process files in root of source folder
-
 #   8 = Process Flagged
 #  16 = Process missing json.
 #  32 = Just undo / reset.  Don't Scan
 #  64 = Do DEFAULT_TASK
 
-# Test option 4 - make sure it is reliable on its own, and when it is run as part of a 0>2
-# don't do the ffmpeg thing for 'wanted'/no file records
-
 os.system('clear')
 
-DEFAULT_TASK = 32 + 16 + 8
+DEFAULT_TASK = 32 + 4
 PROCESS_DIRECTORIES = [ \
                     {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"}, \
-                    {'task':   8, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
+                    {'task':   2, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"}, \
                     {'task':   0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"}, \
                     {'task':   0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"}, \
                     {'task':   0, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"}, \
@@ -74,13 +60,15 @@ if __name__ == "__main__":
       
         if not os.path.exists(SOURCE_DIRECTORY):
             my_logger.critical(SOURCE_DIRECTORY + " does not exist.  Terminating.")
-
+            exit()
         pass
 
         if not os.path.exists(TARGET_DIRECTORY):
             my_logger.critical(TARGET_DIRECTORY + " does not exist.  Creating.")
             os.makedirs(TARGET_DIRECTORY, exist_ok=True)
-            exit()
+
+
+        #ic (PROCESS_TASK)
 
         if (PROCESS_TASK >= 8):
             my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
@@ -89,7 +77,7 @@ if __name__ == "__main__":
         # Perform the scan process looking for metadata etc.
         # Revert Everything
         if (PROCESS_TASK & 32):
-            my_logger.info("=== Reverting (Mode: Undo Everything )" + ("=" * 76))
+            my_logger.info("=== Reverting (Mode: Undo Everything )" + ("=" * 62))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -104,9 +92,9 @@ if __name__ == "__main__":
             my_logger.info("=" * 100)
 
         # Missing JSON
-        if ((PROCESS_TASK & 16) and not (PROCESS_TASK & 32)):
+        if ((PROCESS_TASK & 16) and ~(PROCESS_TASK & 32)):
             records_to_update = get_db_array(my_cursor)
-            my_logger.info("=== Reverting (Mode: Missing Metadata )" + ("=" * 76))
+            my_logger.info("=== Reverting (Mode: Missing Metadata )" + ("=" * 61))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -123,10 +111,13 @@ if __name__ == "__main__":
 
             my_logger.info("=" * 100)
 
+        #ic ((PROCESS_TASK & 8))
+        #ic (~(PROCESS_TASK & 32))
         # Flagged in Database
-        if ((PROCESS_TASK & 8) and not (PROCESS_TASK & 32)):
+        if ((PROCESS_TASK & 8) and ~(PROCESS_TASK & 32)):
             records_to_update = get_db_array(my_cursor)
-            my_logger.info("=== Reverting (Mode: Flagged in DB )" + ("=" * 76))
+            #ic (records_to_update)
+            my_logger.info("=== Reverting (Mode: Flagged in DB )" + ("=" * 64))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -143,21 +134,18 @@ if __name__ == "__main__":
             my_logger.info("=" * 100)
 
 
-        exit()
-
-
-
-
         # generate ffmpeg script.
+        # should we null out the value after running?
         if (PROCESS_TASK & 1 ): # 1
             my_logger.info("=== Process Whisper Tags" + "=" * 65)
             my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
-
+            records_to_update = get_db_array(my_cursor)
             for filename in scanned_directory:
                 # ic (filename)
                 # ic (value_in_list(records_to_update, filename))
                 pass
+
                 if (value_in_list(records_to_update, filename)[1] == 5):
                     #######################
                     # Do the subtitle thing here if the status attribute is 5.
@@ -167,6 +155,7 @@ if __name__ == "__main__":
                         pass
                         source = (sub_record[2])# .replace('/mnt/', '/volume1/')
                         destination = (SUBTITLE_WHISPER + "Audio/" + filename + ".mp3")# .replace('/mnt/', '/volume1/')
+                        my_logger.info("SUB - Schedule " + filename + ".mp3 creation in script.")
                         #print ("ffmpeg -i " + source + " " + destination)
 
                         with open(SUBTITLE_WHISPER + "Audio/runner.sh", 'a') as f:
