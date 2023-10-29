@@ -72,6 +72,15 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
         shutil.copy(f_subtitle_whisper + p_process_title + "." + f_target_language,
                     f_target_directory + "/" + p_process_title + "/" + p_process_title + "-" + f_target_language)
 
+    pass
+
+    if (os.path.isfile(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language)):
+        f_my_logger.info("SUB - Found " + p_process_title +
+                         "-(WH)-" + f_target_language + " in 'whisper'. *")
+        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language,
+                    f_target_directory + "/" + p_process_title + "/" + p_process_title + "-(WH)-" + f_target_language)
+
     return True
 
 
@@ -169,11 +178,11 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
 
                 # ...or copy.
                 if (f_processmode == "COPY"):
-                    f_my_logger.info("MET - Transferring to " +
+                    f_my_logger.info("MET - Transferring " + filename + " to " +
                                      f_target_directory + ".")
                     shutil.copy(p_source_filename, f_target_directory)
 
-                f_my_logger.info("MET - Transferred to " +
+                f_my_logger.info("MET - Transferred " + filename + " to " +
                                  f_target_directory + ".")
     return True
 

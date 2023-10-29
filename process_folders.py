@@ -5,13 +5,22 @@ from icecream import ic
 
 # task:
 #   0 = Skip - do nothing
-#   1 = Generate the ffmpeg script.
+#   1 = Just generate the ffmpeg script.
 #   2 = Just Scan (right now, only for whisper audio files - can be more)
 #   4 = Process files in root of source folder
 #   8 = Process Flagged
 #  16 = Process missing json.
 #  32 = Just undo / reset.  Don't Scan
-#  64 = Do DEFAULT_TASK
+#  64 = Do DEFAULT_TASK.
+
+# status:
+#   1 = rescan
+#   5 = create script in Subtitle_Whisper/Audio/runner folder.  # the value should reset when done.
+
+# Subtitles:
+#   1 = An export MP3 exists ready for whisper processing. (check)
+#
+#   9 = Good, local language subtitle found. (check)
 
 os.system('clear')
 
@@ -19,15 +28,14 @@ DEFAULT_TASK = 32 + 4
 PROCESS_DIRECTORIES = [
     {'task':   0, 'prate':  0,
         'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {'task':   2, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {'task':   0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
     {'task':   0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
     {'task':   0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {'task':   0, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {'task':   2, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
     {'task':   0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
     {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
     {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
     {'task':   0, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
-
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -190,7 +198,7 @@ if __name__ == "__main__":
                         if (subtitle_available == 0):
                             if (os.path.isfile(SUBTITLE_WHISPER + "Audio/" + filename + ".mp3")):
                                 my_logger.info(
-                                    "SUB - Audio Found " + filename + ".mp3 in 'whisper'.")
+                                    "SUB - Audio Found " + filename + ".mp3 in 'whisper subs'.")
                                 # ic (type(db_record))
                                 db_record_list = list(db_record)
                                 db_record_list[9] = 1
@@ -198,7 +206,35 @@ if __name__ == "__main__":
                                 # ic (db_record[9])
                                 put_db_record(my_cursor, db_record)  # 528
                                 my_connection.commit()
-                                pass
+
+                        pass
+############
+############
+                        if (subtitle_available <= 8):
+                            get_localsubtitles(
+                                f_subtitle_general=SUBTITLE_GENERAL,
+                                f_subtitle_whisper=SUBTITLE_WHISPER,
+                                f_target_directory=TARGET_DIRECTORY,
+                                f_target_language=TARGET_LANGUAGE,
+                                f_process_title=filename,
+                                f_my_logger=my_logger)
+                            pass
+
+                            subtitle_available = get_best_subtitle(
+                                f_subtitle_whisper=SUBTITLE_WHISPER,
+                                f_target_directory=TARGET_DIRECTORY,
+                                f_target_language=TARGET_LANGUAGE,
+                                f_process_title=filename,
+                                f_my_logger=my_logger)
+                            pass
+
+                            db_record_list = list(db_record)
+                            db_record_list[9] = subtitle_available
+                            db_record = tuple(db_record_list)
+                            # ic (db_record[9])
+                            put_db_record(my_cursor, db_record)  # 528
+                            my_connection.commit()
+
                         pass
 
         # Do scans and processing.
@@ -238,7 +274,6 @@ if __name__ == "__main__":
                         f_target_language=TARGET_LANGUAGE,
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger)
-
                     pass
 
                     get_subtitlecat(
