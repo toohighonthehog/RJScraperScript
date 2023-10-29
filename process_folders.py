@@ -6,7 +6,7 @@ from icecream import ic
 # task:
 #   0 = Skip - do nothing
 #   1 = Just generate the ffmpeg script.
-#   2 = Just Scan (right now, only for whisper audio files - can be more)
+#   2 = Just Scan (right now, only for whisper audio files and sbutitles - can be more)
 #   4 = Process files in root of source folder
 #   8 = Process Flagged
 #  16 = Process missing json.

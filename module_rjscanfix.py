@@ -76,7 +76,7 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
 
     if (os.path.isfile(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language)):
         f_my_logger.info("SUB - Found " + p_process_title +
-                         "-(WH)-" + f_target_language + " in 'whisper'. *")
+                         "-(WH)-" + f_target_language + " in 'whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
         shutil.copy(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language,
                     f_target_directory + "/" + p_process_title + "/" + p_process_title + "-(WH)-" + f_target_language)
