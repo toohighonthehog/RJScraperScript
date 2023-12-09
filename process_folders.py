@@ -31,7 +31,7 @@ PROCESS_DIRECTORIES = [
     {'task':   0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
     {'task':   0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
     {'task':   0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {'task':   2, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {'task':   4, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
     {'task':   0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
     {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
     {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
@@ -195,21 +195,7 @@ if __name__ == "__main__":
                     if db_record is not None:
                         subtitle_available = (db_record[9])
                         pass
-                        if (subtitle_available == 0):
-                            if (os.path.isfile(SUBTITLE_WHISPER + "Audio/" + filename + ".mp3")):
-                                my_logger.info(
-                                    "SUB - Audio Found " + filename + ".mp3 in 'whisper subs'.")
-                                # ic (type(db_record))
-                                db_record_list = list(db_record)
-                                db_record_list[9] = 1
-                                db_record = tuple(db_record_list)
-                                # ic (db_record[9])
-                                put_db_record(my_cursor, db_record)  # 528
-                                my_connection.commit()
 
-                        pass
-############
-############
                         if (subtitle_available <= 8):
                             get_localsubtitles(
                                 f_subtitle_general=SUBTITLE_GENERAL,
@@ -228,12 +214,20 @@ if __name__ == "__main__":
                                 f_my_logger=my_logger)
                             pass
 
-                            db_record_list = list(db_record)
-                            db_record_list[9] = subtitle_available
-                            db_record = tuple(db_record_list)
-                            # ic (db_record[9])
-                            put_db_record(my_cursor, db_record)  # 528
-                            my_connection.commit()
+                        if (subtitle_available == 0):
+                            if (os.path.isfile(SUBTITLE_WHISPER + "Audio/" + filename + ".mp3")):
+                                my_logger.info(
+                                    "SUB - Audio Found " + filename + ".mp3 in 'whisper subs'.")
+                                # db_record_list = list(db_record)
+                                subtitle_available = 1
+
+                        pass
+
+                        db_record_list = list(db_record)
+                        db_record_list[9] = subtitle_available
+                        db_record = tuple(db_record_list)
+                        put_db_record(my_cursor, db_record)
+                        my_connection.commit()
 
                         pass
 
