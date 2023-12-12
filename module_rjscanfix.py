@@ -96,7 +96,23 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                      p_process_title + "'.")
 
     p_url_level1 = 'https://www.subtitlecat.com/index.php?search=' + p_process_title
-    p_response_level1 = p_session.get(p_url_level1)
+
+    pass
+    p_counter = 0
+    while p_counter < 5:
+        try:
+            p_response_level1 = p_session.get(p_url_level1, timeout=60, allow_redirects=True)
+            break
+        except:
+            p_counter += 1
+            f_my_logger.warning("URL - SubtitleCat (L0) not responding.  Try " + str(p_counter) + " of 5.")
+            time.sleep(30)
+
+    if p_counter >= 5:
+        f_my_logger.critical("URL - SubtitleCat (L0) connection failed.  Terminating.")
+        exit()
+
+    pass
 
     p_counter = 0
     while p_counter < 5:
@@ -105,14 +121,14 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning(
-                "URL - SubtitleCat not responding.  Try " + str(p_counter) + " of 5.")
-            time.sleep(15)
+            f_my_logger.warning("URL - SubtitleCat (L1) not responding.  Try " + str(p_counter) + " of 5.")
+            time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(
-            "URL - SubtitleCat connection failed.  Terminating")
+        f_my_logger.critical("URL - SubtitleCat (L1) connection failed.  Terminating.")
         exit()
+
+    pass
 
     p_table_level1_entries = [[c.absolute_links for c in row.find(
         'td')][:1] for row in p_table_level1.find('tr')][1:]
@@ -121,37 +137,28 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
         p_table_level1_entry_url = (list(p_table_level1_entry[0])[0])
 
         if re.search(p_process_title, p_table_level1_entry_url, re.IGNORECASE):
-            p_response_level2 = p_session.get(p_table_level1_entry_url)
-            p_table_level2 = p_response_level2.html.xpath(
-                '/html/body/div[4]/div/div[2]', first=True)
+            p_response_level2 = p_session.get(p_table_level1_entry_url, timeout=60, allow_redirects=True)
+            p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
             if p_table_level2 is not None:
                 for p_table_level2_entry in p_table_level2.absolute_links:
                     if re.search(f_target_language, p_table_level2_entry, re.IGNORECASE):
                         p_subtitle_url = p_table_level2_entry
                 try:
                     if re.search(f_target_language, p_subtitle_url, re.IGNORECASE):
-
                         p_count = 0
                         while p_count < 5:
-                            p_subtitle_url_check = (
-                                requests.head(p_subtitle_url).status_code)
+                            p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
                             p_count += 1
                             if p_subtitle_url_check == 200:
-                                f_my_logger.debug(
-                                    "SUB - Subtitle_URL " + p_subtitle_url + ".")
+                                f_my_logger.debug("SUB - Subtitle_URL " + p_subtitle_url + ".")
                                 if p_subtitle_url.find('/'):
-                                    p_subtitle_filename = (
-                                        (p_subtitle_url.rsplit('/', 1)[1]).lower())
-                                f_my_logger.info(
-                                    "SUB - Downloading " + p_subtitle_filename + ".")
-                                p_subtitle_download = requests.get(
-                                    p_subtitle_url, allow_redirects=True)
-                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper(
-                                ) + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
+                                    p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
+                                f_my_logger.info("SUB - Downloading " + p_subtitle_filename + ".")
+                                p_subtitle_download = requests.get(p_subtitle_url, timeout=60, allow_redirects=True)
+                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
                                 pass
-                                open(p_target_directory + p_new_subtitle_filename,
-                                     'wb').write(p_subtitle_download.content)
-                                time.sleep(1)
+                                open(p_target_directory + p_new_subtitle_filename,'wb').write(p_subtitle_download.content)
+                                time.sleep(t)
                                 break
                 except:
                     pass
@@ -350,35 +357,46 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             status = values(status)"
 
     p_my_insert_sql_genre = "\
-        INSERT INTO genre \
-            (title_code, \
-            description, \
-            uid) VALUES (%s, %s, %s) \
+        INSERT IGNORE INTO genre \
+            (description) VALUES (%s) \
         ON DUPLICATE KEY UPDATE \
-            description = values(description), \
-            uid = values(uid) "
+            description = values(description)"
 
-    p_my_insert_sql_actor_link = "\
-        INSERT INTO actor_link \
-            (title_code, \
-            actor_name, \
-            uid) VALUES (%s, %s, %s) \
+    # should we be using IGNORE so much here?
+    p_my_insert_sql_genre_title_link = "\
+        INSERT INTO genre_title_link \
+            (genre_g_id, \
+            title_code, \
+            guid ) VALUES (%s, %s, %s) \
         ON DUPLICATE KEY UPDATE \
-            actor_name = values(actor_name), \
-            uid = values(uid) "
+            genre_g_id = values(genre_g_id), \
+            title_code = values(title_code), \
+            guid = values(guid)"
 
-    p_my_insert_sql_title_url = "\
+    p_my_insert_sql_url = "\
         INSERT INTO url \
             (title_code, \
             url, \
-            uid) VALUES (%s, %s, %s) \
+            guid) VALUES (%s, %s, %s) \
         ON DUPLICATE KEY UPDATE \
             url = values(url), \
-            uid = values(uid) "
+            guid = values(guid) "
 
     p_my_insert_sql_actor = "\
         INSERT IGNORE INTO actor \
-            (name) VALUES (%s)"
+            (name) VALUES (%s) \
+        ON DUPLICATE KEY UPDATE \
+            name = values(name)"
+
+    p_my_insert_sql_actor_title_link = "\
+        INSERT INTO actor_title_link \
+            (actor_a_id, \
+            title_code, \
+            guid ) VALUES (%s, %s, %s) \
+        ON DUPLICATE KEY UPDATE \
+            actor_a_id = values(actor_a_id), \
+            title_code = values(title_code), \
+            guid = values(guid)"
 
     # we seem to get the occassional (random?) incorrect date/time value for filedate here
     f_my_cursor.execute(p_my_insert_sql_title,
@@ -395,31 +413,56 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
                          f_metadata_array['prate'],
                          f_metadata_array['status']))
 
-    for g in f_metadata_array['genre']:
-        p_hash_input = (f_metadata_array['code'] + g).encode()
-        p_hash_output = hashlib.md5(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_genre,
-                            (f_metadata_array['code'], g, p_hash_output))
-
     for a in f_metadata_array['actor']:
-        p_hash_input = (f_metadata_array['code'] + a).encode()
-        p_hash_output = hashlib.md5(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_actor_link,
-                            (f_metadata_array['code'], a, p_hash_output))
-        f_my_cursor.execute(p_my_insert_sql_actor, (a,))
+        p_my_query_sql_actor = "SELECT a_id FROM actor WHERE name = '" + a + "';"
+        f_my_cursor.execute(p_my_query_sql_actor)
+        p_my_results = f_my_cursor.fetchone()
+
+        if p_my_results is None:
+            f_my_cursor.execute(p_my_insert_sql_actor, (a,))
+            p_a_id = f_my_cursor.lastrowid
+        else:
+            p_a_id = p_my_results[0]
+        pass
+
+        p_hash_input = (
+            f_metadata_array['code'] + str(p_a_id) + "actor_title_link").encode()
+        p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
+        f_my_cursor.execute(p_my_insert_sql_actor_title_link,
+                            (p_a_id,
+                             f_metadata_array['code'],
+                             p_hash_output))
+
+    for g in f_metadata_array['genre']:
+        p_my_query_sql_genre = "SELECT g_id FROM genre WHERE description = '" + g + "';"
+        f_my_cursor.execute(p_my_query_sql_genre)
+        p_my_results = f_my_cursor.fetchone()
+
+        if p_my_results is None:
+            f_my_cursor.execute(p_my_insert_sql_genre, (g,))
+            p_g_id = f_my_cursor.lastrowid
+        else:
+            p_g_id = p_my_results[0]
+        pass
+
+        p_hash_input = (
+            f_metadata_array['code'] + str(p_g_id) + "genre_title_link").encode()
+        p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
+        f_my_cursor.execute(p_my_insert_sql_genre_title_link,
+                            (p_g_id,
+                             f_metadata_array['code'],
+                             p_hash_output))
 
     for u in f_metadata_array['url']:
         p_hash_input = (f_metadata_array['code'] + u).encode()
         p_hash_output = hashlib.md5(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_title_url,
-                            (f_metadata_array['code'], u, p_hash_output))
+        f_my_cursor.execute(p_my_insert_sql_url, (f_metadata_array['code'], u, p_hash_output))
 
     return True
 
 
 def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
-    f_my_logger.info("MET - Write metadata for '" +
-                     f_metadata_array['code'] + "' to json.")
+    f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
     p_metadata_json = json.dumps(f_metadata_array, indent=4)
     with open(f_json_filename, "w") as outfile:
         outfile.write(p_metadata_json)

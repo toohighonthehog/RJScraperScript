@@ -24,18 +24,17 @@ from icecream import ic
 
 os.system('clear')
 
-DEFAULT_TASK = 32 + 4
+DEFAULT_TASK = 36
 PROCESS_DIRECTORIES = [
-    {'task':   0, 'prate':  0,
-        'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {'task':   0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {'task':   0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {'task':   0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {'task':   4, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {'task':  64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {'task':  64, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {'task':  64, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {'task':  64, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {'task':  64, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
     {'task':   0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
-    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
-    {'task':   0, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
+    {'task':  64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
+    {'task':  64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
+    {'task':  64, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -49,7 +48,7 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD",
     host="diskstation.hachiko.int",
     port=3306,
-    database="Multimedia_Dev"
+    database="Multimedia"
 )
 
 my_cursor = my_connection.cursor()
@@ -320,12 +319,9 @@ if __name__ == "__main__":
                                  f_json_filename=TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + ".json")
 
                 else:
-                    pattern = r'^[A-Z]{2,5}-\d{3}(?:' + \
-                        '|'.join(SOURCE_EXTENSIONS) + ')$'
+                    pattern = r'^[A-Z]{2,5}-\d{3}(?:' + '|'.join(SOURCE_EXTENSIONS) + ')$'
                     if re.match(pattern, filename + file_extension):
-
-                        my_logger.info("+++++ " + filename + file_extension +
-                                       " +++++ no match found but filename is valid.")
+                        my_logger.info("+++++ " + filename + file_extension + " +++++ no match found but filename is valid.")
 
                         pass
 
