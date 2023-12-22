@@ -1,0 +1,5 @@
+javscraper
+icecream
+mysql-connector-python
+Requests
+requests_html

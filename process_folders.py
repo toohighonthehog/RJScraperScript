@@ -26,7 +26,7 @@ os.system('clear')
 
 DEFAULT_TASK = 36
 PROCESS_DIRECTORIES = [
-    {'task':  64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {'task':   4, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
     {'task':  64, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
     {'task':  64, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
     {'task':  64, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
