@@ -26,15 +26,15 @@ os.system('clear')
 
 DEFAULT_TASK = 36
 PROCESS_DIRECTORIES = [
-    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {'task':   0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {'task':   0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {'task':   0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {'task':   4, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {'task':   0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
-    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
-    {'task':   4, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
+    {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {'task': 64, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {'task': 64, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {'task': 64, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {'task': 64, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {'task':  0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
+    {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
+    {'task': 64, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
