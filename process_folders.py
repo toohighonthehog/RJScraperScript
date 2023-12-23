@@ -26,15 +26,15 @@ os.system('clear')
 
 DEFAULT_TASK = 36
 PROCESS_DIRECTORIES = [
-    {'task':   4, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {'task':  64, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {'task':  64, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {'task':  64, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {'task':  64, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {'task':   0, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {'task':   0, 'prate':  8, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {'task':   0, 'prate':  9, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {'task':   4, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
     {'task':   0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {'task':  64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
-    {'task':  64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
-    {'task':  64, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
+    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
+    {'task':   0, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
+    {'task':   4, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         # Revert Everything
         if (PROCESS_TASK & 32):
             my_logger.info(
-                "=== Reverting (Mode: Undo Everything )" + ("=" * 62))
+                "=== Reverting ( Mode: Undo Everything ) " + ("=" * 60))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         if ((PROCESS_TASK & 16) and ~(PROCESS_TASK & 32)):
             records_to_update = get_db_array(my_cursor)
             my_logger.info(
-                "=== Reverting (Mode: Missing Metadata )" + ("=" * 61))
+                "=== Reverting ( Mode: Missing Metadata ) " + ("=" * 59))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         if ((PROCESS_TASK & 8) and ~(PROCESS_TASK & 32)):
             records_to_update = get_db_array(my_cursor)
             # ic (records_to_update)
-            my_logger.info("=== Reverting (Mode: Flagged in DB )" + ("=" * 64))
+            my_logger.info("=== Reverting ( Mode: Flagged in DB ) " + ("=" * 62))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -184,12 +184,11 @@ if __name__ == "__main__":
         # Scan through records and check DB
         if (PROCESS_TASK & 2):  # 2
             my_logger.info("=== Scanning " + "=" * 87)
-            my_logger.info("===== Source: " + SOURCE_DIRECTORY +
-                           " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
-                    db_record = get_db_record(my_cursor, filename)
+                    db_record = get_db_title_record(my_cursor, filename)
                     pass
                     if db_record is not None:
                         subtitle_available = (db_record[9])
@@ -225,7 +224,7 @@ if __name__ == "__main__":
                         db_record_list = list(db_record)
                         db_record_list[9] = subtitle_available
                         db_record = tuple(db_record_list)
-                        put_db_record(my_cursor, db_record)
+                        update_db_title_record(my_cursor, db_record)
                         my_connection.commit()
 
                         pass
@@ -241,7 +240,10 @@ if __name__ == "__main__":
                 f_source_directory=SOURCE_DIRECTORY,
                 f_source_extensions=SOURCE_EXTENSIONS)
 
+            total = (len(scanned_directory))
+            count = 0
             for full_filename in scanned_directory:
+                count += 1
                 filename, file_extension = os.path.splitext(
                     os.path.basename(full_filename))
                 try:
@@ -251,9 +253,10 @@ if __name__ == "__main__":
 
                 pass
 
+                progress = (f" {count}/{total}")
+
                 if to_be_scraped == fix_file_code(filename):
-                    my_logger.info("+++++ " + full_filename +
-                                   " " + ("+" * (93 - (len(full_filename)))))
+                    my_logger.info("+++++ " + full_filename + " " + ("+" * ((93 - len(progress)) - (len(full_filename))) + progress))
 
                     pass
 
@@ -356,22 +359,41 @@ if __name__ == "__main__":
 
                         pass
 
-                        metadata_array = {"code": filename,
-                                          "name": None,
-                                          "actor": [],
-                                          "studio": None,
-                                          "image": None,
-                                          "genre": [],
-                                          "url": [],
-                                          "score": None,
-                                          "release_date": None,
-                                          "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
-                                          "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename))),
-                                          "location": TARGET_DIRECTORY + filename + "/" + filename + file_extension,
-                                          "subtitles": subtitle_available,
-                                          "prate": ARBITRARY_PRATE,
-                                          "status": None}
-
+                        if (ARBITRARY_PRATE >= 0):
+                            metadata_array = {"code": filename,
+                                "name": None,
+                                "actor": [],
+                                "studio": None,
+                                "image": None,
+                                "genre": [],
+                                "url": [],
+                                "score": None,
+                                "release_date": None,
+                                "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
+                                "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename))),
+                                "location": TARGET_DIRECTORY + filename + "/" + filename + file_extension,
+                                "subtitles": subtitle_available,
+                                "prate": ARBITRARY_PRATE,
+                                "notes": None,
+                                "status": None}
+                        else:
+                            metadata_array = {"code": filename,
+                                "name": None,
+                                "actor": [],
+                                "studio": None,
+                                "image": None,
+                                "genre": [],
+                                "url": [],
+                                "score": None,
+                                "release_date": None,
+                                "added_date": None,
+                                "file_date": None,
+                                "location": None,
+                                "subtitles": subtitle_available,
+                                "prate": ARBITRARY_PRATE,
+                                "notes": None,
+                                "status": None}
+                        
                         pass
 
                         shutil.move(SOURCE_DIRECTORY + filename + file_extension,
@@ -386,9 +408,8 @@ if __name__ == "__main__":
                         my_connection.commit()
 
                     else:
-
-                        my_logger.warning(
-                            "+++++ " + filename + file_extension + " +++++ no match found.")
+                        #my_logger.info("+++++ " + full_filename + " " + ("+" * ((93 - len(progress)) - (len(full_filename))) + progress))
+                        my_logger.warning("+++++ " + filename + file_extension + " - no match found " + "+" * ((73 - len(progress)) - (len(filename + file_extension))) + progress)
                 my_logger.info("=" * 100)
 
     my_cursor.close()

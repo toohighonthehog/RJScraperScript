@@ -43,6 +43,9 @@ def get_list_of_files(f_source_directory, f_source_extensions):
     # I know there is a better way to do this...
     # for p_filename in p_folder_list_2:
     #    p_folder_list_3.append(f_source_directory + p_filename)
+
+    p_folder_list_2.sort()
+
     return p_folder_list_2
 
 
@@ -256,6 +259,7 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "release_date": p_release_date,
                             "added_date": f_added_date,
                             "file_date": None,
+                            "notes": None,
                             "location": None,
                             "subtitles": f_subtitle_available,
                             "prate": f_arbitrary_prate,
@@ -329,11 +333,10 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
 
 def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
-    f_my_logger.info("MET - Write metadata for '" +
-                     f_metadata_array['code'] + "' to database.")
+    
+    # if net new 'INSERT', if not, 'UPDATE' - if update, leave prate as is.
     p_my_insert_sql_title = "\
-        INSERT INTO title \
-            (code, \
+        INSERT INTO title (\
             name, \
             studio, \
             image, \
@@ -344,24 +347,31 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             location, \
             subtitles, \
             prate, \
-            status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
-        ON DUPLICATE KEY UPDATE \
-            name = values(name), \
-            studio = values(studio), \
-            score = values(score), \
-            image = values(image), \
-            release_date = values(release_date), \
-            file_date = values(file_date), \
-            location = values(location), \
-            subtitles = values(subtitles), \
-            status = values(status)"
-
+            notes, \
+            status, \
+            code) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+    
+    p_my_insert_sql_title_u = "\
+        UPDATE title SET \
+            name = %s, \
+            studio = %s, \
+            image = %s, \
+            score = %s, \
+            release_date = %s, \
+            added_date = %s, \
+            file_date = %s, \
+            location = %s, \
+            subtitles = %s, \
+            prate = %s, \
+            notes = %s, \
+            status = %s \
+            WHERE code = %s;"
+    
     p_my_insert_sql_genre = "\
         INSERT IGNORE INTO genre \
-            (description) VALUES (%s) \
-        ON DUPLICATE KEY UPDATE \
-            description = values(description)"
-
+            (description) VALUES (%s);"
+       
     # should we be using IGNORE so much here?
     p_my_insert_sql_genre_title_link = "\
         INSERT INTO genre_title_link \
@@ -371,7 +381,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         ON DUPLICATE KEY UPDATE \
             genre_g_id = values(genre_g_id), \
             title_code = values(title_code), \
-            guid = values(guid)"
+            guid = values(guid);"
 
     p_my_insert_sql_url = "\
         INSERT INTO url \
@@ -380,13 +390,11 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             guid) VALUES (%s, %s, %s) \
         ON DUPLICATE KEY UPDATE \
             url = values(url), \
-            guid = values(guid) "
+            guid = values(guid);"
 
     p_my_insert_sql_actor = "\
         INSERT IGNORE INTO actor \
-            (name) VALUES (%s) \
-        ON DUPLICATE KEY UPDATE \
-            name = values(name)"
+            (name) VALUES (%s);"
 
     p_my_insert_sql_actor_title_link = "\
         INSERT INTO actor_title_link \
@@ -396,25 +404,50 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         ON DUPLICATE KEY UPDATE \
             actor_a_id = values(actor_a_id), \
             title_code = values(title_code), \
-            guid = values(guid)"
+            guid = values(guid);"
 
     # we seem to get the occassional (random?) incorrect date/time value for filedate here
+    # check if the record exists, if it does...
+    # p_my_insert_sql_title = p_my_insert_sql_title.replace("INSERT INTO","UPDATE INTO")
+    #print(f"SELECT code FROM title WHERE code = '{f_metadata_array['code']}'")
+    f_my_cursor.execute(f"SELECT * FROM title WHERE code = '{f_metadata_array['code']}';")
+    p_my_results = f_my_cursor.fetchone()
+    pass
+
+    if (p_my_results):
+        f_my_logger.info(f"MET - Write updated metadata for '{f_metadata_array['code']}' to database.")
+        p_my_insert_sql_title = p_my_insert_sql_title_u
+        # the columns we retain when updating a title.
+        f_prate = p_my_results[10]
+        f_added_date = p_my_results[6]
+        f_status = p_my_results[12]
+        f_notes = p_my_results[11]
+    else:
+        f_my_logger.info(f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
+        f_prate = f_metadata_array['prate']
+        f_added_date = f_metadata_array['added_date']
+        f_status = f_metadata_array['status']
+        f_notes = f_metadata_array['notes']
+
+    pass
+
     f_my_cursor.execute(p_my_insert_sql_title,
-                        (f_metadata_array['code'],
-                         f_metadata_array['name'],
+                        (f_metadata_array['name'],
                          f_metadata_array['studio'],
                          f_metadata_array['image'],
                          f_metadata_array['score'],
                          f_metadata_array['release_date'],
-                         f_metadata_array['added_date'],
+                         f_added_date,
                          f_metadata_array['file_date'],
                          f_metadata_array['location'],
                          f_metadata_array['subtitles'],
-                         f_metadata_array['prate'],
-                         f_metadata_array['status']))
+                         f_prate,
+                         f_notes,
+                         f_status,
+                         f_metadata_array['code']))
 
     for a in f_metadata_array['actor']:
-        p_my_query_sql_actor = "SELECT a_id FROM actor WHERE name = '" + a + "';"
+        p_my_query_sql_actor = f"SELECT a_id FROM actor WHERE name = '{a}';"
         f_my_cursor.execute(p_my_query_sql_actor)
         p_my_results = f_my_cursor.fetchone()
 
@@ -635,7 +668,7 @@ def get_db_array(f_my_cursor):
     return p_results
 
 
-def get_db_record(f_my_cursor, f_process_filename):
+def get_db_title_record(f_my_cursor, f_process_filename):
     p_my_sql_query = "SELECT * FROM title WHERE code='" + f_process_filename + "'"
     f_my_cursor.execute(p_my_sql_query)
 
@@ -643,46 +676,37 @@ def get_db_record(f_my_cursor, f_process_filename):
     pass
     return p_result
 
-
-def put_db_record(f_my_cursor, f_db_record):
+def update_db_title_record(f_my_cursor, f_db_record):
     p_my_insert_sql_title = "\
-    INSERT INTO title \
-        (code, \
-        name, \
-        studio, \
-        image, \
-        score, \
-        release_date, \
-        added_date, \
-        file_date, \
-        location, \
-        subtitles, \
-        prate, \
-        status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
-    ON DUPLICATE KEY UPDATE \
-        name = values(name), \
-        studio = values(studio), \
-        score = values(score), \
-        image = values(image), \
-        release_date = values(release_date), \
-        file_date = values(file_date), \
-        location = values(location), \
-        subtitles = values(subtitles), \
-        status = values(status)"
+        UPDATE title SET \
+            name = %s, \
+            studio = %s, \
+            image = %s, \
+            score = %s, \
+            release_date = %s, \
+            added_date = %s, \
+            file_date = %s, \
+            location = %s, \
+            subtitles = %s, \
+            prate = %s, \
+            notes = %s, \
+            status = %s \
+            WHERE code = %s;"
 
     f_my_cursor.execute(p_my_insert_sql_title,
-                        (f_db_record[0],
-                         f_db_record[1],
-                         f_db_record[2],
-                         f_db_record[3],
-                         f_db_record[4],
-                         f_db_record[5],
-                         f_db_record[6],
-                         f_db_record[7],
-                         f_db_record[8],
-                         f_db_record[9],
-                         f_db_record[10],
-                         f_db_record[11]))
+        (f_db_record[0],
+         f_db_record[1],
+         f_db_record[2],
+         f_db_record[3],
+         f_db_record[4],
+         f_db_record[5],
+         f_db_record[6],
+         f_db_record[7],
+         f_db_record[8],
+         f_db_record[9],
+         f_db_record[10],
+         f_db_record[11],
+         f_db_record[12]))
 
     pass
 
