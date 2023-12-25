@@ -24,7 +24,7 @@ from icecream import ic
 
 os.system('clear')
 
-DEFAULT_TASK = 36
+DEFAULT_TASK = 4
 PROCESS_DIRECTORIES = [
     {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
     {'task': 64, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},

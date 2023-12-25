@@ -134,26 +134,42 @@ To do:
 
 #+ Test whisper respository code.
 
-# add find duplicate check
+#  add find duplicate check
 
-# added date will be for the whole batch
+#  added date will be for the whole batch
 
-# if we're adding something which already has a record with the same batch date/time, carry on as normal but with a warning.
+#  if we're adding something which already has a record with the same batch date/time, carry on as normal but with a warning.
 
-# this will involve some queries of live data. where else do we need to use this?
+#  this will involve some queries of live data. where else do we need to use this?
 
-# Create a 'scan for issues' option.
+#  Create a 'scan for issues' option.
 
-# Does a file exist for each record?
+#  Does a file exist for each record?
 
-# Create a 'to be rescanned' flag.
+#  Create a 'to be rescanned' flag.
 
-# Tidy up the dedup script. Make it a bit faster.
+#  Tidy up the dedup script. Make it a bit faster.
 
-# Audit the data which is updated on a rescan.
+#  Audit the data which is updated on a rescan.
 
-# The '5' value to generate the MP3 runner should clear after the .sh file is created.
+#  The '5' value to generate the MP3 runner should clear after the .sh file is created.
 
-# Check that the URL is correct DVMM-003 and returning DVMM-033 for some reason.
+#  Check that the URL is correct DVMM-003 and returning DVMM-033 for some reason.
+
+## added date for 'wanted' is missing? correct? (line 288?) - its fine / expected bahaviour.
+
+## if prate < 0 & can't find data, we get added and file date put in the DB (see above) - fixed? test...
+
+## increment for title is too high for title when doing a rescan.
+
+## Add a visual counter for each processed file.
+
+## notes in title table?  not mentioend in code.
+
+#  no split lines (prettier)
+
+#  use f strings properly.
+
+#  put_title_db_record function should be used more.  i.e. a reusable, universal write title function.
 
 Done:

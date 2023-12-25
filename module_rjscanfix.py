@@ -161,7 +161,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                                 p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
                                 pass
                                 open(p_target_directory + p_new_subtitle_filename,'wb').write(p_subtitle_download.content)
-                                time.sleep(t)
+                                time.sleep(p_count)
                                 break
                 except:
                     pass
@@ -280,21 +280,25 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
         p_target_directory = f_target_directory + p_file_match
 
         os.makedirs(p_target_directory, exist_ok=True)
-        shutil.move(f_source_directory + f_process_file + f_process_extension,
-                    p_target_directory + "/" + p_file_match + f_process_extension)
+        shutil.move(f_source_directory + f_process_file + f_process_extension, p_target_directory + "/" + p_file_match + f_process_extension)
         pass
-        if f_metadata_array['prate'] >= 0:
-            f_metadata_array.update(
-                {'location': p_target_directory + "/" + p_file_match + f_process_extension})
-            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(
-                os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
+
+        try:
+            p_prate = f_metadata_array['prate']
+        except:
+            p_prate = 0
+
+        if p_prate >= 0:
+            f_metadata_array.update({'location': p_target_directory + "/" + p_file_match + f_process_extension})
+            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
         else:
             f_metadata_array.update({'added_date': None})
             f_metadata_array.update({'file_date': None})
             f_metadata_array.update({'location_date': None})
 
-        p_prefixes = [fix_file_code(p_file_match, ""),
-                      fix_file_code(p_file_match, "-")]
+        pass
+
+        p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
         p_file_list = []
 
         for p_filename in os.listdir(f_source_directory):
@@ -309,12 +313,9 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
                 # os.rename(f_source_directory + file, p_target_directory + "/" + fix_file_code(file, "-"))
                 pass
                 os.makedirs(p_target_directory, exist_ok=True)
-                shutil.move(f_source_directory + filename,
-                            p_target_directory + "/" + fix_file_code(filename, "-"))
-                f_my_logger.debug("MOV - Moving " + filename +
-                                  " from " + f_source_directory + ".")
-                f_my_logger.info("MOV - Moved " + filename +
-                                 " to " + p_target_directory + "/.")
+                shutil.move(f_source_directory + filename, p_target_directory + "/" + fix_file_code(filename, "-"))
+                f_my_logger.debug("MOV - Moving " + filename + " from " + f_source_directory + ".")
+                f_my_logger.info("MOV - Moved " + filename + " to " + p_target_directory + "/.")
                 f_metadata_array.update({'subtitles': 1})
 
         f_my_logger.debug("MOV - Moving " + f_process_file +
@@ -422,15 +423,20 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         f_added_date = p_my_results[6]
         f_status = p_my_results[12]
         f_notes = p_my_results[11]
+        f_location = f_metadata_array['location']
     else:
         f_my_logger.info(f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
         f_prate = f_metadata_array['prate']
         f_added_date = f_metadata_array['added_date']
         f_status = f_metadata_array['status']
         f_notes = f_metadata_array['notes']
+        f_location = f_metadata_array['location']
 
-    pass
-
+    try:
+        f_location = f_location.replace("/mnt", "file://diskstation")
+    except:
+        f_location = ''
+    
     f_my_cursor.execute(p_my_insert_sql_title,
                         (f_metadata_array['name'],
                          f_metadata_array['studio'],
@@ -439,7 +445,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
                          f_metadata_array['release_date'],
                          f_added_date,
                          f_metadata_array['file_date'],
-                         f_metadata_array['location'],
+                         f_location,
                          f_metadata_array['subtitles'],
                          f_prate,
                          f_notes,

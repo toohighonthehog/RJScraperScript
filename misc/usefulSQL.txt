@@ -1,0 +1,53 @@
+# find genre
+SELECT title.code, title.name, genre.description, title.location
+  FROM title
+LEFT OUTER JOIN genre_title_link
+  ON title.code = genre_title_link.title_code
+LEFT OUTER JOIN genre
+  ON genre_title_link.genre_g_id = genre.g_ID
+WHERE genre.g_id = 1318
+
+# find actor
+SELECT title.code, title.name, actor.name, title.location
+  FROM title
+LEFT OUTER JOIN actor_title_link
+  ON title.code = actor_title_link.title_code
+LEFT OUTER JOIN actor
+  ON actor_title_link.actor_a_id = actor.a_ID
+WHERE actor.a_id = 1297
+
+# find all actors
+SELECT title.code, title.name, actor.name, title.location
+  FROM title
+LEFT OUTER JOIN actor_title_link
+  ON title.code = actor_title_link.title_code
+LEFT OUTER JOIN actor
+  ON actor_title_link.actor_a_id = actor.a_ID
+
+# count actors occurences (needs work...)
+SELECT COUNT(actor_a_id)
+  FROM title
+LEFT OUTER JOIN actor_title_link
+  ON title.code = actor_title_link.title_code
+LEFT OUTER JOIN actor
+  ON actor_title_link.actor_a_id = actor.a_ID
+
+# Count Actors descending (can definately be simplified - title needn't be ref'd)
+SELECT actor.name, count(actor.name), actor.prate, actor.a_id
+  FROM title
+LEFT OUTER JOIN actor_title_link
+  ON title.code = actor_title_link.title_code
+LEFT OUTER JOIN actor
+  ON actor_title_link.actor_a_id = actor.a_ID
+GROUP BY actor.name
+ORDER BY count(actor.name) DESC;
+
+# Count Genres descending (can definately be simplified - title needn't be ref'd)
+SELECT genre.description, count(genre.description), genre.prate, genre.g_id
+  FROM title
+LEFT OUTER JOIN genre_title_link
+  ON title.code = genre_title_link.title_code
+LEFT OUTER JOIN genre
+  ON genre_title_link.genre_g_id = genre.g_ID
+GROUP BY genre.description
+ORDER BY count(genre.description) DESC;
