@@ -419,10 +419,10 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         f_my_logger.info(f"MET - Write updated metadata for '{f_metadata_array['code']}' to database.")
         p_my_insert_sql_title = p_my_insert_sql_title_u
         # the columns we retain when updating a title.
-        f_prate = p_my_results[10]
-        f_added_date = p_my_results[6]
-        f_status = p_my_results[12]
-        f_notes = p_my_results[11]
+        f_prate = p_my_results['prate']
+        f_added_date = p_my_results['added_date']
+        f_status = p_my_results['status']
+        f_notes = p_my_results['notes']
         f_location = f_metadata_array['location']
     else:
         f_my_logger.info(f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
@@ -461,7 +461,8 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             f_my_cursor.execute(p_my_insert_sql_actor, (a,))
             p_a_id = f_my_cursor.lastrowid
         else:
-            p_a_id = p_my_results[0]
+            pass
+            p_a_id = p_my_results['a_id']
         pass
 
         p_hash_input = (
@@ -481,7 +482,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             f_my_cursor.execute(p_my_insert_sql_genre, (g,))
             p_g_id = f_my_cursor.lastrowid
         else:
-            p_g_id = p_my_results[0]
+            p_g_id = p_my_results['g_id']
         pass
 
         p_hash_input = (
@@ -699,20 +700,22 @@ def update_db_title_record(f_my_cursor, f_db_record):
             status = %s \
             WHERE code = %s;"
 
+    pass
+
     f_my_cursor.execute(p_my_insert_sql_title,
-        (f_db_record[0],
-         f_db_record[1],
-         f_db_record[2],
-         f_db_record[3],
-         f_db_record[4],
-         f_db_record[5],
-         f_db_record[6],
-         f_db_record[7],
-         f_db_record[8],
-         f_db_record[9],
-         f_db_record[10],
-         f_db_record[11],
-         f_db_record[12]))
+        (f_db_record['name'],
+         f_db_record['studio'],
+         f_db_record['image'],
+         f_db_record['score'],
+         f_db_record['release_date'],
+         f_db_record['added_date'],
+         f_db_record['file_date'],
+         f_db_record['location'],
+         f_db_record['subtitles'],
+         f_db_record['prate'],
+         f_db_record['notes'],
+         f_db_record['status'],
+         f_db_record['code']))
 
     pass
 
@@ -721,11 +724,14 @@ def value_in_list(f_list, f_value):
     p_results = False
     pass
     for i in f_list:
-        if f_value in i[0]:
+        pass
+        if f_value in i['code']:
             p_results = i
             break
         else:
-            p_results = (f_value, 0, None)
+            p_results = {'code':f_value, 'status':0, 'location':None}
+
+    pass
 
     return p_results
 

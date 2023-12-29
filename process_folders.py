@@ -6,7 +6,7 @@ from icecream import ic
 # task:
 #   0 = Skip - do nothing
 #   1 = Just generate the ffmpeg script.
-#   2 = Just Scan (right now, only for whisper audio files and sbutitles - can be more)
+#   2 = Just Scan (right now, only for whisper audio files and subtitles - can be more)
 #   4 = Process files in root of source folder
 #   8 = Process Flagged
 #  16 = Process missing json.
@@ -24,7 +24,7 @@ from icecream import ic
 
 os.system('clear')
 
-DEFAULT_TASK = 4
+DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
     {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/General/"},
     {'task': 64, 'prate':  7, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/07/"},
@@ -33,7 +33,7 @@ PROCESS_DIRECTORIES = [
     {'task': 64, 'prate': 10, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/10/"},
     {'task':  0, 'prate': 12, 'base': "/mnt/multimedia/Other/RatedFinalJ/Censored/12/"},
     {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Names/"},
-    {'task': 64, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
+    {'task':  4, 'prate':  0, 'base': "/mnt/multimedia/Other/RatedFinalJ/Series/"},
     {'task': 64, 'prate': -1, 'base': "/mnt/multimedia/Other/RatedFinalJ/Request/"}]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
@@ -51,7 +51,7 @@ my_connection = mysql.connector.connect(
     database="Multimedia"
 )
 
-my_cursor = my_connection.cursor()
+my_cursor = my_connection.cursor(dictionary=True)
 my_logger = get_logger()
 
 if __name__ == "__main__":
@@ -148,26 +148,32 @@ if __name__ == "__main__":
 
         # generate ffmpeg script.
         # should we null out the value after running?
+        # this should just run through the database rather than the file system.
+        # this section is a mess...
         if (PROCESS_TASK & 1):  # 1
             my_logger.info("=== Process Whisper Tags" + "=" * 65)
-            my_logger.info("===== Source: " + SOURCE_DIRECTORY +
-                           " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+
+            pass
+
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             records_to_update = get_db_array(my_cursor)
             for filename in scanned_directory:
                 # ic (filename)
                 # ic (value_in_list(records_to_update, filename))
-                pass
 
-                if (value_in_list(records_to_update, filename)[1] == 5):
+
+                test = value_in_list(records_to_update, filename)
+                pass
+                if (value_in_list(records_to_update, filename)['status'] == 5):
                     #######################
                     # Do the subtitle thing here if the status attribute is 5.
                     sub_record = (value_in_list(records_to_update, filename))
                     # ic (value_in_list(update_status, title)[1])
-                    if ((sub_record[1]) == 5):
+                    if ((sub_record['status']) == 5):
                         pass
                         # .replace('/mnt/', '/volume1/')
-                        source = (sub_record[2])
+                        source = (sub_record['location'])
                         # .replace('/mnt/', '/volume1/')
                         destination = (SUBTITLE_WHISPER +
                                        "Audio/" + filename + ".mp3")
@@ -175,8 +181,10 @@ if __name__ == "__main__":
                                        filename + ".mp3 creation in script.")
                         # print ("ffmpeg -i " + source + " " + destination)
 
+                        fixed_source = source.replace("file://diskstation/", "/mnt/")
+
                         with open(SUBTITLE_WHISPER + "Audio/runner.sh", 'a') as f:
-                            f.write("ffmpeg -i " + source +
+                            f.write("ffmpeg -i " + fixed_source +
                                     " " + destination + "\n")
 
             my_logger.info("=" * 100)
@@ -191,7 +199,7 @@ if __name__ == "__main__":
                     db_record = get_db_title_record(my_cursor, filename)
                     pass
                     if db_record is not None:
-                        subtitle_available = (db_record[9])
+                        subtitle_available = (db_record['subtitles'])
                         pass
 
                         if (subtitle_available <= 8):
@@ -221,9 +229,12 @@ if __name__ == "__main__":
 
                         pass
 
-                        db_record_list = list(db_record)
-                        db_record_list[9] = subtitle_available
-                        db_record = tuple(db_record_list)
+                        db_record['subtitles'] = subtitle_available
+                        # db_record_list = list(db_record)
+                        # db_record_list['subtitles'] = subtitle_available
+                        # db_record = tuple(db_record_list)
+                        pass
+
                         update_db_title_record(my_cursor, db_record)
                         my_connection.commit()
 
@@ -232,10 +243,8 @@ if __name__ == "__main__":
         # Do scans and processing.
         if (PROCESS_TASK & 4):  # 4
             my_logger.info("=== Processing " + "=" * 85)
-            my_logger.info("===== Source: " + SOURCE_DIRECTORY +
-                           " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
-            my_logger.info("=======> Target: " + TARGET_DIRECTORY +
-                           " " + ("=" * (82 - (len(TARGET_DIRECTORY)))))
+            my_logger.info("===== Source: " + SOURCE_DIRECTORY + " " + ("=" * (85 - (len(SOURCE_DIRECTORY)))))
+            my_logger.info("=======> Target: " + TARGET_DIRECTORY + " " + ("=" * (82 - (len(TARGET_DIRECTORY)))))
             scanned_directory = get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
                 f_source_extensions=SOURCE_EXTENSIONS)
