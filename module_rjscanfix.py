@@ -503,7 +503,19 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
 
 def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
     f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
-    p_metadata_json = json.dumps(f_metadata_array, indent=4)
+    pass
+    p_metadata_json_array = {"code": f_metadata_array['code'],
+                             "name": f_metadata_array['name'],
+                             "actor": f_metadata_array['actor'],
+                             "studio": f_metadata_array['studio'],
+                             "image": f_metadata_array['image'],
+                             "genre": f_metadata_array['genre'],
+                             "url": f_metadata_array['url'],
+                             "score": f_metadata_array['score'],
+                             "release_date": f_metadata_array['release_date'],
+                             "location": f_metadata_array['location']}
+
+    p_metadata_json = json.dumps(p_metadata_json_array, indent=4)
     with open(f_json_filename, "w") as outfile:
         outfile.write(p_metadata_json)
 

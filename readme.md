@@ -172,4 +172,6 @@ To do:
 
 #  put_title_db_record function should be used more.  i.e. a reusable, universal write title function.
 
+## The json file doesn't match the database when a record is refreshed.
+
 Done:
