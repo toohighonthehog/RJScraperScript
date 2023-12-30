@@ -104,15 +104,18 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     p_counter = 0
     while p_counter < 5:
         try:
-            p_response_level1 = p_session.get(p_url_level1, timeout=60, allow_redirects=True)
+            p_response_level1 = p_session.get(
+                p_url_level1, timeout=60, allow_redirects=True)
             break
         except:
             p_counter += 1
-            f_my_logger.warning("URL - SubtitleCat (L0) not responding.  Try " + str(p_counter) + " of 5.")
+            f_my_logger.warning(
+                "URL - SubtitleCat (L0) not responding.  Try " + str(p_counter) + " of 5.")
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical("URL - SubtitleCat (L0) connection failed.  Terminating.")
+        f_my_logger.critical(
+            "URL - SubtitleCat (L0) connection failed.  Terminating.")
         exit()
 
     pass
@@ -124,11 +127,13 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning("URL - SubtitleCat (L1) not responding.  Try " + str(p_counter) + " of 5.")
+            f_my_logger.warning(
+                "URL - SubtitleCat (L1) not responding.  Try " + str(p_counter) + " of 5.")
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical("URL - SubtitleCat (L1) connection failed.  Terminating.")
+        f_my_logger.critical(
+            "URL - SubtitleCat (L1) connection failed.  Terminating.")
         exit()
 
     pass
@@ -140,8 +145,10 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
         p_table_level1_entry_url = (list(p_table_level1_entry[0])[0])
 
         if re.search(p_process_title, p_table_level1_entry_url, re.IGNORECASE):
-            p_response_level2 = p_session.get(p_table_level1_entry_url, timeout=60, allow_redirects=True)
-            p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
+            p_response_level2 = p_session.get(
+                p_table_level1_entry_url, timeout=60, allow_redirects=True)
+            p_table_level2 = p_response_level2.html.xpath(
+                '/html/body/div[4]/div/div[2]', first=True)
             if p_table_level2 is not None:
                 for p_table_level2_entry in p_table_level2.absolute_links:
                     if re.search(f_target_language, p_table_level2_entry, re.IGNORECASE):
@@ -150,17 +157,24 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                     if re.search(f_target_language, p_subtitle_url, re.IGNORECASE):
                         p_count = 0
                         while p_count < 5:
-                            p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
+                            p_subtitle_url_check = (
+                                requests.head(p_subtitle_url).status_code)
                             p_count += 1
                             if p_subtitle_url_check == 200:
-                                f_my_logger.debug("SUB - Subtitle_URL " + p_subtitle_url + ".")
+                                f_my_logger.debug(
+                                    "SUB - Subtitle_URL " + p_subtitle_url + ".")
                                 if p_subtitle_url.find('/'):
-                                    p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
-                                f_my_logger.info("SUB - Downloading " + p_subtitle_filename + ".")
-                                p_subtitle_download = requests.get(p_subtitle_url, timeout=60, allow_redirects=True)
-                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
+                                    p_subtitle_filename = (
+                                        (p_subtitle_url.rsplit('/', 1)[1]).lower())
+                                f_my_logger.info(
+                                    "SUB - Downloading " + p_subtitle_filename + ".")
+                                p_subtitle_download = requests.get(
+                                    p_subtitle_url, timeout=60, allow_redirects=True)
+                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper(
+                                ) + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
                                 pass
-                                open(p_target_directory + p_new_subtitle_filename,'wb').write(p_subtitle_download.content)
+                                open(p_target_directory + p_new_subtitle_filename,
+                                     'wb').write(p_subtitle_download.content)
                                 time.sleep(p_count)
                                 break
                 except:
@@ -280,7 +294,8 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
         p_target_directory = f_target_directory + p_file_match
 
         os.makedirs(p_target_directory, exist_ok=True)
-        shutil.move(f_source_directory + f_process_file + f_process_extension, p_target_directory + "/" + p_file_match + f_process_extension)
+        shutil.move(f_source_directory + f_process_file + f_process_extension,
+                    p_target_directory + "/" + p_file_match + f_process_extension)
         pass
 
         try:
@@ -289,8 +304,10 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
             p_prate = 0
 
         if p_prate >= 0:
-            f_metadata_array.update({'location': p_target_directory + "/" + p_file_match + f_process_extension})
-            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
+            f_metadata_array.update(
+                {'location': p_target_directory + "/" + p_file_match + f_process_extension})
+            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(
+                os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
         else:
             f_metadata_array.update({'added_date': None})
             f_metadata_array.update({'file_date': None})
@@ -298,7 +315,8 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
         pass
 
-        p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
+        p_prefixes = [fix_file_code(p_file_match, ""),
+                      fix_file_code(p_file_match, "-")]
         p_file_list = []
 
         for p_filename in os.listdir(f_source_directory):
@@ -313,9 +331,12 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
                 # os.rename(f_source_directory + file, p_target_directory + "/" + fix_file_code(file, "-"))
                 pass
                 os.makedirs(p_target_directory, exist_ok=True)
-                shutil.move(f_source_directory + filename, p_target_directory + "/" + fix_file_code(filename, "-"))
-                f_my_logger.debug("MOV - Moving " + filename + " from " + f_source_directory + ".")
-                f_my_logger.info("MOV - Moved " + filename + " to " + p_target_directory + "/.")
+                shutil.move(f_source_directory + filename,
+                            p_target_directory + "/" + fix_file_code(filename, "-"))
+                f_my_logger.debug("MOV - Moving " + filename +
+                                  " from " + f_source_directory + ".")
+                f_my_logger.info("MOV - Moved " + filename +
+                                 " to " + p_target_directory + "/.")
                 f_metadata_array.update({'subtitles': 1})
 
         f_my_logger.debug("MOV - Moving " + f_process_file +
@@ -334,7 +355,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
 
 def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
-    
+
     # if net new 'INSERT', if not, 'UPDATE' - if update, leave prate as is.
     p_my_insert_sql_title = "\
         INSERT INTO title (\
@@ -352,7 +373,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             status, \
             code) \
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
-    
+
     p_my_insert_sql_title_u = "\
         UPDATE title SET \
             name = %s, \
@@ -368,11 +389,11 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             notes = %s, \
             status = %s \
             WHERE code = %s;"
-    
+
     p_my_insert_sql_genre = "\
         INSERT IGNORE INTO genre \
             (description) VALUES (%s);"
-       
+
     # should we be using IGNORE so much here?
     p_my_insert_sql_genre_title_link = "\
         INSERT INTO genre_title_link \
@@ -410,13 +431,15 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
     # we seem to get the occassional (random?) incorrect date/time value for filedate here
     # check if the record exists, if it does...
     # p_my_insert_sql_title = p_my_insert_sql_title.replace("INSERT INTO","UPDATE INTO")
-    #print(f"SELECT code FROM title WHERE code = '{f_metadata_array['code']}'")
-    f_my_cursor.execute(f"SELECT * FROM title WHERE code = '{f_metadata_array['code']}';")
+    # print(f"SELECT code FROM title WHERE code = '{f_metadata_array['code']}'")
+    f_my_cursor.execute(
+        f"SELECT * FROM title WHERE code = '{f_metadata_array['code']}';")
     p_my_results = f_my_cursor.fetchone()
     pass
 
     if (p_my_results):
-        f_my_logger.info(f"MET - Write updated metadata for '{f_metadata_array['code']}' to database.")
+        f_my_logger.info(
+            f"MET - Write updated metadata for '{f_metadata_array['code']}' to database.")
         p_my_insert_sql_title = p_my_insert_sql_title_u
         # the columns we retain when updating a title.
         f_prate = p_my_results['prate']
@@ -425,7 +448,8 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         f_notes = p_my_results['notes']
         f_location = f_metadata_array['location']
     else:
-        f_my_logger.info(f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
+        f_my_logger.info(
+            f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
         f_prate = f_metadata_array['prate']
         f_added_date = f_metadata_array['added_date']
         f_status = f_metadata_array['status']
@@ -436,7 +460,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         f_location = f_location.replace("/mnt", "file://diskstation")
     except:
         f_location = ''
-    
+
     f_my_cursor.execute(p_my_insert_sql_title,
                         (f_metadata_array['name'],
                          f_metadata_array['studio'],
@@ -496,14 +520,23 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
     for u in f_metadata_array['url']:
         p_hash_input = (f_metadata_array['code'] + u).encode()
         p_hash_output = hashlib.md5(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_url, (f_metadata_array['code'], u, p_hash_output))
+        f_my_cursor.execute(p_my_insert_sql_url,
+                            (f_metadata_array['code'], u, p_hash_output))
 
     return True
 
 
 def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
-    f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
+    f_my_logger.info("MET - Write metadata for '" +
+                     f_metadata_array['code'] + "' to json.")
     pass
+
+    try:
+        p_location = f_metadata_array['location'].replace(
+            "/mnt", "file://diskstation")
+    except:
+        p_location = ''
+
     p_metadata_json_array = {"code": f_metadata_array['code'],
                              "name": f_metadata_array['name'],
                              "actor": f_metadata_array['actor'],
@@ -513,7 +546,7 @@ def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
                              "url": f_metadata_array['url'],
                              "score": f_metadata_array['score'],
                              "release_date": f_metadata_array['release_date'],
-                             "location": f_metadata_array['location']}
+                             "location": p_location}
 
     p_metadata_json = json.dumps(p_metadata_json_array, indent=4)
     with open(f_json_filename, "w") as outfile:
@@ -695,6 +728,7 @@ def get_db_title_record(f_my_cursor, f_process_filename):
     pass
     return p_result
 
+
 def update_db_title_record(f_my_cursor, f_db_record):
     p_my_insert_sql_title = "\
         UPDATE title SET \
@@ -715,19 +749,19 @@ def update_db_title_record(f_my_cursor, f_db_record):
     pass
 
     f_my_cursor.execute(p_my_insert_sql_title,
-        (f_db_record['name'],
-         f_db_record['studio'],
-         f_db_record['image'],
-         f_db_record['score'],
-         f_db_record['release_date'],
-         f_db_record['added_date'],
-         f_db_record['file_date'],
-         f_db_record['location'],
-         f_db_record['subtitles'],
-         f_db_record['prate'],
-         f_db_record['notes'],
-         f_db_record['status'],
-         f_db_record['code']))
+                        (f_db_record['name'],
+                         f_db_record['studio'],
+                            f_db_record['image'],
+                            f_db_record['score'],
+                            f_db_record['release_date'],
+                            f_db_record['added_date'],
+                            f_db_record['file_date'],
+                            f_db_record['location'],
+                            f_db_record['subtitles'],
+                            f_db_record['prate'],
+                            f_db_record['notes'],
+                            f_db_record['status'],
+                            f_db_record['code']))
 
     pass
 
@@ -741,7 +775,7 @@ def value_in_list(f_list, f_value):
             p_results = i
             break
         else:
-            p_results = {'code':f_value, 'status':0, 'location':None}
+            p_results = {'code': f_value, 'status': 0, 'location': None}
 
     pass
 
