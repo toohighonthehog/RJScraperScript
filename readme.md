@@ -174,4 +174,9 @@ To do:
 
 ## The json file doesn't match the database when a record is refreshed.
 
+#  Tidy up the file/location relative path logic
+
+#  Include a warning for duplicates - basically a check of the database before doing a scan (if it exists, warn and skip)
+#   This will be useful for backfilling requests.
+
 Done:

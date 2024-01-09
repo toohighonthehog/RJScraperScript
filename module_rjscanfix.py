@@ -16,18 +16,15 @@ from javscraper import *
 
 
 def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_source_extensions, f_my_logger):
-    # 09/10/2023 - how does this work?  All it needs to do is move back 1 file.  makedirs??
     p_folder_list_1 = os.listdir(f_source_directory + f_process_filename)
-    p_folder_list_2 = [filename for filename in p_folder_list_1 if any(
-        filename.endswith(ext) for ext in f_source_extensions)]
+    p_folder_list_2 = [filename for filename in p_folder_list_1 if any(filename.endswith(ext) for ext in f_source_extensions)]
 
     for p_filename in p_folder_list_2:
         p_source_filename = f_source_directory + f_process_filename + "/" + p_filename
         p_target_directory = f_source_directory + f_process_filename + "/"
         p_target_filename = f_target_directory + p_filename
         pass
-        f_my_logger.info("MOV - Moving " +
-                         p_source_filename + " back a level.")
+        f_my_logger.info("MOV - Moving " + p_source_filename + " back a level.")
         os.makedirs(p_target_directory, exist_ok=True)
         shutil.move(p_source_filename, p_target_filename)
 
@@ -36,13 +33,7 @@ def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_
 
 def get_list_of_files(f_source_directory, f_source_extensions):
     p_folder_list_1 = os.listdir(f_source_directory)
-    p_folder_list_2 = [f_source_directory + filename for filename in p_folder_list_1 if any(
-        filename.endswith(extension) for extension in f_source_extensions)]
-    # p_folder_list_3 = []
-
-    # I know there is a better way to do this...
-    # for p_filename in p_folder_list_2:
-    #    p_folder_list_3.append(f_source_directory + p_filename)
+    p_folder_list_2 = [f_source_directory + filename for filename in p_folder_list_1 if any(filename.endswith(extension) for extension in f_source_extensions)]
 
     p_folder_list_2.sort()
 
@@ -52,37 +43,37 @@ def get_list_of_files(f_source_directory, f_source_extensions):
 def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_process_title = fix_file_code(f_process_title)
 
+    pass
+
+    # fix raw whisper filename
+    p_whisper_raw = f_subtitle_whisper + p_process_title + "-en Whisper-cleaned.srt"
+    p_whisper_raw_fixed = p_whisper_raw.replace("-en Whisper-cleaned", "-(WH)-en")
+    try:
+        os.rename(p_whisper_raw, p_whisper_raw_fixed)
+    except:
+        pass
+
+    pass
+
     if (os.path.isfile(f_subtitle_general + p_process_title + ".srt")):
-        f_my_logger.info("SUB - Found " + p_process_title +
-                         ".srt" + " in 'General'.")
+        f_my_logger.info(f"SUB - Found {p_process_title}.srt in 'General'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_general + p_process_title + ".srt",
-                    f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
+        shutil.copy(f_subtitle_general + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
 
     if (os.path.isfile(f_subtitle_whisper + p_process_title + ".srt")):
-        f_my_logger.info("SUB - Found " + p_process_title +
-                         ".srt" + " in 'whisper'.")
+        f_my_logger.info(f"SUB - Found {p_process_title}.srt in 'Whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + p_process_title + ".srt",
-                    f_target_directory + p_process_title + "/" + p_process_title + "-(WH).srt")
-
-    pass
+        shutil.copy(f_subtitle_whisper + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(WH).srt")
 
     if (os.path.isfile(f_subtitle_whisper + p_process_title + "." + f_target_language)):
-        f_my_logger.info("SUB - Found " + p_process_title +
-                         "." + f_target_language + " in 'whisper'.")
+        f_my_logger.info(f"SUB - Found {p_process_title}{f_target_language} in 'Whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + p_process_title + "." + f_target_language,
-                    f_target_directory + "/" + p_process_title + "/" + p_process_title + "-" + f_target_language)
-
-    pass
+        shutil.copy(f_subtitle_whisper + p_process_title + "." + f_target_language, f_target_directory + "/" + p_process_title + "/" + p_process_title + "-" + f_target_language)
 
     if (os.path.isfile(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language)):
-        f_my_logger.info("SUB - Found " + p_process_title +
-                         "-(WH)-" + f_target_language + " in 'whisper'.")
+        f_my_logger.info(f"SUB - Found {p_process_title}-(WH)-{f_target_language} in 'Whisper'.")
         os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language,
-                    f_target_directory + "/" + p_process_title + "/" + p_process_title + "-(WH)-" + f_target_language)
+        shutil.copy(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language, f_target_directory + "/" + p_process_title + "/" + p_process_title + "-(WH)-" + f_target_language)
 
     return True
 
@@ -95,8 +86,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
         f_my_logger.debug("SUB - Existing subtitles found.")
 
-    f_my_logger.info("SUB - Searching SubtitleCat for '" +
-                     p_process_title + "'.")
+    f_my_logger.info("SUB - Searching SubtitleCat for '" + p_process_title + "'.")
 
     p_url_level1 = 'https://www.subtitlecat.com/index.php?search=' + p_process_title
 
@@ -228,11 +218,11 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
             p_biggest_filename = p_filename
             p_biggest_filesize = os.path.getsize(p_filename)
 
-        if p_filename.endswith('.srt') and p_subtitle_available < 5:
-            p_subtitle_available = 5
+        if p_filename.endswith('.srt') and p_subtitle_available < 7:
+            p_subtitle_available = 7
 
-        if p_filename.endswith('-(WH).srt') and p_subtitle_available < 6:
-            p_subtitle_available = 6
+        if p_filename.endswith('-(WH).srt') and p_subtitle_available < 8:
+            p_subtitle_available = 8
 
         if p_filename.endswith(f_target_language):
             p_subtitle_available = 9
@@ -240,10 +230,8 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
     pass
 
     if (p_biggest_filesize > 0) and not (os.path.isfile(p_target_directory + p_process_title + "-" + f_target_language)):
-        f_my_logger.info("SUB - Creating " + p_process_title +
-                         "-" + f_target_language + " as default subtitle file.")
-        shutil.copy(p_biggest_filename, (p_target_directory +
-                    p_process_title + "-" + f_target_language))
+        f_my_logger.info(f"SUB - Creating {p_process_title}-{f_target_language} as default subtitle file.")
+        shutil.copy(p_biggest_filename, (p_target_directory + p_process_title + "-" + f_target_language))
 
     return p_subtitle_available
 
@@ -254,14 +242,13 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
     p_metadata_url = my_javlibrary_new_search(p_process_title)
     p_metadata_array = []
 
-    f_my_logger.info("MET - Searching web for '" +
-                     p_process_title + "' metadata.")
+    f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
 
     if p_metadata is not None:
         p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
 
-        f_my_logger.info("MET - Metadata downloaded for '" +
-                         p_process_title + "'.")
+        f_my_logger.info(f"MET - Metadata downloaded for '{p_process_title}'.")
+
         p_metadata_array = {"code": p_metadata.code,
                             "name": p_metadata.name,
                             "actor": p_metadata.actresses,
@@ -277,7 +264,7 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "location": None,
                             "subtitles": f_subtitle_available,
                             "prate": f_arbitrary_prate,
-                            "status": None}
+                            "status": 9}
     else:
         f_my_logger.info("MET - No metadata found for '" +
                          p_process_title + "'.")
@@ -355,7 +342,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
 
 def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
-
+    pass
     # if net new 'INSERT', if not, 'UPDATE' - if update, leave prate as is.
     p_my_insert_sql_title = "\
         INSERT INTO title (\
@@ -444,15 +431,24 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
         # the columns we retain when updating a title.
         f_prate = p_my_results['prate']
         f_added_date = p_my_results['added_date']
-        f_status = p_my_results['status']
         f_notes = p_my_results['notes']
+
         f_location = f_metadata_array['location']
+
+        # we need some logic and extra warning when a duplication or record moves.
+        # if current is a real file (i.e. p_rate >=0) and if the existing db record is prate -1, always update and flag the fact that the 'requested' has now been fulfilled.
+        # if current is a real file (i.e. p_rate >=0) and if the existing db record is real (i.e. p_rate >=0), but the location is different, check both physcical locations.
+        #   if a file exists in both, skip with a highly visible warning alert.
+        #   if only exists in one location, update the location of the DB to that one.
+
+        # consider a way to 'format neutralize' the file path prefix when doing location comparisions - a function?
+
+       
     else:
         f_my_logger.info(
             f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
         f_prate = f_metadata_array['prate']
         f_added_date = f_metadata_array['added_date']
-        f_status = f_metadata_array['status']
         f_notes = f_metadata_array['notes']
         f_location = f_metadata_array['location']
 
@@ -473,7 +469,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
                          f_metadata_array['subtitles'],
                          f_prate,
                          f_notes,
-                         f_status,
+                         f_metadata_array['status'],
                          f_metadata_array['code']))
 
     for a in f_metadata_array['actor']:
@@ -527,13 +523,11 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
 
 
 def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
-    f_my_logger.info("MET - Write metadata for '" +
-                     f_metadata_array['code'] + "' to json.")
+    f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
     pass
 
     try:
-        p_location = f_metadata_array['location'].replace(
-            "/mnt", "file://diskstation")
+        p_location = f_metadata_array['location'].replace("/mnt", "file://diskstation")
     except:
         p_location = ''
 
@@ -709,13 +703,13 @@ def search_for_title(f_input_string, f_delimiter="-"):
 # change the name of this to specifically what it does.
 
 
-def get_db_array(f_my_cursor):
-    p_my_sql_query = "SELECT code, status, location FROM title WHERE status IS NOT NULL ORDER BY code"
+def get_db_array(f_my_cursor, f_db_query):
+    p_my_sql_query = f"SELECT * FROM title {f_db_query} ORDER BY code"
     f_my_cursor.execute(p_my_sql_query)
 
     p_results = f_my_cursor.fetchall()
-    if (p_results == []):
-        p_results = [("xxx", 999, "xxx")]
+    # if (p_results == []):
+    #     p_results = [("xxx", 999, "xxx")]
 
     return p_results
 
@@ -751,17 +745,17 @@ def update_db_title_record(f_my_cursor, f_db_record):
     f_my_cursor.execute(p_my_insert_sql_title,
                         (f_db_record['name'],
                          f_db_record['studio'],
-                            f_db_record['image'],
-                            f_db_record['score'],
-                            f_db_record['release_date'],
-                            f_db_record['added_date'],
-                            f_db_record['file_date'],
-                            f_db_record['location'],
-                            f_db_record['subtitles'],
-                            f_db_record['prate'],
-                            f_db_record['notes'],
-                            f_db_record['status'],
-                            f_db_record['code']))
+                         f_db_record['image'],
+                         f_db_record['score'],
+                         f_db_record['release_date'],
+                         f_db_record['added_date'],
+                         f_db_record['file_date'],
+                         f_db_record['location'],
+                         f_db_record['subtitles'],
+                         f_db_record['prate'],
+                         f_db_record['notes'],
+                         f_db_record['status'],
+                         f_db_record['code']))
 
     pass
 
