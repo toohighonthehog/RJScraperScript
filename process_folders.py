@@ -35,18 +35,22 @@ from icecream import ic
 
 os.system("clear")
 
-DEFAULT_TASK = 0
+DEFAULT_TASK = 1
 PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
-    {"task": 0, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {"task": 2, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
+    {"task": 36, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
+    {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
+    {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
+    {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
+    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
+    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
@@ -63,7 +67,7 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD",
     host="diskstation.hachiko.int",
     port=3306,
-    database="Multimedia",
+    database="Multimedia_Dev",
 )
 
 my_cursor = my_connection.cursor(dictionary=True)
@@ -298,7 +302,7 @@ if __name__ == "__main__":
 
                 else:
                     pattern = (
-                        r"^[A-Z]{2,5}-\d{3}(?:" +
+                        r"^[A-Z]{2,7}-\d{3}(?:" +
                         "|".join(SOURCE_EXTENSIONS) + ")$"
                     )
                     if re.match(pattern, filename + file_extension):

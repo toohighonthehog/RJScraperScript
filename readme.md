@@ -179,4 +179,6 @@ To do:
 #  Include a warning for duplicates - basically a check of the database before doing a scan (if it exists, warn and skip)
 #   This will be useful for backfilling requests.
 
+#  Need to cope with 4 and 5 digit numeric parts (VR mostly)
+
 Done:

@@ -318,18 +318,13 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
                 # os.rename(f_source_directory + file, p_target_directory + "/" + fix_file_code(file, "-"))
                 pass
                 os.makedirs(p_target_directory, exist_ok=True)
-                shutil.move(f_source_directory + filename,
-                            p_target_directory + "/" + fix_file_code(filename, "-"))
-                f_my_logger.debug("MOV - Moving " + filename +
-                                  " from " + f_source_directory + ".")
-                f_my_logger.info("MOV - Moved " + filename +
-                                 " to " + p_target_directory + "/.")
+                shutil.move(f_source_directory + filename, p_target_directory + "/" + fix_file_code(filename, "-"))
+                f_my_logger.debug("MOV - Moving " + filename + " from " + f_source_directory + ".")
+                f_my_logger.info("MOV - Moved " + filename + " to " + p_target_directory + "/.")
                 f_metadata_array.update({'subtitles': 1})
 
-        f_my_logger.debug("MOV - Moving " + f_process_file +
-                          f_process_extension + " from " + f_source_directory + ".")
-        f_my_logger.info("MOV - Moved " + f_process_file +
-                         f_process_extension + " to " + p_target_directory + "/.")
+        f_my_logger.debug("MOV - Moving " + f_process_file + f_process_extension + " from " + f_source_directory + ".")
+        f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + p_target_directory + "/.")
 
         # does this need to be returned??
         p_result = p_file_match
@@ -644,64 +639,24 @@ def fix_file_code(f_input_string, f_delimiter="-"):
 
     return f"{p_letters}{f_delimiter}{p_number:03}{p_suffix}{p_file_extension}"
 
+def search_for_title(f_input_string):
+    f_my_javlibrary = JAVLibrary()
+    p_input_string = f_input_string.upper()
+    p_input_string = re.sub(r'[^A-Z0-9]', '', p_input_string)
+    p_input_string += "Z"
+    p_pattern = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
 
-def search_for_title(f_input_string, f_delimiter="-"):
-    # This can probably be simplified with some good regular expressions.
-    p_filename, p_file_extension = os.path.splitext(f_input_string)
-    p_filename = p_filename.upper()
-    p_file_extension = p_file_extension.lower()
-    p_pattern8 = r'^[A-Za-z]{5}\d{3}$'
-    p_pattern7 = r'^[A-Za-z]{4}\d{3}$'
-    p_pattern6 = r'^[A-Za-z]{3}\d{3}$'
-    p_pattern5 = r'^[A-Za-z]{2}\d{3}$'
-    p_results = []
-    p_filename = re.sub(f_delimiter, '', p_filename, flags=re.IGNORECASE)
-    p_filename_length = len(p_filename)
+    p_substrings = set()
+    for p_loop in range(len(p_input_string)):
+        p_substring = p_input_string[p_loop:]
+        if re.match(p_pattern, p_substring):
+            p_matched_value = ((re.match(p_pattern, p_substring)).group())
+            p_matched_value = p_matched_value[:-1]
+            p_get_video = (f_my_javlibrary.get_video(p_matched_value))
+            if (p_get_video):
+                p_substrings.add(p_get_video.code)
 
-    # Search for 8 character codes.
-    p_counter = 0
-    while p_counter + 7 < p_filename_length:
-        f_input_string = p_filename[p_counter:p_counter + 8]
-        if (re.match(p_pattern8, f_input_string)):
-            if my_javlibrary_new_getvideo(f_input_string):
-                p_results.append(p_filename[p_counter:p_counter + 8])
-        p_counter += 1
-
-    # Search for 7 character codes.
-    p_counter = 0
-    while p_counter + 6 < p_filename_length:
-        f_input_string = p_filename[p_counter:p_counter + 7]
-        if (re.match(p_pattern7, f_input_string)):
-            if my_javlibrary_new_getvideo(f_input_string):
-                p_results.append(p_filename[p_counter:p_counter + 7])
-        p_counter += 1
-
-    # Search for 6 character codes.
-    p_counter = 0
-    while p_counter + 5 < p_filename_length:
-        f_input_string = p_filename[p_counter:p_counter + 6]
-        if (re.match(p_pattern6, f_input_string)):
-            if my_javlibrary_new_getvideo(f_input_string):
-                p_results.append(p_filename[p_counter:p_counter + 6])
-        p_counter += 1
-
-    # Search for 5 character codes.
-    p_counter = 0
-    while p_counter + 4 < p_filename_length:
-        f_input_string = p_filename[p_counter:p_counter + 5]
-        if (re.match(p_pattern5, f_input_string)):
-            if my_javlibrary_new_getvideo(f_input_string):
-                p_results.append(p_filename[p_counter:p_counter + 5])
-        p_counter += 1
-
-    pass
-
-    p_results = remove_substrings(p_results)
-
-    return p_results
-
-# change the name of this to specifically what it does.
-
+    return list(p_substrings)
 
 def get_db_array(f_my_cursor, f_db_query):
     p_my_sql_query = f"SELECT * FROM title {f_db_query} ORDER BY code"

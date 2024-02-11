@@ -3,3 +3,5 @@ icecream
 mysql-connector-python
 Requests
 requests_html
+pathlib
+cloudscraper

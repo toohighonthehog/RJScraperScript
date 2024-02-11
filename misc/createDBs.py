@@ -33,10 +33,10 @@ if __name__ == "__main__":
 	    f"file_date datetime, " \
 	    f"location varchar(100), " \
 	    f"subtitles integer UNSIGNED, " \
-	    f"prate int, " \
+	    f"prate integer, " \
 	    f"notes varchar(1000), " \
-	    f"status int UNSIGNED, " \
-	    f"t_id int NOT NULL AUTO_INCREMENT, " \
+	    f"status integer UNSIGNED, " \
+	    f"t_id integer NOT NULL AUTO_INCREMENT, " \
 	    f"PRIMARY KEY (code), " \
 	    f"UNIQUE (t_id));")
     my_cursor.execute(my_sql_create)
