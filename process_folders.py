@@ -223,12 +223,16 @@ if __name__ == "__main__":
 
                 progress = f" {count}/{total}"
 
-                if to_be_scraped == fix_file_code(filename):
+                # ic (filename)
+                # ic (search_for_title(filename))
+                # ic (to_be_scraped)
+
+                if to_be_scraped == search_for_title(filename):
                     my_logger.info("+++++ " + full_filename + " " + ("+" * ((93 - len(progress)) - (len(full_filename))) + progress))
 
                     pass
 
-                    os.makedirs(TARGET_DIRECTORY + fix_file_code(filename), exist_ok=True)
+                    os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
 
                     get_localsubtitles(
                         f_subtitle_general=SUBTITLE_GENERAL,
@@ -301,6 +305,7 @@ if __name__ == "__main__":
                     )
 
                 else:
+                    # this bit...
                     pattern = (
                         r"^[A-Z]{2,7}-\d{3}(?:" +
                         "|".join(SOURCE_EXTENSIONS) + ")$"

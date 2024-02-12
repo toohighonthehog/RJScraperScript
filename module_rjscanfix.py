@@ -41,7 +41,7 @@ def get_list_of_files(f_source_directory, f_source_extensions):
 
 
 def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_target_language, f_process_title, f_my_logger):
-    p_process_title = fix_file_code(f_process_title)
+    p_process_title = search_for_title(f_process_title)
 
     pass
 
@@ -80,7 +80,7 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
 
 def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_session = HTMLSession()
-    p_process_title = fix_file_code(f_process_title)
+    p_process_title = search_for_title(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
 
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
@@ -204,7 +204,7 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
 def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language, f_process_title, f_my_logger):
     # determine the subtitle status only here...
     # remove from elsewhere.
-    p_process_title = fix_file_code(f_process_title)
+    p_process_title = search_for_title(f_process_title)
     p_target_directory = f_target_directory + p_process_title + "/"
     p_filelist = get_list_of_files(p_target_directory, ['.srt'])
     p_biggest_filesize = 0
@@ -237,7 +237,7 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
 
 
 def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_added_date, f_my_logger):
-    p_process_title = fix_file_code(f_process_title)
+    p_process_title = search_for_title(f_process_title)
     p_metadata = my_javlibrary_new_getvideo(p_process_title)
     p_metadata_url = my_javlibrary_new_search(p_process_title)
     p_metadata_array = []
@@ -273,11 +273,9 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
 
 
 def move_to_directory(f_source_directory, f_target_directory, f_target_language, f_process_file, f_process_extension, f_my_logger, f_metadata_array):
-    p_result = False
-    p_file_match_list = search_for_title(f_process_file)
+    p_file_match = search_for_title(f_process_file)
 
-    if len(p_file_match_list) == 1:
-        p_file_match = fix_file_code(p_file_match_list[0])
+    if (p_file_match):
         p_target_directory = f_target_directory + p_file_match
 
         os.makedirs(p_target_directory, exist_ok=True)
@@ -302,8 +300,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
         pass
 
-        p_prefixes = [fix_file_code(p_file_match, ""),
-                      fix_file_code(p_file_match, "-")]
+        p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
         p_file_list = []
 
         for p_filename in os.listdir(f_source_directory):
@@ -315,19 +312,15 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
         # move other existing files
         for filename in p_file_list:
             if (filename.endswith(f_target_language)):
-                # os.rename(f_source_directory + file, p_target_directory + "/" + fix_file_code(file, "-"))
-                pass
+                print ("making")
                 os.makedirs(p_target_directory, exist_ok=True)
-                shutil.move(f_source_directory + filename, p_target_directory + "/" + fix_file_code(filename, "-"))
+                shutil.move(f_source_directory + filename, p_target_directory + "/" + search_for_title(filename))
                 f_my_logger.debug("MOV - Moving " + filename + " from " + f_source_directory + ".")
                 f_my_logger.info("MOV - Moved " + filename + " to " + p_target_directory + "/.")
                 f_metadata_array.update({'subtitles': 1})
 
         f_my_logger.debug("MOV - Moving " + f_process_file + f_process_extension + " from " + f_source_directory + ".")
         f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + p_target_directory + "/.")
-
-        # does this need to be returned??
-        p_result = p_file_match
 
     return f_metadata_array
 
@@ -581,8 +574,8 @@ def my_javlibrary_new_getvideo(f_input_string):
 
     if p_results != None:
         if p_count > 0:
-            p_value1 = fix_file_code(p_results.code)
-            p_value2 = fix_file_code(f_input_string)
+            p_value1 = search_for_title(p_results.code)
+            p_value2 = search_for_title(f_input_string)
 
             if (p_value1 != p_value2):
                 p_results = ""
@@ -656,7 +649,12 @@ def search_for_title(f_input_string):
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
 
-    return list(p_substrings)
+    if len(p_substrings) == 1:
+        result = list(p_substrings)[0]
+    else:
+        result = None
+
+    return result
 
 def get_db_array(f_my_cursor, f_db_query):
     p_my_sql_query = f"SELECT * FROM title {f_db_query} ORDER BY code"
