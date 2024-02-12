@@ -15,7 +15,6 @@ from icecream import ic
 
 #  1, 2 & 8 should be combined as they all just cover rescans initiated from the database. (and run first?)
 
-
 # status:
 #   1 = set for rescan (i.e. already reverted  to parent folder)
 #   2 = set for rescan (i.e. revert to parent folder)
@@ -155,14 +154,9 @@ if __name__ == "__main__":
                 record_to_scan['subtitles'] = 3
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()         
-
-            #my_logger.info("=" * 100)
             
         if PROCESS_TASK & 2:
-            my_logger.info(f"=== Scanning Subtitles ".ljust(100, "="))
-            #my_logger.info(f"===== Source: {SOURCE_DIRECTORY} ".ljust(100, "="))
-            
-            # Anything with subtitles in 0,1,3,4,5,6,7,8, rescan for subtitles, then update subtitles value according to findings.
+            my_logger.info("=== Scanning Subtitles ".ljust(100, "="))
 
             db_query = f"WHERE subtitles IN (0,1,3,4,5,6,7,8) AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
@@ -174,7 +168,7 @@ if __name__ == "__main__":
                     f_target_directory=TARGET_DIRECTORY,
                     f_target_language=TARGET_LANGUAGE,
                     f_process_title=record_to_scan['code'],
-                    f_my_logger=my_logger,
+                    f_my_logger=my_logger
                     )
 
                 subtitle_available = get_best_subtitle(
@@ -182,7 +176,7 @@ if __name__ == "__main__":
                     f_target_directory=TARGET_DIRECTORY,
                     f_target_language=TARGET_LANGUAGE,
                     f_process_title=record_to_scan['code'],
-                    f_my_logger=my_logger,
+                    f_my_logger=my_logger
                     )
 
                 if os.path.isfile(f"{SUBTITLE_WHISPER}Audio/{record_to_scan['code']}.mp3"):
@@ -200,9 +194,7 @@ if __name__ == "__main__":
 
         # Do scans and processing.
         if PROCESS_TASK & 4:  # 4
-            #my_logger.info(f"=== Processing ".ljust(100, "="))
-            #my_logger.info(f"===== Source: {SOURCE_DIRECTORY} ".ljust(100, "="))
-            my_logger.info(f"=======> Target: {TARGET_DIRECTORY} ".ljust(100, "="))
+            my_logger.info("=======> Target: {TARGET_DIRECTORY} ".ljust(100, "="))
 
             scanned_directory = get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
@@ -228,9 +220,7 @@ if __name__ == "__main__":
                 # ic (to_be_scraped)
 
                 if to_be_scraped == search_for_title(filename):
-                    my_logger.info("+++++ " + full_filename + " " + ("+" * ((93 - len(progress)) - (len(full_filename))) + progress))
-
-                    pass
+                    my_logger.info(f"+++++ {full_filename} + " * ((93 - len(progress)) - (len(full_filename))) + progress)
 
                     os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
 
@@ -242,7 +232,6 @@ if __name__ == "__main__":
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger,
                     )
-                    pass
 
                     get_subtitlecat(
                         f_target_directory=TARGET_DIRECTORY,
@@ -250,8 +239,6 @@ if __name__ == "__main__":
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger,
                     )
-
-                    pass
 
                     subtitle_available = get_best_subtitle(
                         f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -261,8 +248,6 @@ if __name__ == "__main__":
                         f_my_logger=my_logger,
                     )
 
-                    pass
-
                     metadata_array = download_metadata(
                         f_process_title=to_be_scraped,
                         f_subtitle_available=subtitle_available,
@@ -270,8 +255,6 @@ if __name__ == "__main__":
                         f_added_date=BATCH_DATETIME,
                         f_my_logger=my_logger,
                     )
-
-                    pass
 
                     metadata_array = move_to_directory(
                         f_source_directory=SOURCE_DIRECTORY,
@@ -283,8 +266,6 @@ if __name__ == "__main__":
                         f_metadata_array=metadata_array,
                     )
 
-                    pass
-
                     send_to_database(
                         f_metadata_array=metadata_array,
                         f_my_logger=my_logger,
@@ -292,33 +273,17 @@ if __name__ == "__main__":
                     )
                     my_connection.commit()
 
-                    pass
-
                     send_to_json(
                         f_metadata_array=metadata_array,
                         f_my_logger=my_logger,
-                        f_json_filename=TARGET_DIRECTORY
-                        + to_be_scraped
-                        + "/"
-                        + to_be_scraped
-                        + ".json",
+                        f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped} "/" {to_be_scraped}.json"
                     )
 
                 else:
                     # this bit...
-                    pattern = (
-                        r"^[A-Z]{2,7}-\d{3}(?:" +
-                        "|".join(SOURCE_EXTENSIONS) + ")$"
-                    )
+                    pattern = (r"^[A-Z]{2,7}-\d{3}(?:" + "|".join(SOURCE_EXTENSIONS) + ")$")
                     if re.match(pattern, filename + file_extension):
-                        my_logger.info(
-                            "+++++ "
-                            + filename
-                            + file_extension
-                            + " +++++ no match found but filename is valid."
-                        )
-
-                        pass
+                        my_logger.info(f"+++++ {filename}{file_extension} +++++ no match found but filename is valid.")
 
                         os.makedirs(TARGET_DIRECTORY + filename, exist_ok=True)
 
@@ -331,16 +296,12 @@ if __name__ == "__main__":
                             f_my_logger=my_logger,
                         )
 
-                        pass
-
                         subtitle_available = get_subtitlecat(
                             f_target_directory=TARGET_DIRECTORY,
                             f_target_language=TARGET_LANGUAGE,
                             f_process_title=filename,
                             f_my_logger=my_logger,
                         )
-
-                        pass
 
                         subtitle_available = get_best_subtitle(
                             f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -349,10 +310,6 @@ if __name__ == "__main__":
                             f_process_title=filename,
                             f_my_logger=my_logger,
                         )
-
-                        # my_logger.info("+++++ " + full_filename + " " + ("+" * (93 - (len(full_filename)))))
-
-                        pass
 
                         if ARBITRARY_PRATE >= 0:
                             metadata_array = {
@@ -365,19 +322,9 @@ if __name__ == "__main__":
                                 "url": [],
                                 "score": None,
                                 "release_date": None,
-                                "added_date": str(
-                                    (f"{datetime.now():%Y-%m-%d %H:%M:%S}")
-                                ),
-                                "file_date": time.strftime(
-                                    "%Y-%m-%d",
-                                    time.localtime(
-                                        os.path.getctime(full_filename)),
-                                ),
-                                "location": TARGET_DIRECTORY
-                                + filename
-                                + "/"
-                                + filename
-                                + file_extension,
+                                "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
+                                "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),),
+                                "location": TARGET_DIRECTORY + filename + "/" + filename + file_extension,
                                 "subtitles": subtitle_available,
                                 "prate": ARBITRARY_PRATE,
                                 "notes": None,
@@ -407,11 +354,7 @@ if __name__ == "__main__":
 
                         shutil.move(
                             SOURCE_DIRECTORY + filename + file_extension,
-                            TARGET_DIRECTORY
-                            + filename
-                            + "/"
-                            + filename
-                            + file_extension,
+                            TARGET_DIRECTORY + filename + "/" + filename + file_extension
                         )
 
                         pass
@@ -419,21 +362,12 @@ if __name__ == "__main__":
                         send_to_database(
                             f_metadata_array=metadata_array,
                             f_my_logger=my_logger,
-                            f_my_cursor=my_cursor,
+                            f_my_cursor=my_cursor
                         )
                         my_connection.commit()
 
                     else:
-                        # my_logger.info("+++++ " + full_filename + " " + ("+" * ((93 - len(progress)) - (len(full_filename))) + progress))
-                        my_logger.warning(
-                            "+++++ "
-                            + filename
-                            + file_extension
-                            + " - no match found "
-                            + "+"
-                            * ((73 - len(progress)) - (len(filename + file_extension)))
-                            + progress
-                        )
+                        my_logger.warning(f"+++++ {filename}{file_extension} - no match found " + (73 - len(progress)) - (len(filename + file_extension)) + progress)
                 my_logger.info("=" * 100)
 
     my_cursor.close()

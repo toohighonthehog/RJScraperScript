@@ -23,8 +23,8 @@ def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_
         p_source_filename = f_source_directory + f_process_filename + "/" + p_filename
         p_target_directory = f_source_directory + f_process_filename + "/"
         p_target_filename = f_target_directory + p_filename
-        pass
-        f_my_logger.info("MOV - Moving " + p_source_filename + " back a level.")
+        
+        f_my_logger.info(f"MOV - Moving {p_source_filename} back a level.")
         os.makedirs(p_target_directory, exist_ok=True)
         shutil.move(p_source_filename, p_target_filename)
 
@@ -43,8 +43,6 @@ def get_list_of_files(f_source_directory, f_source_extensions):
 def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_process_title = search_for_title(f_process_title)
 
-    pass
-
     # fix raw whisper filename
     p_whisper_raw = f_subtitle_whisper + p_process_title + "-en Whisper-cleaned.srt"
     p_whisper_raw_fixed = p_whisper_raw.replace("-en Whisper-cleaned", "-(WH)-en")
@@ -52,8 +50,6 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
         os.rename(p_whisper_raw, p_whisper_raw_fixed)
     except:
         pass
-
-    pass
 
     if (os.path.isfile(f_subtitle_general + p_process_title + ".srt")):
         f_my_logger.info(f"SUB - Found {p_process_title}.srt in 'General'.")
@@ -86,7 +82,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
         f_my_logger.debug("SUB - Existing subtitles found.")
 
-    f_my_logger.info("SUB - Searching SubtitleCat for '" + p_process_title + "'.")
+    f_my_logger.info(f"SUB - Searching SubtitleCat for '{p_process_title}'.")
 
     p_url_level1 = 'https://www.subtitlecat.com/index.php?search=' + p_process_title
 
@@ -94,18 +90,15 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     p_counter = 0
     while p_counter < 5:
         try:
-            p_response_level1 = p_session.get(
-                p_url_level1, timeout=60, allow_redirects=True)
+            p_response_level1 = p_session.get(p_url_level1, timeout=60, allow_redirects=True)
             break
         except:
             p_counter += 1
-            f_my_logger.warning(
-                "URL - SubtitleCat (L0) not responding.  Try " + str(p_counter) + " of 5.")
+            f_my_logger.warning(f"URL - SubtitleCat (L0) not responding.  Try {str(p_counter)} of 5.")
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(
-            "URL - SubtitleCat (L0) connection failed.  Terminating.")
+        f_my_logger.critical("URL - SubtitleCat (L0) connection failed.  Terminating.")
         exit()
 
     pass
@@ -117,28 +110,23 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning(
-                "URL - SubtitleCat (L1) not responding.  Try " + str(p_counter) + " of 5.")
+            f_my_logger.warning(f"URL - SubtitleCat (L1) not responding.  Try {str(p_counter)} of 5.")
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(
-            "URL - SubtitleCat (L1) connection failed.  Terminating.")
+        f_my_logger.critical("URL - SubtitleCat (L1) connection failed.  Terminating.")
         exit()
 
     pass
 
-    p_table_level1_entries = [[c.absolute_links for c in row.find(
-        'td')][:1] for row in p_table_level1.find('tr')][1:]
+    p_table_level1_entries = [[c.absolute_links for c in row.find('td')][:1] for row in p_table_level1.find('tr')][1:]
 
     for p_table_level1_entry in p_table_level1_entries:
         p_table_level1_entry_url = (list(p_table_level1_entry[0])[0])
 
         if re.search(p_process_title, p_table_level1_entry_url, re.IGNORECASE):
-            p_response_level2 = p_session.get(
-                p_table_level1_entry_url, timeout=60, allow_redirects=True)
-            p_table_level2 = p_response_level2.html.xpath(
-                '/html/body/div[4]/div/div[2]', first=True)
+            p_response_level2 = p_session.get(p_table_level1_entry_url, timeout=60, allow_redirects=True)
+            p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
             if p_table_level2 is not None:
                 for p_table_level2_entry in p_table_level2.absolute_links:
                     if re.search(f_target_language, p_table_level2_entry, re.IGNORECASE):
@@ -147,22 +135,17 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                     if re.search(f_target_language, p_subtitle_url, re.IGNORECASE):
                         p_count = 0
                         while p_count < 5:
-                            p_subtitle_url_check = (
-                                requests.head(p_subtitle_url).status_code)
+                            p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
                             p_count += 1
                             if p_subtitle_url_check == 200:
                                 f_my_logger.debug(
                                     "SUB - Subtitle_URL " + p_subtitle_url + ".")
                                 if p_subtitle_url.find('/'):
-                                    p_subtitle_filename = (
-                                        (p_subtitle_url.rsplit('/', 1)[1]).lower())
-                                f_my_logger.info(
-                                    "SUB - Downloading " + p_subtitle_filename + ".")
-                                p_subtitle_download = requests.get(
-                                    p_subtitle_url, timeout=60, allow_redirects=True)
-                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper(
-                                ) + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
-                                pass
+                                    p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
+                                f_my_logger.info(f"SUB - Downloading {p_subtitle_filename}.")
+                                p_subtitle_download = requests.get(p_subtitle_url, timeout=60, allow_redirects=True)
+                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
+                                
                                 open(p_target_directory + p_new_subtitle_filename,
                                      'wb').write(p_subtitle_download.content)
                                 time.sleep(p_count)
@@ -192,12 +175,10 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
 
                 # ...or copy.
                 if (f_processmode == "COPY"):
-                    f_my_logger.info("MET - Transferring " + filename + " to " +
-                                     f_target_directory + ".")
+                    f_my_logger.info(f"MET - Transferring {filename} to {f_target_directory}.")
                     shutil.copy(p_source_filename, f_target_directory)
 
-                f_my_logger.info("MET - Transferred " + filename + " to " +
-                                 f_target_directory + ".")
+                f_my_logger.info(f"MET - Transferred {filename} to {f_target_directory}.")
     return True
 
 
@@ -210,8 +191,6 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
     p_biggest_filesize = 0
     p_biggest_filename = ""
     p_subtitle_available = 0
-
-    pass
 
     for p_filename in p_filelist:
         if os.path.getsize(p_filename) > p_biggest_filesize and p_filename.endswith(f_target_language):
@@ -227,8 +206,6 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
         if p_filename.endswith(f_target_language):
             p_subtitle_available = 9
 
-    pass
-
     if (p_biggest_filesize > 0) and not (os.path.isfile(p_target_directory + p_process_title + "-" + f_target_language)):
         f_my_logger.info(f"SUB - Creating {p_process_title}-{f_target_language} as default subtitle file.")
         shutil.copy(p_biggest_filename, (p_target_directory + p_process_title + "-" + f_target_language))
@@ -237,9 +214,10 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
 
 
 def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_added_date, f_my_logger):
+    p_my_javlibrary = JAVLibrary()
     p_process_title = search_for_title(f_process_title)
-    p_metadata = my_javlibrary_new_getvideo(p_process_title)
-    p_metadata_url = my_javlibrary_new_search(p_process_title)
+    p_metadata = p_my_javlibrary.getvideo(p_process_title)
+    p_metadata_url = p_metadata = p_my_javlibrary.search(p_process_title)
     p_metadata_array = []
 
     f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
@@ -266,8 +244,7 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "prate": f_arbitrary_prate,
                             "status": 9}
     else:
-        f_my_logger.info("MET - No metadata found for '" +
-                         p_process_title + "'.")
+        f_my_logger.info(f"MET - No metadata found for '{p_process_title}'.")
 
     return p_metadata_array
 
@@ -300,6 +277,7 @@ def move_to_directory(f_source_directory, f_target_directory, f_target_language,
 
         pass
 
+        # what is this?  what is 'prefixes' ?
         p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
         p_file_list = []
 
@@ -407,20 +385,17 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
     # check if the record exists, if it does...
     # p_my_insert_sql_title = p_my_insert_sql_title.replace("INSERT INTO","UPDATE INTO")
     # print(f"SELECT code FROM title WHERE code = '{f_metadata_array['code']}'")
-    f_my_cursor.execute(
-        f"SELECT * FROM title WHERE code = '{f_metadata_array['code']}';")
+    f_my_cursor.execute(f"SELECT * FROM title WHERE code = '{f_metadata_array['code']}';")
     p_my_results = f_my_cursor.fetchone()
     pass
 
     if (p_my_results):
-        f_my_logger.info(
-            f"MET - Write updated metadata for '{f_metadata_array['code']}' to database.")
+        f_my_logger.info(f"MET - Write updated metadata for '{f_metadata_array['code']}' to database.")
         p_my_insert_sql_title = p_my_insert_sql_title_u
         # the columns we retain when updating a title.
         f_prate = p_my_results['prate']
         f_added_date = p_my_results['added_date']
         f_notes = p_my_results['notes']
-
         f_location = f_metadata_array['location']
 
         # we need some logic and extra warning when a duplication or record moves.
@@ -433,8 +408,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
 
        
     else:
-        f_my_logger.info(
-            f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
+        f_my_logger.info(f"MET - Write new metadata for '{f_metadata_array['code']}' to database.")
         f_prate = f_metadata_array['prate']
         f_added_date = f_metadata_array['added_date']
         f_notes = f_metadata_array['notes']
@@ -469,9 +443,7 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             f_my_cursor.execute(p_my_insert_sql_actor, (a,))
             p_a_id = f_my_cursor.lastrowid
         else:
-            pass
             p_a_id = p_my_results['a_id']
-        pass
 
         p_hash_input = (
             f_metadata_array['code'] + str(p_a_id) + "actor_title_link").encode()
@@ -497,21 +469,18 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
             f_metadata_array['code'] + str(p_g_id) + "genre_title_link").encode()
         p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
         f_my_cursor.execute(p_my_insert_sql_genre_title_link,
-                            (p_g_id,
-                             f_metadata_array['code'],
-                             p_hash_output))
+                            (p_g_id, f_metadata_array['code'], p_hash_output))
 
     for u in f_metadata_array['url']:
         p_hash_input = (f_metadata_array['code'] + u).encode()
         p_hash_output = hashlib.md5(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_url,
-                            (f_metadata_array['code'], u, p_hash_output))
+        f_my_cursor.execute(p_my_insert_sql_url, (f_metadata_array['code'], u, p_hash_output))
 
     return True
 
 
 def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
-    f_my_logger.info("MET - Write metadata for '" + f_metadata_array['code'] + "' to json.")
+    f_my_logger.info(f"MET - Write metadata for '{f_metadata_array['code']}' to json.")
     pass
 
     try:
@@ -539,50 +508,6 @@ def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
 # region Wrapped Scraper Functions
 
 
-def my_javlibrary_new_search(f_input_string):
-    p_my_javlibrary = JAVLibrary()
-    p_count = 0
-    p_results = []
-    while p_results == [] and p_count <= 5:
-        try:
-            p_results = p_my_javlibrary.search(f_input_string)
-            p_count = 6
-        except:
-            time.sleep(0.25 * p_count)
-        p_count += 1
-
-        if my_javlibrary_new_getvideo(f_input_string) == "":
-            p_results = []
-
-        pass
-
-    return p_results
-
-
-def my_javlibrary_new_getvideo(f_input_string):
-    p_my_javlibrary = JAVLibrary()
-    p_count = 0
-    p_results = None
-    while p_results == None and p_count <= 5:
-        try:
-            p_results = p_my_javlibrary.get_video(f_input_string)
-            p_count = 6
-        except:
-            pass
-        time.sleep(0.25 * p_count)
-        p_count += 1
-
-    if p_results != None:
-        if p_count > 0:
-            p_value1 = search_for_title(p_results.code)
-            p_value2 = search_for_title(f_input_string)
-
-            if (p_value1 != p_value2):
-                p_results = ""
-
-    pass
-
-    return p_results
 # endregion
 
 # region Primary Data Functions
@@ -653,17 +578,12 @@ def search_for_title(f_input_string):
         result = list(p_substrings)[0]
     else:
         result = None
-
     return result
 
 def get_db_array(f_my_cursor, f_db_query):
     p_my_sql_query = f"SELECT * FROM title {f_db_query} ORDER BY code"
     f_my_cursor.execute(p_my_sql_query)
-
     p_results = f_my_cursor.fetchall()
-    # if (p_results == []):
-    #     p_results = [("xxx", 999, "xxx")]
-
     return p_results
 
 
@@ -672,9 +592,7 @@ def get_db_title_record(f_my_cursor, f_process_filename):
     f_my_cursor.execute(p_my_sql_query)
 
     p_result = f_my_cursor.fetchone()
-    pass
     return p_result
-
 
 def update_db_title_record(f_my_cursor, f_db_record):
     p_my_insert_sql_title = "\
@@ -693,8 +611,6 @@ def update_db_title_record(f_my_cursor, f_db_record):
             status = %s \
             WHERE code = %s;"
 
-    pass
-
     f_my_cursor.execute(p_my_insert_sql_title,
                         (f_db_record['name'],
                          f_db_record['studio'],
@@ -709,9 +625,6 @@ def update_db_title_record(f_my_cursor, f_db_record):
                          f_db_record['notes'],
                          f_db_record['status'],
                          f_db_record['code']))
-
-    pass
-
 
 def value_in_list(f_list, f_value):
     p_results = False
@@ -735,17 +648,14 @@ def value_in_list(f_list, f_value):
 
 def get_console_handler():
     p_console_handler = logging.StreamHandler(sys.stdout)
-    p_console_handler.setFormatter(logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+    p_console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
     p_console_handler.setLevel(logging.INFO)
     return p_console_handler
 
 
 def get_file_handler():
-    p_file_handler = logging.FileHandler(
-        './logs/{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
-    p_file_handler.setFormatter(logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
+    p_file_handler = logging.FileHandler('./logs/{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
+    p_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
     p_file_handler.setLevel(logging.DEBUG)
     return p_file_handler
 

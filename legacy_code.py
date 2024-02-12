@@ -92,3 +92,50 @@
 #                 p_substrings.add(p_get_video.code)
 
 #     return list(p_substrings)
+
+
+# def my_javlibrary_new_getvideo(f_input_string):
+#     p_my_javlibrary = JAVLibrary()
+#     p_count = 0
+#     p_results = None
+#     while p_results == None and p_count <= 5:
+#         try:
+#             p_results = p_my_javlibrary.get_video(f_input_string)
+#             p_count = 6
+#         except:
+#             pass
+#         time.sleep(0.25 * p_count)
+#         p_count += 1
+
+#     if p_results != None:
+#         if p_count > 0:
+#             p_value1 = search_for_title(p_results.code)
+#             p_value2 = search_for_title(f_input_string)
+
+#             if (p_value1 != p_value2):
+#                 p_results = ""
+
+#     pass
+
+#     return p_results
+
+
+
+# def my_javlibrary_new_search(f_input_string):
+#     p_my_javlibrary = JAVLibrary()
+#     p_count = 0
+#     p_results = []
+#     while p_results == [] and p_count <= 5:
+#         try:
+#             p_results = p_my_javlibrary.search(f_input_string)
+#             p_count = 6
+#         except:
+#             time.sleep(0.25 * p_count)
+#         p_count += 1
+
+#         if p_my_javlibrary.getvideo(f_input_string) == "":
+#             p_results = []
+
+#         pass
+
+#     return p_results
