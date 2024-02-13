@@ -163,6 +163,8 @@ if __name__ == "__main__":
             records_to_scan = get_db_array(my_cursor, db_query)
 
             for record_to_scan in records_to_scan:
+
+                
                 get_localsubtitles(
                     f_subtitle_general=SUBTITLE_GENERAL,
                     f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -172,8 +174,9 @@ if __name__ == "__main__":
                     f_my_logger=my_logger
                     )
 
+                # get_subtitlecat ???
+
                 subtitle_available = get_best_subtitle(
-                    f_subtitle_whisper=SUBTITLE_WHISPER,
                     f_target_directory=TARGET_DIRECTORY,
                     f_target_language=TARGET_LANGUAGE,
                     f_process_title=record_to_scan['code'],
@@ -220,25 +223,21 @@ if __name__ == "__main__":
                 if to_be_scraped_count == 1:
                     # we've identified something, so make a directory
                     os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
+                    metadata_array = download_metadata(
+                        f_process_title=to_be_scraped,
+                        f_my_logger=my_logger
+                    )
 
-                    # we've got a metadata match so download it
+                    metadata_array["prate"] = ARBITRARY_PRATE
+                    metadata_array["added_date"] = BATCH_DATETIME
+
                     if ARBITRARY_PRATE >= 0:
-                        metadata_array = download_metadata(
-                            f_process_title=to_be_scraped,
-                            f_my_logger=my_logger
-                        )
-                        
-                        metadata_array["added_date"] = BATCH_DATETIME
                         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
                         metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
-                        metadata_array["prate"] = ARBITRARY_PRATE
-                        metadata_array["status"] = ""
+                        metadata_array["status"] = "" # what number?
 
                     if ARBITRARY_PRATE < 0:
-                        pass
-                            # update values specific to a 'wanted'
-                        
-
+                        metadata_array["status"] = "" # what number?
 
                 if to_be_scraped_count == 0:
                     if ARBITRARY_PRATE < 0:
@@ -261,81 +260,6 @@ if __name__ == "__main__":
                             "status": 7
                         }
 
-
-                if to_be_scraped_count == 1:
-                    #my_logger.info(f"+++++ {full_filename} / {progress}")
-
-
-                    if ARBITRARY_PRATE < 0:
-                        metadata_array = {
-                            "code": to_be_scraped,
-                            "name": None,
-                            "actor": [],
-                            "studio": None,
-                            "image": None,
-                            "genre": [],
-                            "url": [],
-                            "score": None,
-                            "release_date": None,
-                            "added_date": None,
-                            "file_date": None,
-                            "location": None,
-                            "subtitles": None,
-                            "prate": ARBITRARY_PRATE,
-                            "notes": None,
-                            "status": 7
-                        }
-
-                    if ARBITRARY_PRATE >= 0:
-                        metadata_array = download_metadata(
-                            f_process_title=to_be_scraped,
-                            f_arbitrary_prate=ARBITRARY_PRATE,
-                            f_added_date=BATCH_DATETIME,
-                            f_my_logger=my_logger
-                        )
-
-                        metadata_array = {
-                            "code": to_be_scraped,
-                            "name": None,
-                            "actor": [],
-                            "studio": None,
-                            "image": None,
-                            "genre": [],
-                            "url": [],
-                            "score": None,
-                            "release_date": None,
-                            "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
-                            "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),),
-                            "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
-                            "subtitles": None,
-                            "prate": ARBITRARY_PRATE,
-                            "notes": None,
-                            "status": 8
-                        }
-
-                if to_be_scraped_count == 1:
-                    if to_be_scraped_count == 1:
-                        metadata_array = download_metadata(
-                            f_process_title=to_be_scraped,
-                            f_arbitrary_prate=ARBITRARY_PRATE,
-                            f_added_date=BATCH_DATETIME,
-                            f_my_logger=my_logger
-                        )
-
-                    metadata_array = move_to_directory(
-                        f_source_directory=SOURCE_DIRECTORY,
-                        f_target_directory=TARGET_DIRECTORY,
-                        f_target_language=TARGET_LANGUAGE,
-                        f_process_file=filename,
-                        f_process_extension=file_extension,
-                        f_my_logger=my_logger,
-                        f_metadata_array=metadata_array,
-                    )
-
-                if to_be_scraped:
-                    #my_logger.info(f"+++++ {full_filename} / {progress}")
-                    os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
-
                     get_localsubtitles(
                         f_subtitle_general=SUBTITLE_GENERAL,
                         f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -352,8 +276,7 @@ if __name__ == "__main__":
                         f_my_logger=my_logger
                     )
 
-                    subtitle_available = get_best_subtitle(
-                        f_subtitle_whisper=SUBTITLE_WHISPER,
+                    metadata_array["subtitles"] = get_best_subtitle(
                         f_target_directory=TARGET_DIRECTORY,
                         f_target_language=TARGET_LANGUAGE,
                         f_process_title=to_be_scraped,
@@ -363,16 +286,6 @@ if __name__ == "__main__":
                     shutil.move(
                         SOURCE_DIRECTORY + filename + file_extension,
                         TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
-                    )
-
-                    metadata_array = move_to_directory(
-                        f_source_directory=SOURCE_DIRECTORY,
-                        f_target_directory=TARGET_DIRECTORY,
-                        f_target_language=TARGET_LANGUAGE,
-                        f_process_file=filename,
-                        f_process_extension=file_extension,
-                        f_my_logger=my_logger,
-                        f_metadata_array=metadata_array
                     )
 
                     send_to_database(
@@ -391,7 +304,7 @@ if __name__ == "__main__":
 
 
 
-                if to_be_scraped is None:
+                if to_be_scraped_count < 0:
                     my_logger.warning(f"+++++ {filename}{file_extension} - no match found ")
 
                 my_connection.commit()

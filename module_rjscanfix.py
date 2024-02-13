@@ -182,7 +182,7 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
     return True
 
 
-def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language, f_process_title, f_my_logger):
+def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_my_logger):
     # determine the subtitle status only here...
     # remove from elsewhere.
     p_process_title = search_for_title(f_process_title)
@@ -213,95 +213,95 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
     return p_subtitle_available
 
 
-def download_metadata(f_process_title, f_my_logger):
-    p_my_javlibrary = JAVLibrary()
-    p_process_title = f_process_title
-    p_metadata = p_my_javlibrary.get_video(p_process_title)
-    p_metadata_url = p_my_javlibrary.search(p_process_title)
-    p_metadata_array = []
+# def download_metadata(f_process_title, f_my_logger):
+#     p_my_javlibrary = JAVLibrary()
+#     p_process_title = f_process_title
+#     p_metadata = p_my_javlibrary.get_video(p_process_title)
+#     p_metadata_url = p_my_javlibrary.search(p_process_title)
+#     p_metadata_array = []
 
-    f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
+#     f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
 
-    if p_metadata is not None:
-        p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
+#     if p_metadata is not None:
+#         p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
 
-        f_my_logger.info(f"MET - Metadata downloaded for '{p_process_title}'.")
+#         f_my_logger.info(f"MET - Metadata downloaded for '{p_process_title}'.")
 
-        p_metadata_array = {"code": p_metadata.code,
-                            "name": p_metadata.name,
-                            "actor": p_metadata.actresses,
-                            "studio": p_metadata.studio,
-                            "image": p_metadata.image,
-                            "genre": p_metadata.genres,
-                            "url": p_metadata_url,
-                            "score": p_metadata.score,
-                            "release_date": p_release_date,
-                            "added_date": None,
-                            "file_date": None,
-                            "notes": None,
-                            "location": None,
-                            "subtitles": None,
-                            "prate": None,
-                            "status": None}
-    else:
-        # does this ever get called?
-        f_my_logger.info(f"MET - No metadata found for '{p_process_title}'.")
+#         p_metadata_array = {"code": p_metadata.code,
+#                             "name": p_metadata.name,
+#                             "actor": p_metadata.actresses,
+#                             "studio": p_metadata.studio,
+#                             "image": p_metadata.image,
+#                             "genre": p_metadata.genres,
+#                             "url": p_metadata_url,
+#                             "score": p_metadata.score,
+#                             "release_date": p_release_date,
+#                             "added_date": None,
+#                             "file_date": None,
+#                             "notes": None,
+#                             "location": None,
+#                             "subtitles": None,
+#                             "prate": None,
+#                             "status": None}
+#     else:
+#         # does this ever get called?
+#         f_my_logger.info(f"MET - No metadata found for '{p_process_title}'.")
 
-    return p_metadata_array
+#     return p_metadata_array
 
 
-def move_to_directory(f_source_directory, f_target_directory, f_target_language, f_process_file, f_process_extension, f_my_logger, f_metadata_array):
-    p_file_match = search_for_title(f_process_file)
+# def move_to_directory(f_source_directory, f_target_directory, f_target_language, f_process_file, f_process_extension, f_my_logger, f_metadata_array):
+#     p_file_match = search_for_title(f_process_file)
 
-    if (p_file_match):
-        p_target_directory = f_target_directory + p_file_match
+#     if (p_file_match):
+#         p_target_directory = f_target_directory + p_file_match
 
-        os.makedirs(p_target_directory, exist_ok=True)
-        shutil.move(f_source_directory + f_process_file + f_process_extension,
-                    p_target_directory + "/" + p_file_match + f_process_extension)
-        pass
+#         os.makedirs(p_target_directory, exist_ok=True)
+#         shutil.move(f_source_directory + f_process_file + f_process_extension,
+#                     p_target_directory + "/" + p_file_match + f_process_extension)
+#         pass
 
-        try:
-            p_prate = f_metadata_array['prate']
-        except:
-            p_prate = 0
+#         try:
+#             p_prate = f_metadata_array['prate']
+#         except:
+#             p_prate = 0
 
-        if p_prate >= 0:
-            f_metadata_array.update(
-                {'location': p_target_directory + "/" + p_file_match + f_process_extension})
-            f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(
-                os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
-        else:
-            f_metadata_array.update({'added_date': None})
-            f_metadata_array.update({'file_date': None})
-            f_metadata_array.update({'location_date': None})
+#         if p_prate >= 0:
+#             f_metadata_array.update(
+#                 {'location': p_target_directory + "/" + p_file_match + f_process_extension})
+#             f_metadata_array.update({'file_date': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(
+#                 os.path.getctime(p_target_directory + "/" + p_file_match + f_process_extension)))})
+#         else:
+#             f_metadata_array.update({'added_date': None})
+#             f_metadata_array.update({'file_date': None})
+#             f_metadata_array.update({'location_date': None})
 
-        pass
+#         pass
 
-        # what is this?  what is 'prefixes' ?
-        p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
-        p_file_list = []
+#         # what is this?  what is 'prefixes' ?
+#         p_prefixes = [fix_file_code(p_file_match, ""), fix_file_code(p_file_match, "-")]
+#         p_file_list = []
 
-        for p_filename in os.listdir(f_source_directory):
-            for p_prefix in p_prefixes:
-                if p_filename.upper().startswith(p_prefix):
-                    if os.path.isfile(os.path.join(f_source_directory, p_filename)):
-                        p_file_list.append(p_filename)
+#         for p_filename in os.listdir(f_source_directory):
+#             for p_prefix in p_prefixes:
+#                 if p_filename.upper().startswith(p_prefix):
+#                     if os.path.isfile(os.path.join(f_source_directory, p_filename)):
+#                         p_file_list.append(p_filename)
 
-        # move other existing files
-        for filename in p_file_list:
-            if (filename.endswith(f_target_language)):
-                print ("making")
-                os.makedirs(p_target_directory, exist_ok=True)
-                shutil.move(f_source_directory + filename, p_target_directory + "/" + search_for_title(filename))
-                f_my_logger.debug("MOV - Moving " + filename + " from " + f_source_directory + ".")
-                f_my_logger.info("MOV - Moved " + filename + " to " + p_target_directory + "/.")
-                f_metadata_array.update({'subtitles': 1})
+#         # move other existing files
+#         for filename in p_file_list:
+#             if (filename.endswith(f_target_language)):
+#                 print ("making")
+#                 os.makedirs(p_target_directory, exist_ok=True)
+#                 shutil.move(f_source_directory + filename, p_target_directory + "/" + search_for_title(filename))
+#                 f_my_logger.debug("MOV - Moving " + filename + " from " + f_source_directory + ".")
+#                 f_my_logger.info("MOV - Moved " + filename + " to " + p_target_directory + "/.")
+#                 f_metadata_array.update({'subtitles': 1})
 
-        f_my_logger.debug("MOV - Moving " + f_process_file + f_process_extension + " from " + f_source_directory + ".")
-        f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + p_target_directory + "/.")
+#         f_my_logger.debug("MOV - Moving " + f_process_file + f_process_extension + " from " + f_source_directory + ".")
+#         f_my_logger.info("MOV - Moved " + f_process_file + f_process_extension + " to " + p_target_directory + "/.")
 
-    return f_metadata_array
+#     return f_metadata_array
 
 # we need to get f_metadata_url written too.
 
