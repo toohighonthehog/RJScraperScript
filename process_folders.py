@@ -199,7 +199,7 @@ if __name__ == "__main__":
 
             scanned_directory = get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
-                f_source_extensions=SOURCE_EXTENSIONS,
+                f_source_extensions=SOURCE_EXTENSIONS
             )
 
             my_javlibrary = JAVLibrary()
@@ -208,13 +208,15 @@ if __name__ == "__main__":
             for full_filename in scanned_directory:
                 count += 1
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-                to_be_scraped = search_for_title(filename)
+                to_be_scraped, to_be_scraped_count = search_for_title(filename)
 
                 progress = f" {count}/{total}"
 
-                # ic (filename)
-                # ic (search_for_title(filename))
-                # ic (to_be_scraped)
+                ### unpick the logic here.
+                # if to_be_scraped, do subtitles and move
+                # if to_be_scraped_count = 0 and to_be_scaped is null, do empty metadata and move
+                # if to_be_scraped_count = 1, do metadata and move
+                # if to_be_scraped_count > 1 don't move
 
                 if to_be_scraped:
                     my_logger.info(f"+++++ {full_filename} / {progress}")
@@ -227,14 +229,14 @@ if __name__ == "__main__":
                         f_target_directory=TARGET_DIRECTORY,
                         f_target_language=TARGET_LANGUAGE,
                         f_process_title=to_be_scraped,
-                        f_my_logger=my_logger,
+                        f_my_logger=my_logger
                     )
 
                     get_subtitlecat(
                         f_target_directory=TARGET_DIRECTORY,
                         f_target_language=TARGET_LANGUAGE,
                         f_process_title=to_be_scraped,
-                        f_my_logger=my_logger,
+                        f_my_logger=my_logger
                     )
 
                     subtitle_available = get_best_subtitle(
@@ -242,7 +244,7 @@ if __name__ == "__main__":
                         f_target_directory=TARGET_DIRECTORY,
                         f_target_language=TARGET_LANGUAGE,
                         f_process_title=to_be_scraped,
-                        f_my_logger=my_logger,
+                        f_my_logger=my_logger
                     )
 
                     metadata_array = download_metadata(
@@ -250,7 +252,7 @@ if __name__ == "__main__":
                         f_subtitle_available=subtitle_available,
                         f_arbitrary_prate=ARBITRARY_PRATE,
                         f_added_date=BATCH_DATETIME,
-                        f_my_logger=my_logger,
+                        f_my_logger=my_logger
                     )
 
                     metadata_array = move_to_directory(
@@ -266,8 +268,9 @@ if __name__ == "__main__":
                     send_to_database(
                         f_metadata_array=metadata_array,
                         f_my_logger=my_logger,
-                        f_my_cursor=my_cursor,
+                        f_my_cursor=my_cursor
                     )
+
                     my_connection.commit()
 
                     send_to_json(
@@ -278,11 +281,9 @@ if __name__ == "__main__":
 
                 else:
                     # this bit...
-                    
                     pass
-                    
-                    pattern = (r"^[A-Z]{2,7}-\d{3}(?:" + "|".join(SOURCE_EXTENSIONS) + ")$")
-                    if (re.match(pattern, filename + file_extension)):
+                    #pattern = (r"^[A-Z]{2,7}-\d{3}(?:" + "|".join(SOURCE_EXTENSIONS) + ")$")
+                    if to_be_scraped_count == 0:
                         
                         my_logger.info(f"+++++ {filename}{file_extension} +++++ no match found but filename is valid.")
 
