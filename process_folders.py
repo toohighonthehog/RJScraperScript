@@ -210,8 +210,6 @@ if __name__ == "__main__":
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
                 to_be_scraped = search_for_title(filename)
 
-                pass
-
                 progress = f" {count}/{total}"
 
                 # ic (filename)
