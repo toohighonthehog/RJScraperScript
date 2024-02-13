@@ -215,9 +215,9 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
 
 def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_added_date, f_my_logger):
     p_my_javlibrary = JAVLibrary()
-    p_process_title = search_for_title(f_process_title)
-    p_metadata = p_my_javlibrary.getvideo(p_process_title)
-    p_metadata_url = p_metadata = p_my_javlibrary.search(p_process_title)
+    p_process_title = f_process_title
+    p_metadata = p_my_javlibrary.get_video(p_process_title)
+    p_metadata_url = p_my_javlibrary.search(p_process_title)
     p_metadata_array = []
 
     f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
@@ -628,16 +628,13 @@ def update_db_title_record(f_my_cursor, f_db_record):
 
 def value_in_list(f_list, f_value):
     p_results = False
-    pass
+
     for i in f_list:
-        pass
         if f_value in i['code']:
             p_results = i
             break
         else:
             p_results = {'code': f_value, 'status': 0, 'location': None}
-
-    pass
 
     return p_results
 

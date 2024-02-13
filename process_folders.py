@@ -2,6 +2,7 @@ from module_rjscanfix import *
 import os
 import pathlib
 from icecream import ic
+from javscraper import *
 
 # task:
 #   0 = Do nothing
@@ -41,7 +42,7 @@ PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 36, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 4, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
@@ -194,22 +195,20 @@ if __name__ == "__main__":
 
         # Do scans and processing.
         if PROCESS_TASK & 4:  # 4
-            my_logger.info("=======> Target: {TARGET_DIRECTORY} ".ljust(100, "="))
+            my_logger.info(f"=======> Target: {TARGET_DIRECTORY} ".ljust(100, "="))
 
             scanned_directory = get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
                 f_source_extensions=SOURCE_EXTENSIONS,
             )
 
+            my_javlibrary = JAVLibrary()
             total = len(scanned_directory)
             count = 0
             for full_filename in scanned_directory:
                 count += 1
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-                try:
-                    to_be_scraped = (my_javlibrary_new_getvideo(filename)).code
-                except:
-                    to_be_scraped = ""
+                to_be_scraped = search_for_title(filename)
 
                 pass
 
@@ -219,9 +218,9 @@ if __name__ == "__main__":
                 # ic (search_for_title(filename))
                 # ic (to_be_scraped)
 
-                if to_be_scraped == search_for_title(filename):
-                    my_logger.info(f"+++++ {full_filename} + " * ((93 - len(progress)) - (len(full_filename))) + progress)
-
+                if to_be_scraped:
+                    my_logger.info(f"+++++ {full_filename} / {progress}")
+                    pass
                     os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
 
                     get_localsubtitles(
@@ -276,13 +275,17 @@ if __name__ == "__main__":
                     send_to_json(
                         f_metadata_array=metadata_array,
                         f_my_logger=my_logger,
-                        f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped} "/" {to_be_scraped}.json"
+                        f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
                 else:
                     # this bit...
+                    
+                    pass
+                    
                     pattern = (r"^[A-Z]{2,7}-\d{3}(?:" + "|".join(SOURCE_EXTENSIONS) + ")$")
-                    if re.match(pattern, filename + file_extension):
+                    if (re.match(pattern, filename + file_extension)):
+                        
                         my_logger.info(f"+++++ {filename}{file_extension} +++++ no match found but filename is valid.")
 
                         os.makedirs(TARGET_DIRECTORY + filename, exist_ok=True)
@@ -367,7 +370,7 @@ if __name__ == "__main__":
                         my_connection.commit()
 
                     else:
-                        my_logger.warning(f"+++++ {filename}{file_extension} - no match found " + (73 - len(progress)) - (len(filename + file_extension)) + progress)
+                        my_logger.warning(f"+++++ {filename}{file_extension} - no match found ")
                 my_logger.info("=" * 100)
 
     my_cursor.close()
