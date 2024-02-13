@@ -213,7 +213,7 @@ def get_best_subtitle(f_target_directory, f_subtitle_whisper, f_target_language,
     return p_subtitle_available
 
 
-def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, f_added_date, f_my_logger):
+def download_metadata(f_process_title, f_my_logger):
     p_my_javlibrary = JAVLibrary()
     p_process_title = f_process_title
     p_metadata = p_my_javlibrary.get_video(p_process_title)
@@ -236,14 +236,15 @@ def download_metadata(f_process_title, f_subtitle_available, f_arbitrary_prate, 
                             "url": p_metadata_url,
                             "score": p_metadata.score,
                             "release_date": p_release_date,
-                            "added_date": f_added_date,
+                            "added_date": None,
                             "file_date": None,
                             "notes": None,
                             "location": None,
-                            "subtitles": f_subtitle_available,
-                            "prate": f_arbitrary_prate,
-                            "status": 9}
+                            "subtitles": None,
+                            "prate": None,
+                            "status": None}
     else:
+        # does this ever get called?
         f_my_logger.info(f"MET - No metadata found for '{p_process_title}'.")
 
     return p_metadata_array
@@ -557,6 +558,11 @@ def fix_file_code(f_input_string, f_delimiter="-"):
 
     return f"{p_letters}{f_delimiter}{p_number:03}{p_suffix}{p_file_extension}"
 
+# count =  1    =  all good, one confirmed match
+# count =  0    =  name looks good, but no scrape.
+# count = -n    =  multiple returned matches, skip
+# count = -255  =  absolutely nothing found.
+
 def search_for_title(f_input_string):
     f_my_javlibrary = JAVLibrary()
     p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
@@ -581,17 +587,25 @@ def search_for_title(f_input_string):
                 p_substrings.add(p_get_video.code)
 
     p_result = p_strict_matched_value
-    if len(p_substrings) == 1:
+    p_result_count = (len(p_substrings))
+
+    if len(p_substrings) > 1:
         p_result = list(p_substrings)[0]
+        p_result_count = -(len(p_substrings))
+
+    if len(p_substrings) == 0:
+        p_result = p_strict_matched_value
+        p_result_count = 0
+        if p_strict_matched_value is None:
+            p_result_count = -255
     
-    return p_result, len(p_substrings)
+    return p_result, p_result_count
 
 def get_db_array(f_my_cursor, f_db_query):
     p_my_sql_query = f"SELECT * FROM title {f_db_query} ORDER BY code"
     f_my_cursor.execute(p_my_sql_query)
     p_results = f_my_cursor.fetchall()
     return p_results
-
 
 def get_db_title_record(f_my_cursor, f_process_filename):
     p_my_sql_query = "SELECT * FROM title WHERE code='" + f_process_filename + "'"

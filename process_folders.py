@@ -212,11 +212,125 @@ if __name__ == "__main__":
 
                 progress = f" {count}/{total}"
 
-                ### unpick the logic here.
-                # if to_be_scraped, do subtitles and move
-                # if to_be_scraped_count = 0 and to_be_scaped is null, do empty metadata and move
-                # if to_be_scraped_count = 1, do metadata and move
-                # if to_be_scraped_count > 1 don't move
+                # count =  1    =  all good, one confirmed match
+                # count =  0    =  name looks good, but no scrape.
+                # count = -n    =  multiple returned matches, skip
+                # count = -255  =  absolutely nothing found.
+
+                if to_be_scraped_count == 1:
+                    # we've identified something, so make a directory
+                    os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
+
+                    # we've got a metadata match so download it
+                    if ARBITRARY_PRATE >= 0:
+                        metadata_array = download_metadata(
+                            f_process_title=to_be_scraped,
+                            f_my_logger=my_logger
+                        )
+                        
+                        metadata_array["added_date"] = BATCH_DATETIME
+                        metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
+                        metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
+                        metadata_array["prate"] = ARBITRARY_PRATE
+                        metadata_array["status"] = ""
+
+                    if ARBITRARY_PRATE < 0:
+                        pass
+                            # update values specific to a 'wanted'
+                        
+
+
+                if to_be_scraped_count == 0:
+                    if ARBITRARY_PRATE < 0:
+                        metadata_array = {
+                            "code": to_be_scraped,
+                            "name": None,
+                            "actor": [],
+                            "studio": None,
+                            "image": None,
+                            "genre": [],
+                            "url": [],
+                            "score": None,
+                            "release_date": None,
+                            "added_date": None,
+                            "file_date": None,
+                            "location": None,
+                            "subtitles": None,
+                            "prate": ARBITRARY_PRATE,
+                            "notes": None,
+                            "status": 7
+                        }
+
+
+                if to_be_scraped_count == 1:
+                    #my_logger.info(f"+++++ {full_filename} / {progress}")
+
+
+                    if ARBITRARY_PRATE < 0:
+                        metadata_array = {
+                            "code": to_be_scraped,
+                            "name": None,
+                            "actor": [],
+                            "studio": None,
+                            "image": None,
+                            "genre": [],
+                            "url": [],
+                            "score": None,
+                            "release_date": None,
+                            "added_date": None,
+                            "file_date": None,
+                            "location": None,
+                            "subtitles": None,
+                            "prate": ARBITRARY_PRATE,
+                            "notes": None,
+                            "status": 7
+                        }
+
+                    if ARBITRARY_PRATE >= 0:
+                        metadata_array = download_metadata(
+                            f_process_title=to_be_scraped,
+                            f_arbitrary_prate=ARBITRARY_PRATE,
+                            f_added_date=BATCH_DATETIME,
+                            f_my_logger=my_logger
+                        )
+
+                        metadata_array = {
+                            "code": to_be_scraped,
+                            "name": None,
+                            "actor": [],
+                            "studio": None,
+                            "image": None,
+                            "genre": [],
+                            "url": [],
+                            "score": None,
+                            "release_date": None,
+                            "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
+                            "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),),
+                            "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
+                            "subtitles": None,
+                            "prate": ARBITRARY_PRATE,
+                            "notes": None,
+                            "status": 8
+                        }
+
+                if to_be_scraped_count == 1:
+                    if to_be_scraped_count == 1:
+                        metadata_array = download_metadata(
+                            f_process_title=to_be_scraped,
+                            f_arbitrary_prate=ARBITRARY_PRATE,
+                            f_added_date=BATCH_DATETIME,
+                            f_my_logger=my_logger
+                        )
+
+                    metadata_array = move_to_directory(
+                        f_source_directory=SOURCE_DIRECTORY,
+                        f_target_directory=TARGET_DIRECTORY,
+                        f_target_language=TARGET_LANGUAGE,
+                        f_process_file=filename,
+                        f_process_extension=file_extension,
+                        f_my_logger=my_logger,
+                        f_metadata_array=metadata_array,
+                    )
 
                 if to_be_scraped:
                     #my_logger.info(f"+++++ {full_filename} / {progress}")
@@ -251,15 +365,6 @@ if __name__ == "__main__":
                         TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
                     )
 
-                if to_be_scraped_count == 1:
-                    metadata_array = download_metadata(
-                        f_process_title=to_be_scraped,
-                        f_subtitle_available=subtitle_available,
-                        f_arbitrary_prate=ARBITRARY_PRATE,
-                        f_added_date=BATCH_DATETIME,
-                        f_my_logger=my_logger
-                    )
-
                     metadata_array = move_to_directory(
                         f_source_directory=SOURCE_DIRECTORY,
                         f_target_directory=TARGET_DIRECTORY,
@@ -267,7 +372,7 @@ if __name__ == "__main__":
                         f_process_file=filename,
                         f_process_extension=file_extension,
                         f_my_logger=my_logger,
-                        f_metadata_array=metadata_array,
+                        f_metadata_array=metadata_array
                     )
 
                     send_to_database(
@@ -284,45 +389,7 @@ if __name__ == "__main__":
                         f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
-                if to_be_scraped and to_be_scraped_count == 0:
-                    if ARBITRARY_PRATE >= 0:
-                        metadata_array = {
-                            "code": filename,
-                            "name": None,
-                            "actor": [],
-                            "studio": None,
-                            "image": None,
-                            "genre": [],
-                            "url": [],
-                            "score": None,
-                            "release_date": None,
-                            "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
-                            "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),),
-                            "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
-                            "subtitles": subtitle_available,
-                            "prate": ARBITRARY_PRATE,
-                            "notes": None,
-                            "status": 8,
-                        }
-                    else:
-                        metadata_array = {
-                            "code": filename,
-                            "name": None,
-                            "actor": [],
-                            "studio": None,
-                            "image": None,
-                            "genre": [],
-                            "url": [],
-                            "score": None,
-                            "release_date": None,
-                            "added_date": None,
-                            "file_date": None,
-                            "location": None,
-                            "subtitles": subtitle_available,
-                            "prate": ARBITRARY_PRATE,
-                            "notes": None,
-                            "status": 7,
-                        }
+
 
                 if to_be_scraped is None:
                     my_logger.warning(f"+++++ {filename}{file_extension} - no match found ")
