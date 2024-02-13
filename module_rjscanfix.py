@@ -559,26 +559,32 @@ def fix_file_code(f_input_string, f_delimiter="-"):
 
 def search_for_title(f_input_string):
     f_my_javlibrary = JAVLibrary()
+    p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
+    p_strict_valid = r'^([A-Z]{3,5})(\d{3})Z$'
     p_input_string = f_input_string.upper()
     p_input_string = re.sub(r'[^A-Z0-9]', '', p_input_string)
     p_input_string += "Z"
-    p_pattern = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
 
+    p_strict_match = (re.match(p_strict_valid, p_input_string))
+    p_strict_matched_value = None
+    if p_strict_match:
+        p_strict_matched_value = p_strict_match.group(1) + '-' + p_strict_match.group(2)
+    
     p_substrings = set()
     for p_loop in range(len(p_input_string)):
         p_substring = p_input_string[p_loop:]
-        if re.match(p_pattern, p_substring):
-            p_matched_value = ((re.match(p_pattern, p_substring)).group())
+        if re.match(p_valid, p_substring):
+            p_matched_value = ((re.match(p_valid, p_substring)).group())
             p_matched_value = p_matched_value[:-1]
             p_get_video = (f_my_javlibrary.get_video(p_matched_value))
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
 
+    p_result = p_strict_matched_value
     if len(p_substrings) == 1:
-        result = list(p_substrings)[0]
-    else:
-        result = None
-    return result
+        p_result = list(p_substrings)[0]
+    
+    return p_result, len(p_substrings)
 
 def get_db_array(f_my_cursor, f_db_query):
     p_my_sql_query = f"SELECT * FROM title {f_db_query} ORDER BY code"
