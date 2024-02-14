@@ -219,8 +219,7 @@ if __name__ == "__main__":
                 # if to_be_scraped_count > 1 don't move
 
                 if to_be_scraped:
-                    my_logger.info(f"+++++ {full_filename} / {progress}")
-                    pass
+                    #my_logger.info(f"+++++ {full_filename} / {progress}")
                     os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
 
                     get_localsubtitles(
@@ -247,6 +246,12 @@ if __name__ == "__main__":
                         f_my_logger=my_logger
                     )
 
+                    shutil.move(
+                        SOURCE_DIRECTORY + filename + file_extension,
+                        TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
+                    )
+
+                if to_be_scraped_count == 1:
                     metadata_array = download_metadata(
                         f_process_title=to_be_scraped,
                         f_subtitle_available=subtitle_available,
@@ -279,97 +284,50 @@ if __name__ == "__main__":
                         f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
-                else:
-                    # this bit...
-                    pass
-                    #pattern = (r"^[A-Z]{2,7}-\d{3}(?:" + "|".join(SOURCE_EXTENSIONS) + ")$")
-                    if to_be_scraped_count == 0:
-                        
-                        my_logger.info(f"+++++ {filename}{file_extension} +++++ no match found but filename is valid.")
-
-                        os.makedirs(TARGET_DIRECTORY + filename, exist_ok=True)
-
-                        get_localsubtitles(
-                            f_subtitle_general=SUBTITLE_GENERAL,
-                            f_subtitle_whisper=SUBTITLE_WHISPER,
-                            f_target_directory=TARGET_DIRECTORY,
-                            f_target_language=TARGET_LANGUAGE,
-                            f_process_title=filename,
-                            f_my_logger=my_logger,
-                        )
-
-                        subtitle_available = get_subtitlecat(
-                            f_target_directory=TARGET_DIRECTORY,
-                            f_target_language=TARGET_LANGUAGE,
-                            f_process_title=filename,
-                            f_my_logger=my_logger,
-                        )
-
-                        subtitle_available = get_best_subtitle(
-                            f_subtitle_whisper=SUBTITLE_WHISPER,
-                            f_target_directory=TARGET_DIRECTORY,
-                            f_target_language=TARGET_LANGUAGE,
-                            f_process_title=filename,
-                            f_my_logger=my_logger,
-                        )
-
-                        if ARBITRARY_PRATE >= 0:
-                            metadata_array = {
-                                "code": filename,
-                                "name": None,
-                                "actor": [],
-                                "studio": None,
-                                "image": None,
-                                "genre": [],
-                                "url": [],
-                                "score": None,
-                                "release_date": None,
-                                "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
-                                "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),),
-                                "location": TARGET_DIRECTORY + filename + "/" + filename + file_extension,
-                                "subtitles": subtitle_available,
-                                "prate": ARBITRARY_PRATE,
-                                "notes": None,
-                                "status": 8,
-                            }
-                        else:
-                            metadata_array = {
-                                "code": filename,
-                                "name": None,
-                                "actor": [],
-                                "studio": None,
-                                "image": None,
-                                "genre": [],
-                                "url": [],
-                                "score": None,
-                                "release_date": None,
-                                "added_date": None,
-                                "file_date": None,
-                                "location": None,
-                                "subtitles": subtitle_available,
-                                "prate": ARBITRARY_PRATE,
-                                "notes": None,
-                                "status": 7,
-                            }
-
-                        pass
-
-                        shutil.move(
-                            SOURCE_DIRECTORY + filename + file_extension,
-                            TARGET_DIRECTORY + filename + "/" + filename + file_extension
-                        )
-
-                        pass
-
-                        send_to_database(
-                            f_metadata_array=metadata_array,
-                            f_my_logger=my_logger,
-                            f_my_cursor=my_cursor
-                        )
-                        my_connection.commit()
-
+                if to_be_scraped and to_be_scraped_count == 0:
+                    if ARBITRARY_PRATE >= 0:
+                        metadata_array = {
+                            "code": filename,
+                            "name": None,
+                            "actor": [],
+                            "studio": None,
+                            "image": None,
+                            "genre": [],
+                            "url": [],
+                            "score": None,
+                            "release_date": None,
+                            "added_date": str((f"{datetime.now():%Y-%m-%d %H:%M:%S}")),
+                            "file_date": time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),),
+                            "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
+                            "subtitles": subtitle_available,
+                            "prate": ARBITRARY_PRATE,
+                            "notes": None,
+                            "status": 8,
+                        }
                     else:
-                        my_logger.warning(f"+++++ {filename}{file_extension} - no match found ")
+                        metadata_array = {
+                            "code": filename,
+                            "name": None,
+                            "actor": [],
+                            "studio": None,
+                            "image": None,
+                            "genre": [],
+                            "url": [],
+                            "score": None,
+                            "release_date": None,
+                            "added_date": None,
+                            "file_date": None,
+                            "location": None,
+                            "subtitles": subtitle_available,
+                            "prate": ARBITRARY_PRATE,
+                            "notes": None,
+                            "status": 7,
+                        }
+
+                if to_be_scraped is None:
+                    my_logger.warning(f"+++++ {filename}{file_extension} - no match found ")
+
+                my_connection.commit()
                 my_logger.info("=" * 100)
 
     my_cursor.close()
