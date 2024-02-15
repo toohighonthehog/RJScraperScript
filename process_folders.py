@@ -86,7 +86,7 @@ if __name__ == "__main__":
             PROCESS_TASK = DEFAULT_TASK
 
         if not os.path.exists(SOURCE_DIRECTORY):
-            my_logger.critical(f"{SOURCE_DIRECTORY} does not exist.  Terminating.")
+            my_logger.critical(logt(f"{SOURCE_DIRECTORY} does not exist.  Terminating."))
             exit()
         pass
 
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
         # Do scans and processing.
         if PROCESS_TASK & 4:  # 4
-            my_logger.info(f"=======> Target: {TARGET_DIRECTORY} ".ljust(100, "="))
+            my_logger.info(logt(f"=======> Target: {TARGET_DIRECTORY}"))
 
             scanned_directory = get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
@@ -219,6 +219,10 @@ if __name__ == "__main__":
                 # count =  0    =  name looks good, but no scrape.
                 # count = -n    =  multiple returned matches, skip
                 # count = -255  =  absolutely nothing found.
+                
+                #   7 = metadata not found, file not found - wanted.
+                #   8 = metadata not found, file found.
+                #   9 = all good.
 
                 if to_be_scraped_count >= 0:
                     # we've identified something, so make a directory
@@ -236,10 +240,10 @@ if __name__ == "__main__":
                     if ARBITRARY_PRATE >= 0:
                         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
                         metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
-                        metadata_array["status"] = 999 # what number?
+                        metadata_array["status"] = 9 # what number?
 
                     if ARBITRARY_PRATE < 0:
-                        metadata_array["status"] = 999 # what number?
+                        metadata_array["status"] = 7 # what number?
 
                 if to_be_scraped_count == 0:
                     metadata_array = {
@@ -262,7 +266,7 @@ if __name__ == "__main__":
                     }
 
                     if ARBITRARY_PRATE < 0:
-                        metadata_array["status"] = 999 # what number?
+                        metadata_array["status"] = 8 # what number?
                 pass
 
                 if to_be_scraped_count >= 0:
