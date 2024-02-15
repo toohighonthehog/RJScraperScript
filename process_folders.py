@@ -42,7 +42,7 @@ PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 4, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 36, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
@@ -220,9 +220,11 @@ if __name__ == "__main__":
                 # count = -n    =  multiple returned matches, skip
                 # count = -255  =  absolutely nothing found.
 
-                if to_be_scraped_count == 1:
+                if to_be_scraped_count >= 0:
                     # we've identified something, so make a directory
-                    os.makedirs(TARGET_DIRECTORY + search_for_title(filename), exist_ok=True)
+                    os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
+
+                if to_be_scraped_count == 1:
                     metadata_array = download_metadata(
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger
@@ -234,32 +236,36 @@ if __name__ == "__main__":
                     if ARBITRARY_PRATE >= 0:
                         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
                         metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
-                        metadata_array["status"] = "" # what number?
+                        metadata_array["status"] = 999 # what number?
 
                     if ARBITRARY_PRATE < 0:
-                        metadata_array["status"] = "" # what number?
+                        metadata_array["status"] = 999 # what number?
 
                 if to_be_scraped_count == 0:
-                    if ARBITRARY_PRATE < 0:
-                        metadata_array = {
-                            "code": to_be_scraped,
-                            "name": None,
-                            "actor": [],
-                            "studio": None,
-                            "image": None,
-                            "genre": [],
-                            "url": [],
-                            "score": None,
-                            "release_date": None,
-                            "added_date": None,
-                            "file_date": None,
-                            "location": None,
-                            "subtitles": None,
-                            "prate": ARBITRARY_PRATE,
-                            "notes": None,
-                            "status": 7
-                        }
+                    metadata_array = {
+                        "code": to_be_scraped,
+                        "name": None,
+                        "actor": [],
+                        "studio": None,
+                        "image": None,
+                        "genre": [],
+                        "url": [],
+                        "score": None,
+                        "release_date": None,
+                        "added_date": None,
+                        "file_date": None,
+                        "location": None,
+                        "subtitles": None,
+                        "prate": ARBITRARY_PRATE,
+                        "notes": None,
+                        "status": 7
+                    }
 
+                    if ARBITRARY_PRATE < 0:
+                        metadata_array["status"] = 999 # what number?
+                pass
+
+                if to_be_scraped_count >= 0:
                     get_localsubtitles(
                         f_subtitle_general=SUBTITLE_GENERAL,
                         f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -302,10 +308,8 @@ if __name__ == "__main__":
                         f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
-
-
                 if to_be_scraped_count < 0:
-                    my_logger.warning(f"+++++ {filename}{file_extension} - no match found ")
+                    my_logger.warning(f"+++++ {filename}{file_extension} - no confirmed match found.")
 
                 my_connection.commit()
                 my_logger.info("=" * 100)

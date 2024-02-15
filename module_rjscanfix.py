@@ -41,50 +41,53 @@ def get_list_of_files(f_source_directory, f_source_extensions):
 
 
 def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_target_language, f_process_title, f_my_logger):
-    p_process_title = search_for_title(f_process_title)
+    #p_process_title = f_process_title
 
     # fix raw whisper filename
-    p_whisper_raw = f_subtitle_whisper + p_process_title + "-en Whisper-cleaned.srt"
+    p_whisper_raw = f_subtitle_whisper + f_process_title + "-en Whisper-cleaned.srt"
     p_whisper_raw_fixed = p_whisper_raw.replace("-en Whisper-cleaned", "-(WH)-en")
+    
+    pass
+    
     try:
         os.rename(p_whisper_raw, p_whisper_raw_fixed)
     except:
         pass
 
-    if (os.path.isfile(f_subtitle_general + p_process_title + ".srt")):
-        f_my_logger.info(f"SUB - Found {p_process_title}.srt in 'General'.")
-        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_general + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(LR).srt")
+    if (os.path.isfile(f_subtitle_general + f_process_title + ".srt")):
+        f_my_logger.info(f"SUB - Found {f_process_title}.srt in 'General'.")
+        os.makedirs(f_target_directory + f_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_general + f_process_title + ".srt", f_target_directory + f_process_title + "/" + f_process_title + "-(LR).srt")
 
-    if (os.path.isfile(f_subtitle_whisper + p_process_title + ".srt")):
-        f_my_logger.info(f"SUB - Found {p_process_title}.srt in 'Whisper'.")
-        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + p_process_title + ".srt", f_target_directory + p_process_title + "/" + p_process_title + "-(WH).srt")
+    if (os.path.isfile(f_subtitle_whisper + f_process_title + ".srt")):
+        f_my_logger.info(f"SUB - Found {f_process_title}.srt in 'Whisper'.")
+        os.makedirs(f_target_directory + f_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_whisper + f_process_title + ".srt", f_target_directory + f_process_title + "/" + f_process_title + "-(WH).srt")
 
-    if (os.path.isfile(f_subtitle_whisper + p_process_title + "." + f_target_language)):
-        f_my_logger.info(f"SUB - Found {p_process_title}{f_target_language} in 'Whisper'.")
-        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + p_process_title + "." + f_target_language, f_target_directory + "/" + p_process_title + "/" + p_process_title + "-" + f_target_language)
+    if (os.path.isfile(f_subtitle_whisper + f_process_title + "." + f_target_language)):
+        f_my_logger.info(f"SUB - Found {f_process_title}{f_target_language} in 'Whisper'.")
+        os.makedirs(f_target_directory + f_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_whisper + f_process_title + "." + f_target_language, f_target_directory + "/" + f_process_title + "/" + f_process_title + "-" + f_target_language)
 
-    if (os.path.isfile(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language)):
-        f_my_logger.info(f"SUB - Found {p_process_title}-(WH)-{f_target_language} in 'Whisper'.")
-        os.makedirs(f_target_directory + p_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + p_process_title + "-(WH)-" + f_target_language, f_target_directory + "/" + p_process_title + "/" + p_process_title + "-(WH)-" + f_target_language)
+    if (os.path.isfile(f_subtitle_whisper + f_process_title + "-(WH)-" + f_target_language)):
+        f_my_logger.info(f"SUB - Found {f_process_title}-(WH)-{f_target_language} in 'Whisper'.")
+        os.makedirs(f_target_directory + f_process_title, exist_ok=True)
+        shutil.copy(f_subtitle_whisper + f_process_title + "-(WH)-" + f_target_language, f_target_directory + "/" + f_process_title + "/" + f_process_title + "-(WH)-" + f_target_language)
 
     return True
 
 
 def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my_logger):
     p_session = HTMLSession()
-    p_process_title = search_for_title(f_process_title)
-    p_target_directory = f_target_directory + p_process_title + "/"
+    #p_process_title = f_process_title
+    p_target_directory = f_target_directory + f_process_title + "/"
 
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
         f_my_logger.debug("SUB - Existing subtitles found.")
 
-    f_my_logger.info(f"SUB - Searching SubtitleCat for '{p_process_title}'.")
+    f_my_logger.info(f"SUB - Searching SubtitleCat for '{f_process_title}'.")
 
-    p_url_level1 = 'https://www.subtitlecat.com/index.php?search=' + p_process_title
+    p_url_level1 = 'https://www.subtitlecat.com/index.php?search=' + f_process_title
 
     pass
     p_counter = 0
@@ -124,7 +127,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     for p_table_level1_entry in p_table_level1_entries:
         p_table_level1_entry_url = (list(p_table_level1_entry[0])[0])
 
-        if re.search(p_process_title, p_table_level1_entry_url, re.IGNORECASE):
+        if re.search(f_process_title, p_table_level1_entry_url, re.IGNORECASE):
             p_response_level2 = p_session.get(p_table_level1_entry_url, timeout=60, allow_redirects=True)
             p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
             if p_table_level2 is not None:
@@ -144,7 +147,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                                     p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
                                 f_my_logger.info(f"SUB - Downloading {p_subtitle_filename}.")
                                 p_subtitle_download = requests.get(p_subtitle_url, timeout=60, allow_redirects=True)
-                                p_new_subtitle_filename = re.sub(p_process_title, p_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
+                                p_new_subtitle_filename = re.sub(f_process_title, f_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
                                 
                                 open(p_target_directory + p_new_subtitle_filename,
                                      'wb').write(p_subtitle_download.content)
@@ -185,8 +188,8 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
 def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_my_logger):
     # determine the subtitle status only here...
     # remove from elsewhere.
-    p_process_title = search_for_title(f_process_title)
-    p_target_directory = f_target_directory + p_process_title + "/"
+    #p_process_title = search_for_title(f_process_title)
+    p_target_directory = f_target_directory + f_process_title + "/"
     p_filelist = get_list_of_files(p_target_directory, ['.srt'])
     p_biggest_filesize = 0
     p_biggest_filename = ""
@@ -206,48 +209,48 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
         if p_filename.endswith(f_target_language):
             p_subtitle_available = 9
 
-    if (p_biggest_filesize > 0) and not (os.path.isfile(p_target_directory + p_process_title + "-" + f_target_language)):
-        f_my_logger.info(f"SUB - Creating {p_process_title}-{f_target_language} as default subtitle file.")
-        shutil.copy(p_biggest_filename, (p_target_directory + p_process_title + "-" + f_target_language))
+    if (p_biggest_filesize > 0) and not (os.path.isfile(p_target_directory + f_process_title + "-" + f_target_language)):
+        f_my_logger.info(f"SUB - Creating {f_process_title}-{f_target_language} as default subtitle file.")
+        shutil.copy(p_biggest_filename, (p_target_directory + f_process_title + "-" + f_target_language))
 
     return p_subtitle_available
 
 
-# def download_metadata(f_process_title, f_my_logger):
-#     p_my_javlibrary = JAVLibrary()
-#     p_process_title = f_process_title
-#     p_metadata = p_my_javlibrary.get_video(p_process_title)
-#     p_metadata_url = p_my_javlibrary.search(p_process_title)
-#     p_metadata_array = []
+def download_metadata(f_process_title, f_my_logger):
+    p_my_javlibrary = JAVLibrary()
+    p_process_title = f_process_title
+    p_metadata = p_my_javlibrary.get_video(p_process_title)
+    p_metadata_url = p_my_javlibrary.search(p_process_title)
+    p_metadata_array = []
 
-#     f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
+    f_my_logger.info(f"MET - Searching web for '{p_process_title}' metadata.")
 
-#     if p_metadata is not None:
-#         p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
+    if p_metadata is not None:
+        p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
 
-#         f_my_logger.info(f"MET - Metadata downloaded for '{p_process_title}'.")
+        f_my_logger.info(f"MET - Metadata downloaded for '{p_process_title}'.")
 
-#         p_metadata_array = {"code": p_metadata.code,
-#                             "name": p_metadata.name,
-#                             "actor": p_metadata.actresses,
-#                             "studio": p_metadata.studio,
-#                             "image": p_metadata.image,
-#                             "genre": p_metadata.genres,
-#                             "url": p_metadata_url,
-#                             "score": p_metadata.score,
-#                             "release_date": p_release_date,
-#                             "added_date": None,
-#                             "file_date": None,
-#                             "notes": None,
-#                             "location": None,
-#                             "subtitles": None,
-#                             "prate": None,
-#                             "status": None}
-#     else:
-#         # does this ever get called?
-#         f_my_logger.info(f"MET - No metadata found for '{p_process_title}'.")
+        p_metadata_array = {"code": p_metadata.code,
+                            "name": p_metadata.name,
+                            "actor": p_metadata.actresses,
+                            "studio": p_metadata.studio,
+                            "image": p_metadata.image,
+                            "genre": p_metadata.genres,
+                            "url": p_metadata_url,
+                            "score": p_metadata.score,
+                            "release_date": p_release_date,
+                            "added_date": None,
+                            "file_date": None,
+                            "notes": None,
+                            "location": None,
+                            "subtitles": None,
+                            "prate": None,
+                            "status": None}
+    else:
+        # does this ever get called?
+        f_my_logger.info(f"MET - No metadata found for '{p_process_title}'.")
 
-#     return p_metadata_array
+    return p_metadata_array
 
 
 # def move_to_directory(f_source_directory, f_target_directory, f_target_language, f_process_file, f_process_extension, f_my_logger, f_metadata_array):
