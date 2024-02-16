@@ -9,13 +9,15 @@ from icecream import ic
 #   1 = Generate the ffmpeg script, processed flagged
 #   2 = Rescan for subtitles
 #   4 = Process files in root of source folder
-#   8 = ** Nothing yet **
+#   8 = Process files in root of source folder (but no SubtitleCat)
 #  16 = ** Nothing yet **
 #  32 = Just undo / reset.  Don't Scan
 #  64 = Do DEFAULT_TASK.
+#  Add some logic on what can be run concurrently.
+#  valid values = 1,2,3,4,32,36
 
 # Status:
-#   1 = set for rescan (i.e. already reverted  to parent folder)
+#   1 = set for rescan (i.e. already reverted to parent folder)
 #   2 = set for rescan (i.e. revert to parent folder)
 #   6 = metadata not found, file not found - wanted.
 #   7 = metadata found, file not found - wanted.
@@ -33,7 +35,7 @@ from icecream import ic
 
 os.system("clear")
 
-DEFAULT_TASK = 36
+DEFAULT_TASK = 40
 PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
@@ -50,6 +52,8 @@ PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
+
+VALID_TASKS = (0, 1, 2, 3, 4, 8, 32, 36, 40)
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -81,20 +85,23 @@ if __name__ == "__main__":
         if PROCESS_TASK == 64:
             PROCESS_TASK = DEFAULT_TASK
 
-        if not os.path.exists(SOURCE_DIRECTORY):
-            my_logger.critical(logt(f"{SOURCE_DIRECTORY} does not exist.  Terminating."))
-            exit()
-
-        if not os.path.exists(TARGET_DIRECTORY):
-            my_logger.critical(logt(f"{TARGET_DIRECTORY} does not exist.  Creating."))
-            os.makedirs(TARGET_DIRECTORY, exist_ok=True)
+        if PROCESS_TASK not in VALID_TASKS:
+            my_logger.warning(logt(f_left = f"Invalid task for {SOURCE_DIRECTORY} ", f_middle = "=", f_width = -3))
+            PROCESS_TASK = 0
 
         if PROCESS_TASK >= 1:
-            my_logger.info(logt(f"===== Source: {SOURCE_DIRECTORY} "))
-            my_logger.info(logt("="))
+            my_logger.info(logt(f_left = f"=== Source: {SOURCE_DIRECTORY} ", f_middle = "="))
+            if not os.path.exists(SOURCE_DIRECTORY):
+                my_logger.critical(logt(f"{SOURCE_DIRECTORY} does not exist.  Terminating."))
+                exit()
+
+            if not os.path.exists(TARGET_DIRECTORY):
+                my_logger.critical(logt(f"{TARGET_DIRECTORY} does not exist.  Creating."))
+                os.makedirs(TARGET_DIRECTORY, exist_ok=True)
+                #my_logger.info(logt("="))
 
         if PROCESS_TASK & 32:
-            my_logger.info(logt("=== Reverting ( Mode: Undo Everything ) "))
+            my_logger.info(logt(f_left = "=== Reverting ( Mode: Undo Everything ) ", f_middle = "="))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
@@ -106,14 +113,14 @@ if __name__ == "__main__":
                         f_my_logger=my_logger,
                     )
 
-        if (PROCESS_TASK & 1) and ~(PROCESS_TASK & 32):
-            my_logger.info(logt("=== Process Rescan Requests"))
+        if PROCESS_TASK & 1:
+            my_logger.info(logt(f_left = "=== Process Rescan Requests", f_middle = "="))
            
             db_query = f"WHERE status = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
 
             for record_to_scan in records_to_scan:
-                my_logger.info(logt("=== Reverting ( Mode: Flagged in DB )."))
+                my_logger.info(logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
 
                 move_up_level(
                     f_source_directory = SOURCE_DIRECTORY,
@@ -126,7 +133,7 @@ if __name__ == "__main__":
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
-            my_logger.info(logt("=== Process MP3 Runner Requests."))
+            my_logger.info(logt(f_left = "=== Process MP3 Runner Requests ", f_middle = "="))
 
             # anything with subtitles = 2, add to runner.sh MP3 creator then set to 3.
             db_query = f"WHERE subtitles = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
@@ -144,7 +151,7 @@ if __name__ == "__main__":
                 my_connection.commit()         
 
         if PROCESS_TASK & 2:
-            my_logger.info(logt("=== Scanning Subtitles"))
+            my_logger.info(logt(f_left = "=== Scanning Subtitles ", f_middle = "="))
 
             db_query = f"WHERE subtitles IN (0,1,3,4,5,6,7,8) AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
@@ -162,7 +169,7 @@ if __name__ == "__main__":
                 get_subtitlecat(
                     f_target_directory=TARGET_DIRECTORY,
                     f_target_language=TARGET_LANGUAGE,
-                    f_process_title=to_be_scraped,
+                    f_process_title=record_to_scan['code'],
                     f_my_logger=my_logger
                     )
 
@@ -186,9 +193,8 @@ if __name__ == "__main__":
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
-        if PROCESS_TASK & 4:  # 4
-            my_logger.info(logt("="))
-            my_logger.info(logt(f"=======> Target: {TARGET_DIRECTORY}"))
+        if (PROCESS_TASK & 4) or (PROCESS_TASK & 8):  # 4
+            my_logger.info(logt(f_left = f"=== Processing Files ", f_middle = "="))
 
             scanned_directory = get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
@@ -204,14 +210,7 @@ if __name__ == "__main__":
                 to_be_scraped, to_be_scraped_count = search_for_title(filename)
 
                 progress = f" {count}/{total}"
-                my_logger.info(logt(f"Processing '{filename}' ", progress, "-"))
-
-                # count =  1    =  all good, one confirmed match
-                # count =  0    =  name looks good, but no scrape.
-                # count = -n    =  multiple returned matches, skip
-                # count = -255  =  absolutely nothing found.
-
-                pass
+                my_logger.info(logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
                 if to_be_scraped_count >= 0:
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
@@ -270,12 +269,13 @@ if __name__ == "__main__":
                         f_my_logger=my_logger
                     )
 
-                    get_subtitlecat(
-                        f_target_directory=TARGET_DIRECTORY,
-                        f_target_language=TARGET_LANGUAGE,
-                        f_process_title=to_be_scraped,
-                        f_my_logger=my_logger
-                    )
+                    if PROCESS_TASK == 4:
+                        get_subtitlecat(
+                            f_target_directory=TARGET_DIRECTORY,
+                            f_target_language=TARGET_LANGUAGE,
+                            f_process_title=to_be_scraped,
+                            f_my_logger=my_logger
+                        )
 
                     metadata_array["subtitles"] = get_best_subtitle(
                         f_target_directory=TARGET_DIRECTORY,
@@ -304,10 +304,10 @@ if __name__ == "__main__":
                     )
 
                 if to_be_scraped_count < 0:
-                    my_logger.warning(f"+++++ {filename}{file_extension} - no confirmed match found.")
+                    my_logger.warning(logt(f"+++++ {filename}{file_extension} - no confirmed match found.", f_width = -3))
 
                 my_connection.commit()
-                my_logger.info(logt("-"))
+                my_logger.info(logt("="))
 
     my_cursor.close()
     my_connection.disconnect()

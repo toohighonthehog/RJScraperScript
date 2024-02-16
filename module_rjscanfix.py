@@ -14,7 +14,7 @@ def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_
         p_target_directory = f_source_directory + f_process_filename + "/"
         p_target_filename = f_target_directory + p_filename
         
-        f_my_logger.info(logt(f"MOV - Moving {p_source_filename} back a level."))
+        f_my_logger.info(logt(f"MOV - Moving {p_filename} back a level."))
         os.makedirs(p_target_directory, exist_ok=True)
         shutil.move(p_source_filename, p_target_filename)
 
@@ -67,7 +67,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     p_target_directory = f_target_directory + f_process_title + "/"
 
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
-        f_my_logger.debug(logt("SUB - Existing subtitles found."))
+        f_my_logger.debug(logt(f_left = "SUB - Existing subtitles found.", f_width = -1))
 
     f_my_logger.info(logt(f"SUB - Searching SubtitleCat for '{f_process_title}'."))
 
@@ -80,11 +80,11 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning(logt(f"URL - SubtitleCat (L0) not responding.", f"{str(p_counter)}/5"))
+            f_my_logger.warning(logt(f_left = f"URL - SubtitleCat (L0) not responding.", f_right = f"{str(p_counter)}/5"), f_width = -3)
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(logt("URL - SubtitleCat (L0) connection failed.  Terminating."))
+        f_my_logger.critical(logt(f_left = "URL - SubtitleCat (L0) connection failed.  Terminating.", f_width = -4))
         exit()
 
     p_counter = 0
@@ -94,11 +94,11 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning(logt(f"URL - SubtitleCat (L1) not responding.", f"{str(p_counter)}/5"))
+            f_my_logger.warning(logt(f_left = f"URL - SubtitleCat (L1) not responding.", f_right = f"{str(p_counter)}/5", f_width = -3))
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(logt("URL - SubtitleCat (L1) connection failed.  Terminating."))
+        f_my_logger.critical(logt(f_left = "URL - SubtitleCat (L1) connection failed.  Terminating.", f_width = -4))
         exit()
 
     p_table_level1_entries = [[c.absolute_links for c in row.find('td')][:1] for row in p_table_level1.find('tr')][1:]
@@ -108,6 +108,21 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
 
         if re.search(f_process_title, p_table_level1_entry_url, re.IGNORECASE):
             p_response_level2 = p_session.get(p_table_level1_entry_url, timeout=60, allow_redirects=True)
+            pass
+
+            p_counter = 0
+            while p_counter < 3:
+                try:
+                    p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', timeout=30, first=True)
+                except:
+                    p_counter += 1
+                    f_my_logger.warning(logt(f_left = f"URL - SubtitleCat (L2) not responding.", f_right = f"{str(p_counter)}/3", f_width = -3))
+                    time.sleep(5)
+
+            if p_counter >= 3:
+                f_my_logger.warning(logt(f_left = "URL - SubtitleCat (L2) connection failed.  Skipping."))
+                break
+
             p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', first=True)
             if p_table_level2 is not None:
                 for p_table_level2_entry in p_table_level2.absolute_links:
@@ -120,7 +135,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                             p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
                             p_count += 1
                             if p_subtitle_url_check == 200:
-                                f_my_logger.debug(logt(f"SUB - Subtitle_URL " + p_subtitle_url + "."))
+                                f_my_logger.debug(logt(f_left = f"SUB - Subtitle_URL " + p_subtitle_url + "."), f_width = -1)
                                 if p_subtitle_url.find('/'):
                                     p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
                                 f_my_logger.info(logt(f"SUB - Downloading {p_subtitle_filename}."))
@@ -412,7 +427,7 @@ def search_for_title(f_input_string):
             p_result_count = 1
         else:
             p_result = None
-            print (p_substrings)
+            #print (p_substrings)
             p_result_count = -p_result_count
 
     if p_result_count == 0:
@@ -493,11 +508,15 @@ def get_logger():
     p_logger.addHandler(get_file_handler())
     return p_logger
 
-def logt(f_left = "", f_right = "", f_middle = " ", f_width = 120):
+def logt(f_left = "", f_right = "", f_middle = " ", f_width = 0):
+    p_default_width = 120
+    if f_width > 0: p_width = f_width
+    if f_width == 0: p_width = p_default_width
+    if f_width < 0: p_width =  p_default_width + f_width
     if len(f_left) == 1:
-        return (f_left * f_width)
+        return (f_left * p_width)
     
-    p_middle_length = f_width - (len(f_left) + len(f_right))
+    p_middle_length = p_width - (len(f_left) + len(f_right))
 
     return (f_left + (p_middle_length * f_middle) + f_right)
 
