@@ -2,7 +2,7 @@ import mysql.connector
 
 if __name__ == "__main__":
 
-    db_name="Multimedia"
+    db_name="Multimedia_Dev"
 
     my_connection = mysql.connector.connect(
         user="rjohnson",

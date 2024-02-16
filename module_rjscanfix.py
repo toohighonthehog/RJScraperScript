@@ -400,19 +400,29 @@ def search_for_title(f_input_string):
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
 
-    p_result = p_strict_matched_value
+    #p_result = p_strict_matched_value
     p_result_count = (len(p_substrings))
 
-    if len(p_substrings) > 1:
+    if p_result_count == 1:
         p_result = list(p_substrings)[0]
-        p_result_count = -(len(p_substrings))
 
-    if len(p_substrings) == 0:
+    if p_result_count > 1:
+        if f_input_string in p_substrings:
+            p_result = f_input_string
+            p_result_count = 1
+        else:
+            p_result = None
+            print (p_substrings)
+            p_result_count = -p_result_count
+
+    if p_result_count == 0:
         p_result = p_strict_matched_value
         p_result_count = 0
         if p_strict_matched_value is None:
             p_result_count = -255
-    
+
+    pass
+
     return p_result, p_result_count
 
 def get_db_array(f_my_cursor, f_db_query):

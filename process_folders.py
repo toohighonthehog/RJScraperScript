@@ -33,14 +33,14 @@ from icecream import ic
 
 os.system("clear")
 
-DEFAULT_TASK = 0
+DEFAULT_TASK = 36
 PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 36, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 0, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
@@ -210,6 +210,8 @@ if __name__ == "__main__":
                 # count =  0    =  name looks good, but no scrape.
                 # count = -n    =  multiple returned matches, skip
                 # count = -255  =  absolutely nothing found.
+
+                pass
 
                 if to_be_scraped_count >= 0:
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
