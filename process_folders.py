@@ -1,10 +1,10 @@
 from module_rjscanfix import *
 import os
-import pathlib
-from icecream import ic
+import mysql.connector
 from javscraper import *
+from icecream import ic
 
-# task:
+# Task:
 #   0 = Do nothing
 #   1 = Generate the ffmpeg script, processed flagged
 #   2 = Rescan for subtitles
@@ -14,15 +14,13 @@ from javscraper import *
 #  32 = Just undo / reset.  Don't Scan
 #  64 = Do DEFAULT_TASK.
 
-#  1, 2 & 8 should be combined as they all just cover rescans initiated from the database. (and run first?)
-
-# status:
+# Status:
 #   1 = set for rescan (i.e. already reverted  to parent folder)
 #   2 = set for rescan (i.e. revert to parent folder)
-#   7 = metadata not found, file not found - wanted.
+#   6 = metadata not found, file not found - wanted.
+#   7 = metadata found, file not found - wanted.
 #   8 = metadata not found, file found.
 #   9 = all good.
-
 
 # Subtitles:
 #   1 = ???
@@ -35,14 +33,14 @@ from javscraper import *
 
 os.system("clear")
 
-DEFAULT_TASK = 1
+DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 36, "prate": 12, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 36, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
@@ -59,7 +57,6 @@ LOCAL_MOUNT_PREFIX = "/mnt"
 REMOTE_MOUNT_PREFIX = "file://diskstation"
 SUBTITLE_GENERAL = "/mnt/multimedia/Other/~Miscellaneous/~SubtitleRepository/General/"
 SUBTITLE_WHISPER = "/mnt/multimedia/Other/~Miscellaneous/~SubtitleRepository/Whisper/"
-
 BATCH_DATETIME = str(f"{datetime.now():%Y-%m-%d %H:%M:%S}")
 
 my_connection = mysql.connector.connect(
@@ -67,45 +64,40 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD",
     host="diskstation.hachiko.int",
     port=3306,
-    database="Multimedia_Dev",
+    database="Multimedia_Dev"
 )
 
 my_cursor = my_connection.cursor(dictionary=True)
 my_logger = get_logger()
 
 if __name__ == "__main__":
-    #pathlib.Path(SUBTITLE_WHISPER + "Audio/runner.sh").unlink(missing_ok=True)
-
     for PROCESS_DIRECTORY in PROCESS_DIRECTORIES:
         SOURCE_DIRECTORY = LOCAL_MOUNT_PREFIX + PROCESS_DIRECTORY["base"]
         SOURCE_DIRECTORY_R = REMOTE_MOUNT_PREFIX + PROCESS_DIRECTORY["base"]
         TARGET_DIRECTORY = SOURCE_DIRECTORY
         ARBITRARY_PRATE = PROCESS_DIRECTORY["prate"]
         PROCESS_TASK = PROCESS_DIRECTORY["task"]
+        
         if PROCESS_TASK == 64:
             PROCESS_TASK = DEFAULT_TASK
 
         if not os.path.exists(SOURCE_DIRECTORY):
             my_logger.critical(logt(f"{SOURCE_DIRECTORY} does not exist.  Terminating."))
             exit()
-        pass
 
         if not os.path.exists(TARGET_DIRECTORY):
-            my_logger.critical(f"{TARGET_DIRECTORY} does not exist.  Creating.")
+            my_logger.critical(logt(f"{TARGET_DIRECTORY} does not exist.  Creating."))
             os.makedirs(TARGET_DIRECTORY, exist_ok=True)
 
-        # ic (PROCESS_TASK)
-
         if PROCESS_TASK >= 1:
-            my_logger.info(f"===== Source: {SOURCE_DIRECTORY} ".ljust(100, "="))
+            my_logger.info(logt(f"===== Source: {SOURCE_DIRECTORY} "))
+            my_logger.info(logt("="))
 
-        # Revert Everything
         if PROCESS_TASK & 32:
-            my_logger.info(f"=== Reverting ( Mode: Undo Everything ) ".ljust(100, "="))
+            my_logger.info(logt("=== Reverting ( Mode: Undo Everything ) "))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
-                    pass
                     move_up_level(
                         f_source_directory=SOURCE_DIRECTORY,
                         f_target_directory=TARGET_DIRECTORY,
@@ -114,19 +106,14 @@ if __name__ == "__main__":
                         f_my_logger=my_logger,
                     )
 
-            my_logger.info("=" * 100)
-
         if (PROCESS_TASK & 1) and ~(PROCESS_TASK & 32):
-            my_logger.info("=== Process Rescan Requests ".ljust(100, "="))
+            my_logger.info(logt("=== Process Rescan Requests"))
            
-            # anything with status = 2 in database, revert
             db_query = f"WHERE status = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
 
             for record_to_scan in records_to_scan:
-
-                pass
-                my_logger.info("=== Reverting ( Mode: Flagged in DB ) ".ljust(100, "="))
+                my_logger.info(logt("=== Reverting ( Mode: Flagged in DB )."))
 
                 move_up_level(
                     f_source_directory = SOURCE_DIRECTORY,
@@ -139,14 +126,14 @@ if __name__ == "__main__":
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
-            my_logger.info("=== Process MP3 Runner Requests ".ljust(100, "="))
+            my_logger.info(logt("=== Process MP3 Runner Requests."))
 
             # anything with subtitles = 2, add to runner.sh MP3 creator then set to 3.
             db_query = f"WHERE subtitles = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
             
             for record_to_scan in records_to_scan:
-                my_logger.info(f"SUB - Add {record_to_scan['code']} to MP3 creation script.")
+                my_logger.info(logt(f"SUB - Add {record_to_scan['code']} to MP3 creation script."))
                 source = record_to_scan['location'].replace(REMOTE_MOUNT_PREFIX, LOCAL_MOUNT_PREFIX)
                 destination = f"{SUBTITLE_WHISPER}Audio/{record_to_scan['code']}.mp3"
                 #destination = destination.replace('/mnt/', '/volume1/')
@@ -155,16 +142,14 @@ if __name__ == "__main__":
                 record_to_scan['subtitles'] = 3
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()         
-            
+
         if PROCESS_TASK & 2:
-            my_logger.info("=== Scanning Subtitles ".ljust(100, "="))
+            my_logger.info(logt("=== Scanning Subtitles"))
 
             db_query = f"WHERE subtitles IN (0,1,3,4,5,6,7,8) AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
 
             for record_to_scan in records_to_scan:
-
-                
                 get_localsubtitles(
                     f_subtitle_general=SUBTITLE_GENERAL,
                     f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -174,7 +159,12 @@ if __name__ == "__main__":
                     f_my_logger=my_logger
                     )
 
-                # get_subtitlecat ???
+                get_subtitlecat(
+                    f_target_directory=TARGET_DIRECTORY,
+                    f_target_language=TARGET_LANGUAGE,
+                    f_process_title=to_be_scraped,
+                    f_my_logger=my_logger
+                    )
 
                 subtitle_available = get_best_subtitle(
                     f_target_directory=TARGET_DIRECTORY,
@@ -184,7 +174,7 @@ if __name__ == "__main__":
                     )
 
                 if os.path.isfile(f"{SUBTITLE_WHISPER}Audio/{record_to_scan['code']}.mp3"):
-                    my_logger.info(f"SUB - Audio Found {record_to_scan['code']}.mp3 in 'whisper subs'.")
+                    my_logger.info(logt(f"SUB - Audio Found {record_to_scan['code']}.mp3 in 'whisper subs'."))
                     if subtitle_available < 4:
                         subtitle_available = 4
 
@@ -196,8 +186,8 @@ if __name__ == "__main__":
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
-        # Do scans and processing.
         if PROCESS_TASK & 4:  # 4
+            my_logger.info(logt("="))
             my_logger.info(logt(f"=======> Target: {TARGET_DIRECTORY}"))
 
             scanned_directory = get_list_of_files(
@@ -214,18 +204,14 @@ if __name__ == "__main__":
                 to_be_scraped, to_be_scraped_count = search_for_title(filename)
 
                 progress = f" {count}/{total}"
+                my_logger.info(logt(f"Processing '{filename}' ", progress, "-"))
 
                 # count =  1    =  all good, one confirmed match
                 # count =  0    =  name looks good, but no scrape.
                 # count = -n    =  multiple returned matches, skip
                 # count = -255  =  absolutely nothing found.
-                
-                #   7 = metadata not found, file not found - wanted.
-                #   8 = metadata not found, file found.
-                #   9 = all good.
 
                 if to_be_scraped_count >= 0:
-                    # we've identified something, so make a directory
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
 
                 if to_be_scraped_count == 1:
@@ -236,10 +222,10 @@ if __name__ == "__main__":
 
                     metadata_array["prate"] = ARBITRARY_PRATE
                     metadata_array["added_date"] = BATCH_DATETIME
+                    metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
 
                     if ARBITRARY_PRATE >= 0:
                         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
-                        metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
                         metadata_array["status"] = 9 # what number?
 
                     if ARBITRARY_PRATE < 0:
@@ -256,18 +242,21 @@ if __name__ == "__main__":
                         "url": [],
                         "score": None,
                         "release_date": None,
-                        "added_date": None,
+                        "added_date": BATCH_DATETIME,
                         "file_date": None,
-                        "location": None,
+                        "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
                         "subtitles": None,
                         "prate": ARBITRARY_PRATE,
                         "notes": None,
-                        "status": 7
+                        "status": None
                     }
 
-                    if ARBITRARY_PRATE < 0:
+                    if ARBITRARY_PRATE >= 0:
+                        metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
                         metadata_array["status"] = 8 # what number?
-                pass
+
+                    if ARBITRARY_PRATE < 0:
+                        metadata_array["status"] = 6 # what number?
 
                 if to_be_scraped_count >= 0:
                     get_localsubtitles(
@@ -316,7 +305,7 @@ if __name__ == "__main__":
                     my_logger.warning(f"+++++ {filename}{file_extension} - no confirmed match found.")
 
                 my_connection.commit()
-                my_logger.info("=" * 100)
+                my_logger.info(logt("-"))
 
     my_cursor.close()
     my_connection.disconnect()
