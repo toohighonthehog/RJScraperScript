@@ -176,6 +176,8 @@ To do:
 
 #  Tidy up the file/location relative path logic
 
+#  How do we update metadata when it a) didn't exist before, or b) is different, or c) worse - i.e. no result?
+
 #  Include a warning for duplicates - basically a check of the database before doing a scan (if it exists, warn and skip)
 #   This will be useful for backfilling requests.
 

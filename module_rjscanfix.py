@@ -178,7 +178,7 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
 
     return p_subtitle_available
 
-def download_metadata(f_process_title, f_my_logger):
+def download_metadata(f_process_title, f_my_logger, f_attribute_override=""):
     p_my_javlibrary = JAVLibrary()
     p_process_title = f_process_title
     p_metadata = p_my_javlibrary.get_video(p_process_title)
@@ -392,8 +392,13 @@ def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
     with open(f_json_filename, "w") as outfile:
         outfile.write(p_metadata_json)
 
-def search_for_title(f_input_string):
+def search_for_title(f_input_string, f_javli_override):
     f_my_javlibrary = JAVLibrary()
+    
+    if (f_javli_override[:5] == 'javli'):
+        p_get_video = (f_my_javlibrary.get_video(f_input_string))
+        return f_input_string, 1
+    
     p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
     p_strict_valid = r'^([A-Z]{3,5})(\d{3})Z$'
     p_input_string = f_input_string.upper()

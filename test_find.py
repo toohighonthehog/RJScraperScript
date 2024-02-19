@@ -2,15 +2,17 @@ import os, re, time
 from javscraper import *
 from module_rjscanfix import *
 
-title = "DSVR-01369"
+#title = "javliiatr4"
+title = "BBAN-016"
 #title = "042CLT-079"
-#title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"
+#title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
 
 f_my_javlibrary = JAVLibrary()
-print (f_my_javlibrary.search(title))
-x, y = search_for_title(title)
-print (f"{x} {y}")
+#print (f_my_javlibrary.search(title))
+print (f_my_javlibrary.get_video(title))
+#x, y = search_for_title(title, "javliiatr4")
+#print (f"{x} {y}")
 
 
 #1 not null, count = 1
