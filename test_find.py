@@ -11,7 +11,7 @@ title = "BBAN-016"
 f_my_javlibrary = JAVLibrary()
 #print (f_my_javlibrary.search(title))
 print (f_my_javlibrary.get_video(title))
-#x, y = search_for_title(title, "javliiatr4")
+x, y = search_for_title(f_input_string = title, f_javli_override = "javliiatr4")
 #print (f"{x} {y}")
 
 

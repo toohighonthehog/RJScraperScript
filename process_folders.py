@@ -35,14 +35,14 @@ from icecream import ic
 
 os.system("clear")
 
-DEFAULT_TASK = 40
+DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {"task": 36, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 36, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 0, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
@@ -207,7 +207,7 @@ if __name__ == "__main__":
             for full_filename in scanned_directory:
                 count += 1
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-                to_be_scraped, to_be_scraped_count = search_for_title(filename)
+                to_be_scraped, to_be_scraped_count = search_for_title(f_input_string = filename)
 
                 progress = f" {count}/{total}"
                 my_logger.info(logt(f_left = f"Processing '{filename}' ", f_right = progress))
