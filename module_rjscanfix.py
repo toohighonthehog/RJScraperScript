@@ -392,12 +392,13 @@ def send_to_json(f_metadata_array, f_my_logger, f_json_filename):
     with open(f_json_filename, "w") as outfile:
         outfile.write(p_metadata_json)
 
-def search_for_title(f_input_string, f_javli_override):
+def search_for_title(f_input_string, f_javli_override = None):
     f_my_javlibrary = JAVLibrary()
     
-    if (f_javli_override[:5] == 'javli'):
-        p_get_video = (f_my_javlibrary.get_video(f_input_string))
-        return f_input_string, 1
+    if f_javli_override:
+        if f_javli_override[:5] == 'javli':
+            p_get_video = (f_my_javlibrary.get_video(f_input_string))
+            return f_input_string, 1
     
     p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
     p_strict_valid = r'^([A-Z]{3,5})(\d{3})Z$'

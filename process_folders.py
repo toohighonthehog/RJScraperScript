@@ -270,7 +270,7 @@ if __name__ == "__main__":
                         f_my_logger=my_logger
                     )
 
-                    if PROCESS_TASK == 4:
+                    if PROCESS_TASK & 4:
                         get_subtitlecat(
                             f_target_directory=TARGET_DIRECTORY,
                             f_target_language=TARGET_LANGUAGE,
