@@ -207,6 +207,12 @@ if __name__ == "__main__":
             for full_filename in scanned_directory:
                 count += 1
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
+                
+                try:
+                    file_metadata = os.getxattr(full_filename, 'user.javli')
+                except:
+                    file_metadata = None
+
                 to_be_scraped, to_be_scraped_count = search_for_title(f_input_string = filename)
 
                 progress = f" {count}/{total}"

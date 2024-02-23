@@ -397,7 +397,9 @@ def search_for_title(f_input_string, f_javli_override = None):
     
     if f_javli_override:
         if f_javli_override[:5] == 'javli':
-            p_get_video = (f_my_javlibrary.get_video(f_input_string))
+            p_get_video = f_my_javlibrary.get_video(f_input_string)
+            ### if a value result is returned, return f_input_string, 1
+            ### if not, just keep going.          
             return f_input_string, 1
     
     p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
@@ -415,9 +417,9 @@ def search_for_title(f_input_string, f_javli_override = None):
     for p_loop in range(len(p_input_string)):
         p_substring = p_input_string[p_loop:]
         if re.match(p_valid, p_substring):
-            p_matched_value = ((re.match(p_valid, p_substring)).group())
+            p_matched_value = (re.match(p_valid, p_substring)).group()
             p_matched_value = p_matched_value[:-1]
-            p_get_video = (f_my_javlibrary.get_video(p_matched_value))
+            p_get_video = f_my_javlibrary.get_video(p_matched_value)
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
 
@@ -433,7 +435,6 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_result_count = 1
         else:
             p_result = None
-            #print (p_substrings)
             p_result_count = -p_result_count
 
     if p_result_count == 0:
