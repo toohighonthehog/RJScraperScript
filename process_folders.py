@@ -4,6 +4,7 @@ import mysql.connector
 from javscraper import *
 from icecream import ic
 
+# test
 # Task:
 #   0 = Do nothing
 #   1 = Generate the ffmpeg script, processed flagged
