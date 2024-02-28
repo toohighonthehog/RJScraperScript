@@ -180,6 +180,7 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
 
 def download_metadata(f_process_title, f_my_logger, f_attribute_override=""):
     ############## xxx
+    ### need to check that, if f_attribute_override is set, try that first.
     p_my_javlibrary = JAVLibrary()
     p_process_title = f_process_title
     p_metadata = p_my_javlibrary.get_video(p_process_title)
