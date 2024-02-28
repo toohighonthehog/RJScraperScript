@@ -213,7 +213,7 @@ if __name__ == "__main__":
                     # setfattr -n user.javli -v <code> <filename>
                     # getfattr -n user.javli <filename>
                     f_file_xdata = (os.getxattr(full_filename, 'user.javli')).decode("utf-8")
-                    print (f"file xdata: {f_file_xdata}")
+                    #print (f"file xdata: {f_file_xdata}")
                 except:
                     f_file_xdata = None
 

@@ -178,21 +178,28 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
 
     return p_subtitle_available
 
-def download_metadata(f_process_title, f_my_logger, f_attribute_override=""):
+def download_metadata(f_process_title, f_my_logger, f_attribute_override = None):
     ############## xxx
     ### need to check that, if f_attribute_override is set, try that first.
     p_my_javlibrary = JAVLibrary()
-    p_process_title = f_process_title
-    p_metadata = p_my_javlibrary.get_video(p_process_title)
-    p_metadata_url = p_my_javlibrary.search(p_process_title)
+    #p_process_title = f_process_title
     p_metadata_array = []
 
-    f_my_logger.info(logt(f"MET - Searching web for '{p_process_title}' metadata."))
+    if f_attribute_override:
+        p_metadata = p_my_javlibrary.get_video(f_attribute_override)
+        p_metadata_url = p_my_javlibrary.search(f_attribute_override)
+        f_string_override = f" ({f_attribute_override})"
+    else:
+        p_metadata = p_my_javlibrary.get_video(f_process_title)
+        p_metadata_url = p_my_javlibrary.search(f_process_title)
+        f_string_override = ""
+  
+    f_my_logger.info(logt(f"MET - Searching web for '{f_process_title}' metadata.{f_string_override}"))
 
     if p_metadata is not None:
         p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
 
-        f_my_logger.info(logt(f"MET - Metadata downloaded for '{p_process_title}'."))
+        f_my_logger.info(logt(f"MET - Metadata downloaded for '{f_process_title}'."))
 
         p_metadata_array = {"code": p_metadata.code,
                             "name": p_metadata.name,
@@ -212,7 +219,7 @@ def download_metadata(f_process_title, f_my_logger, f_attribute_override=""):
                             "status": None}
     else:
         # does this ever get called?
-        f_my_logger.info(logt(f"MET - No metadata found for '{p_process_title}'."))
+        f_my_logger.info(logt(f"MET - No metadata found for '{f_process_title}'."))
 
     return p_metadata_array
 
@@ -402,10 +409,10 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_get_video = p_my_javlibrary.get_video(f_javli_override)
             ### if a value result is returned, return f_input_string, 1
             ### if not, just keep going.          
-            print (f"crap: {p_get_video}")
+            #print (f"crap: {p_get_video}")
             if p_get_video:
-                print (f"Override: {f_input_string}")
-                print (p_get_video)
+                #print (f"Override: {f_input_string}")
+                #print (p_get_video)
                 return f_input_string, 1
     
     p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
