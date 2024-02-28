@@ -4,7 +4,7 @@ import mysql.connector
 from javscraper import *
 from icecream import ic
 
-# test
+# javli
 # Task:
 #   0 = Do nothing
 #   1 = Generate the ffmpeg script, processed flagged
@@ -210,11 +210,12 @@ if __name__ == "__main__":
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
                 
                 try:
-                    file_metadata = os.getxattr(full_filename, 'user.javli')
+                    f_file_xdata = os.getxattr(full_filename, 'user.javli')
+                    print (f"file xdata: {f_file_xdata}")
                 except:
-                    file_metadata = None
+                    f_file_xdata = None
 
-                to_be_scraped, to_be_scraped_count = search_for_title(f_input_string = filename)
+                to_be_scraped, to_be_scraped_count = search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
 
                 progress = f" {count}/{total}"
                 my_logger.info(logt(f_left = f"Processing '{filename}' ", f_right = progress))

@@ -401,6 +401,7 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_get_video = f_my_javlibrary.get_video(f_input_string)
             ### if a value result is returned, return f_input_string, 1
             ### if not, just keep going.          
+            print (f"Override: {f_input_string}")
             return f_input_string, 1
     
     p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
