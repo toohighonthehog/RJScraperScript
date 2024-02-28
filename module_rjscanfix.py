@@ -143,8 +143,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                                 p_subtitle_download = requests.get(p_subtitle_url, timeout=60, allow_redirects=True)
                                 p_new_subtitle_filename = re.sub(f_process_title, f_process_title.upper() + "-(SC)", p_subtitle_filename, flags=re.IGNORECASE)
                                 
-                                open(p_target_directory + p_new_subtitle_filename,
-                                     'wb').write(p_subtitle_download.content)
+                                open(p_target_directory + p_new_subtitle_filename, 'wb').write(p_subtitle_download.content)
                                 time.sleep(p_count)
                                 break
                 except:
@@ -397,7 +396,9 @@ def search_for_title(f_input_string, f_javli_override = None):
     f_my_javlibrary = JAVLibrary()
     
     if f_javli_override:
+        print ("x")
         if f_javli_override[:5] == 'javli':
+            print ("y")
             p_get_video = f_my_javlibrary.get_video(f_input_string)
             ### if a value result is returned, return f_input_string, 1
             ### if not, just keep going.          

@@ -210,7 +210,9 @@ if __name__ == "__main__":
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
                 
                 try:
-                    f_file_xdata = os.getxattr(full_filename, 'user.javli')
+                    # setfattr -n user.javli -v <code> <filename>
+                    # getfattr -n user.javli <filename>
+                    f_file_xdata = (os.getxattr(full_filename, 'user.javli')).decode("utf-8")
                     print (f"file xdata: {f_file_xdata}")
                 except:
                     f_file_xdata = None
