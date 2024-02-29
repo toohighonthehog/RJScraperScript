@@ -229,7 +229,7 @@ if __name__ == "__main__":
                     metadata_array = download_metadata(
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger,
-                        f_attribute_override=""
+                        f_attribute_override=f_file_xdata
                     )
 
                     metadata_array["prate"] = ARBITRARY_PRATE

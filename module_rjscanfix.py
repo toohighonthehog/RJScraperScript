@@ -188,7 +188,7 @@ def download_metadata(f_process_title, f_my_logger, f_attribute_override = None)
     if f_attribute_override:
         p_metadata = p_my_javlibrary.get_video(f_attribute_override)
         p_metadata_url = p_my_javlibrary.search(f_attribute_override)
-        f_string_override = f" ({f_attribute_override})"
+        f_string_override = f" (xcode: {f_attribute_override})"
     else:
         p_metadata = p_my_javlibrary.get_video(f_process_title)
         p_metadata_url = p_my_javlibrary.search(f_process_title)
