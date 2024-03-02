@@ -38,7 +38,7 @@ os.system("clear")
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 16, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 8, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
@@ -69,7 +69,7 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD",
     host="diskstation.hachiko.int",
     port=3306,
-    database="Multimedia_Dev"
+    database="Multimedia_Dev2"
 )
 
 my_cursor = my_connection.cursor(dictionary=True)
