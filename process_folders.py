@@ -11,7 +11,7 @@ from icecream import ic
 #   2 = Rescan for subtitles
 #   4 = Process files in root of source folder
 #   8 = Process files in root of source folder (but no SubtitleCat)
-#  16 = ** Write key data to extended attributes
+#  16 = Write key data to extended attributes
 #  32 = Just undo / reset.  Don't Scan
 #  64 = Do DEFAULT_TASK.
 #  Add some logic on what can be run concurrently.
@@ -115,7 +115,7 @@ if __name__ == "__main__":
                     )
 
         if PROCESS_TASK & 16:
-            my_logger.info(logt(f_left = "=== Process Extended Attributes", f_middle = "="))
+            my_logger.info(logt(f_left = "=== Process Extended Attributes ", f_middle = "="))
             db_query = f"WHERE location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
 
@@ -124,14 +124,12 @@ if __name__ == "__main__":
                 prate = record_to_scan['prate']
                 if (prate > 0):
                     full_filename = (record_to_scan['location']).replace('file://diskstation', '/mnt')
-
                     try:
                         file_xdata_prate = (os.getxattr(full_filename, 'user.prate')).decode("utf-8")
                     except:
                         file_xdata_prate = None
-                    #print (f"Code: {code}, PRate: {prate}, Location: {full_filename}, xPRate: {file_xdata_prate}")
+
                     if not file_xdata_prate:
-                        #os.setxattr(full_filename, "user.prate", str(prate).encode())
                         try:
                             os.setxattr(full_filename, "user.prate", str(prate).encode())
                             my_logger.info(logt(f"ATT - Set xattr for {code} to {prate}."))
@@ -218,7 +216,7 @@ if __name__ == "__main__":
                 update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
-        if (PROCESS_TASK & 4) or (PROCESS_TASK & 8):  # 4
+        if (PROCESS_TASK & 4) or (PROCESS_TASK & 8):
             my_logger.info(logt(f_left = f"=== Processing Files ", f_middle = "="))
 
             scanned_directory = get_list_of_files(
@@ -232,14 +230,15 @@ if __name__ == "__main__":
             for full_filename in scanned_directory:
                 count += 1
                 filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-                
                 try:
-                    # setfattr -n user.javli -v <code> <filename>
-                    # getfattr -n user.javli <filename>
                     f_file_xdata = (os.getxattr(full_filename, 'user.javli')).decode("utf-8")
-                    #print (f"file xdata: {f_file_xdata}")
                 except:
                     f_file_xdata = None
+
+                try:
+                    f_file_xprate = int((os.getxattr(full_filename, 'user.prate')).decode("utf-8"))
+                except:
+                    f_file_xprate = None
 
                 to_be_scraped, to_be_scraped_count = search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
 
@@ -257,6 +256,10 @@ if __name__ == "__main__":
                     )
 
                     metadata_array["prate"] = ARBITRARY_PRATE
+                    if f_file_xprate:
+                        if f_file_xprate > 0:
+                            metadata_array["prate"] = f_file_xprate
+                        
                     metadata_array["added_date"] = BATCH_DATETIME
                     metadata_array["location"] = TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
 
