@@ -132,7 +132,7 @@ if __name__ == "__main__":
                     print (f"Code: {code}, PRate: {prate}, Location: {full_filename}, xPRate: {file_xdata_prate}")
                     if not file_xdata_prate:
                         try:
-                            os.setxattr(full_filename, "user.prate", b"{prate}")
+                            os.setxattr(full_filename, "user.prate", str(prate))
                             my_logger.info(logt(f"ATT - Set xattr for {code} to {prate}."))
                         except:
                             my_logger.warning(logt(f"ATT - Set xattr for {code} to {prate} failed."))
