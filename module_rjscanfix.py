@@ -220,6 +220,22 @@ def download_metadata(f_process_title, f_my_logger, f_attribute_override = None)
     else:
         # does this ever get called?
         f_my_logger.info(logt(f"MET - No metadata found for '{f_process_title}'."))
+        p_metadata_array = {"code": f_process_title,
+                            "name": None,
+                            "actor": None,
+                            "studio": None,
+                            "image": None,
+                            "genre": None,
+                            "url": None,
+                            "score": None,
+                            "release_date": None,
+                            "added_date": None,
+                            "file_date": None,
+                            "notes": None,
+                            "location": None,
+                            "subtitles": None,
+                            "prate": None,
+                            "status": None}
 
     return p_metadata_array
 
