@@ -123,13 +123,13 @@ if __name__ == "__main__":
                 code = record_to_scan['code']
                 prate = record_to_scan['prate']
                 if (prate > 0):
-                    full_fullname = (record_to_scan['location']).replace('file://diskstation', '/mnt')
+                    full_filename = (record_to_scan['location']).replace('file://diskstation', '/mnt')
 
                     try:
                         file_xdata_prate = (os.getxattr(full_filename, 'user.prate')).decode("utf-8")
                     except:
                         file_xdata_prate = None
-                    print (f"Code: {code}, PRate: {prate}, Location: {full_fullname}, xPRate: {file_xdata_prate}")
+                    print (f"Code: {code}, PRate: {prate}, Location: {full_filename}, xPRate: {file_xdata_prate}")
                     if not file_xdata_prate:
                         os.setxattr(full_filename, "user.prate", prate)
                         try:
