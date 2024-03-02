@@ -258,7 +258,7 @@ if __name__ == "__main__":
                     metadata_array["prate"] = ARBITRARY_PRATE
                     if f_file_xprate:
                         if f_file_xprate > 0:
-                            my_logger.info(logt(f"ATT - Found xattr for {code}.  ({f_file_xprate})"))
+                            my_logger.info(logt(f"ATT - Found xattr for {filename}.  ({f_file_xprate})"))
                             metadata_array["prate"] = f_file_xprate
                         
                     metadata_array["added_date"] = BATCH_DATETIME
