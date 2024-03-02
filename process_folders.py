@@ -38,9 +38,9 @@ os.system("clear")
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 8, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {"task": 40, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
@@ -258,6 +258,7 @@ if __name__ == "__main__":
                     metadata_array["prate"] = ARBITRARY_PRATE
                     if f_file_xprate:
                         if f_file_xprate > 0:
+                            my_logger.info(logt(f"ATT - Found xattr for {code}.  ({f_file_xprate})"))
                             metadata_array["prate"] = f_file_xprate
                         
                     metadata_array["added_date"] = BATCH_DATETIME
