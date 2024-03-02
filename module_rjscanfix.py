@@ -351,46 +351,49 @@ def send_to_database(f_metadata_array, f_my_logger, f_my_cursor):
                          f_metadata_array['status'],
                          f_metadata_array['code']))
 
-    for a in f_metadata_array['actor']:
-        p_my_query_sql_actor = f"SELECT a_id FROM actor WHERE name = '{a}';"
-        f_my_cursor.execute(p_my_query_sql_actor)
-        p_my_results = f_my_cursor.fetchone()
+    if f_metadata_array['actor']:
+        for a in f_metadata_array['actor']:
+            p_my_query_sql_actor = f"SELECT a_id FROM actor WHERE name = '{a}';"
+            f_my_cursor.execute(p_my_query_sql_actor)
+            p_my_results = f_my_cursor.fetchone()
 
-        if p_my_results is None:
-            f_my_cursor.execute(p_my_insert_sql_actor, (a,))
-            p_a_id = f_my_cursor.lastrowid
-        else:
-            p_a_id = p_my_results['a_id']
+            if p_my_results is None:
+                f_my_cursor.execute(p_my_insert_sql_actor, (a,))
+                p_a_id = f_my_cursor.lastrowid
+            else:
+                p_a_id = p_my_results['a_id']
 
-        p_hash_input = (
-            f_metadata_array['code'] + str(p_a_id) + "actor_title_link").encode()
-        p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_actor_title_link,
-                            (p_a_id,
-                             f_metadata_array['code'],
-                             p_hash_output))
+            p_hash_input = (
+                f_metadata_array['code'] + str(p_a_id) + "actor_title_link").encode()
+            p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
+            f_my_cursor.execute(p_my_insert_sql_actor_title_link,
+                                (p_a_id,
+                                f_metadata_array['code'],
+                                p_hash_output))
 
-    for g in f_metadata_array['genre']:
-        p_my_query_sql_genre = "SELECT g_id FROM genre WHERE description = '" + g + "';"
-        f_my_cursor.execute(p_my_query_sql_genre)
-        p_my_results = f_my_cursor.fetchone()
+    if f_metadata_array['genre']:
+        for g in f_metadata_array['genre']:
+            p_my_query_sql_genre = "SELECT g_id FROM genre WHERE description = '" + g + "';"
+            f_my_cursor.execute(p_my_query_sql_genre)
+            p_my_results = f_my_cursor.fetchone()
 
-        if p_my_results is None:
-            f_my_cursor.execute(p_my_insert_sql_genre, (g,))
-            p_g_id = f_my_cursor.lastrowid
-        else:
-            p_g_id = p_my_results['g_id']
+            if p_my_results is None:
+                f_my_cursor.execute(p_my_insert_sql_genre, (g,))
+                p_g_id = f_my_cursor.lastrowid
+            else:
+                p_g_id = p_my_results['g_id']
 
-        p_hash_input = (
-            f_metadata_array['code'] + str(p_g_id) + "genre_title_link").encode()
-        p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_genre_title_link,
-                            (p_g_id, f_metadata_array['code'], p_hash_output))
+            p_hash_input = (
+                f_metadata_array['code'] + str(p_g_id) + "genre_title_link").encode()
+            p_hash_output = hashlib.sha1(p_hash_input).hexdigest()
+            f_my_cursor.execute(p_my_insert_sql_genre_title_link,
+                                (p_g_id, f_metadata_array['code'], p_hash_output))
 
-    for u in f_metadata_array['url']:
-        p_hash_input = (f_metadata_array['code'] + u).encode()
-        p_hash_output = hashlib.md5(p_hash_input).hexdigest()
-        f_my_cursor.execute(p_my_insert_sql_url, (f_metadata_array['code'], u, p_hash_output))
+    if f_metadata_array['url']:
+        for u in f_metadata_array['url']:
+            p_hash_input = (f_metadata_array['code'] + u).encode()
+            p_hash_output = hashlib.md5(p_hash_input).hexdigest()
+            f_my_cursor.execute(p_my_insert_sql_url, (f_metadata_array['code'], u, p_hash_output))
 
     return True
 
