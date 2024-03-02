@@ -11,7 +11,7 @@ from icecream import ic
 #   2 = Rescan for subtitles
 #   4 = Process files in root of source folder
 #   8 = Process files in root of source folder (but no SubtitleCat)
-#  16 = ** Nothing yet **
+#  16 = ** Write key data to extended attributes
 #  32 = Just undo / reset.  Don't Scan
 #  64 = Do DEFAULT_TASK.
 #  Add some logic on what can be run concurrently.
@@ -38,13 +38,13 @@ os.system("clear")
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {"task": 4, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {"task": 16, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 64, "prate": 7, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
     {"task": 64, "prate": 9, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 64, "prate": 10, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {"task": 8, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
+    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
     {"task": 64, "prate": 8, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
@@ -54,7 +54,7 @@ PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
 
-VALID_TASKS = (0, 1, 2, 3, 4, 8, 32, 36, 40)
+VALID_TASKS = (0, 1, 2, 3, 4, 8, 16, 32, 36, 40)
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -114,15 +114,38 @@ if __name__ == "__main__":
                         f_my_logger=my_logger,
                     )
 
+        if PROCESS_TASK & 16:
+            my_logger.info(logt(f_left = "=== Process Extended Attributes", f_middle = "="))
+            db_query = f"WHERE location LIKE '{SOURCE_DIRECTORY_R}%'"
+            records_to_scan = get_db_array(my_cursor, db_query)
+
+            for record_to_scan in records_to_scan:
+                code = record_to_scan['code']
+                prate = record_to_scan['prate']
+                if (prate > 0):
+                    full_fullname = (record_to_scan['location']).replace('file://diskstation', '/mnt')
+
+                    try:
+                        file_xdata_prate = (os.getxattr(full_filename, 'user.prate')).decode("utf-8")
+                    except:
+                        file_xdata_prate = None
+                    print (f"Code: {code}, PRate: {prate}, Location: {full_fullname}, xPRate: {file_xdata_prate}")
+                    if not file_xdata_prate:
+                        try:
+                            os.setxattr(full_filename, "user.prate", prate)
+                            my_logger.info(logt(f"ATT - Set xattr for {code} to {prate}."))
+                        except:
+                            my_logger.warning(logt(f"ATT - Set xattr for {code} to {prate} failed."))
+
         if PROCESS_TASK & 1:
             my_logger.info(logt(f_left = "=== Process Rescan Requests", f_middle = "="))
            
             db_query = f"WHERE status = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = get_db_array(my_cursor, db_query)
 
-            for record_to_scan in records_to_scan:
-                my_logger.info(logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
+            my_logger.info(logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
 
+            for record_to_scan in records_to_scan:
                 move_up_level(
                     f_source_directory = SOURCE_DIRECTORY,
                     f_target_directory = TARGET_DIRECTORY,
