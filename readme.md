@@ -104,3 +104,4 @@
 #  Split functions from module (diff file for each function?)
 #  What happens if the xcode is bad?
 #  The record in the database should take priority and overwrite this xattr even if it is set.
+#  are 5 and 9 a reasonable options too?  Do they happen in the right order?

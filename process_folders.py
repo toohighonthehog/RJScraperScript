@@ -41,22 +41,22 @@ from datetime import datetime
 
 os.system("clear")
 
-DEFAULT_TASK = 8
+DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 0, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task":  4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {"task":  0, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
-    {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
+    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
 
 VALID_TASKS = (0, 1, 2, 3, 4, 8, 16, 32, 36, 40)
