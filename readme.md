@@ -97,9 +97,10 @@
 ## Tidy up the file/location relative path logic
 
 #  Todo:
-#  Check that the URL is correct DVMM-003 and returning DVMM-033 for some reason.
-#  put_title_db_record function should be used more.  i.e. a reusable, universal write title function.
+## Check that the URL is correct DVMM-003 and returning DVMM-033 for some reason.
+#? put_title_db_record function should be used more.  i.e. a reusable, universal write title function.
 #  How do we update metadata when it a) didn't exist before, or b) is different, or c) worse - i.e. no result?
-#  Finish code for custom attribute search (javli)
+## Finish code for custom attribute search (javli)
 #  Split functions from module (diff file for each function?)
 #  What happens if the xcode is bad?
+#  The record in the database should take priority and overwrite this xattr even if it is set.

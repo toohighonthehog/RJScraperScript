@@ -1,10 +1,13 @@
-from module_rjscanfix import *
-import os
-import mysql.connector
-from javscraper import *
-from icecream import ic
+import javscraper
+import rjscanmodule.rjdatabase as rjdb
+import rjscanmodule.rjlogging as rjlog
+import rjscanmodule.rjgeneral as rjgen
+import rjscanmodule.rjmetadata as rjmeta
+import rjscanmodule.rjsubtitles as rjsub
+import os, shutil, mysql.connector, time
 
-# javli
+from datetime import datetime
+
 # Task:
 #   0 = Do nothing
 #   1 = Generate the ffmpeg script, processed flagged
@@ -13,9 +16,11 @@ from icecream import ic
 #   8 = Process files in root of source folder (but no SubtitleCat)
 #  16 = Write key data to extended attributes
 #  32 = Just undo / reset.  Don't Scan
-#  64 = Do DEFAULT_TASK.
+#  6 = Do DEFAULT_TASK.
 #  Add some logic on what can be run concurrently.
-#  valid values = 1,2,3,4,32,36
+#  valid values = 1,2,3,4,16,32,36
+
+# are 5 and 9 a reasonable options too?  Do they happen in the right order?
 
 # Status:
 #   1 = set for rescan (i.e. already reverted to parent folder)
@@ -36,7 +41,7 @@ from icecream import ic
 
 os.system("clear")
 
-DEFAULT_TASK = 40
+DEFAULT_TASK = 8
 PROCESS_DIRECTORIES = [
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 64, "prate": 0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
@@ -69,11 +74,11 @@ my_connection = mysql.connector.connect(
     password="5Nf%GB6r10bD",
     host="diskstation.hachiko.int",
     port=3306,
-    database="MultimediaShare"
+    database="Multimedia"
 )
 
 my_cursor = my_connection.cursor(dictionary=True)
-my_logger = get_logger()
+my_logger = rjlog.get_logger()
 
 if __name__ == "__main__":
     for PROCESS_DIRECTORY in PROCESS_DIRECTORIES:
@@ -87,26 +92,26 @@ if __name__ == "__main__":
             PROCESS_TASK = DEFAULT_TASK
 
         if PROCESS_TASK not in VALID_TASKS:
-            my_logger.warning(logt(f_left = f"Invalid task for {SOURCE_DIRECTORY} ", f_middle = "=", f_width = -3))
+            my_logger.warning(rjlog.logt(f_left = f"Invalid task for {SOURCE_DIRECTORY} ", f_middle = "=", f_width = -3))
             PROCESS_TASK = 0
 
         if PROCESS_TASK >= 1:
-            my_logger.info(logt(f_left = f"=== Source: {SOURCE_DIRECTORY} ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = f"=== Source: {SOURCE_DIRECTORY} ", f_middle = "="))
             if not os.path.exists(SOURCE_DIRECTORY):
-                my_logger.critical(logt(f"{SOURCE_DIRECTORY} does not exist.  Terminating."))
+                my_logger.critical(rjlog.logt(f"{SOURCE_DIRECTORY} does not exist.  Terminating."))
                 exit()
 
             if not os.path.exists(TARGET_DIRECTORY):
-                my_logger.critical(logt(f"{TARGET_DIRECTORY} does not exist.  Creating."))
+                my_logger.critical(rjlog.logt(f"{TARGET_DIRECTORY} does not exist.  Creating."))
                 os.makedirs(TARGET_DIRECTORY, exist_ok=True)
-                #my_logger.info(logt("="))
+                #my_logger.info(rjlog.logt("="))
 
         if PROCESS_TASK & 32:
-            my_logger.info(logt(f_left = "=== Reverting ( Mode: Undo Everything ) ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Reverting ( Mode: Undo Everything ) ", f_middle = "="))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
                 if os.path.isdir(SOURCE_DIRECTORY + filename):
-                    move_up_level(
+                    rjgen.move_up_level(
                         f_source_directory=SOURCE_DIRECTORY,
                         f_target_directory=TARGET_DIRECTORY,
                         f_process_filename=filename,
@@ -115,9 +120,9 @@ if __name__ == "__main__":
                     )
 
         if PROCESS_TASK & 16:
-            my_logger.info(logt(f_left = "=== Process Extended Attributes ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Process Extended Attributes ", f_middle = "="))
             db_query = f"WHERE location LIKE '{SOURCE_DIRECTORY_R}%'"
-            records_to_scan = get_db_array(my_cursor, db_query)
+            records_to_scan = rjdb.get_db_array(my_cursor, db_query)
 
             for record_to_scan in records_to_scan:
                 code = record_to_scan['code']
@@ -132,20 +137,20 @@ if __name__ == "__main__":
                     if not file_xdata_prate:
                         try:
                             os.setxattr(full_filename, "user.prate", str(prate).encode())
-                            my_logger.info(logt(f"ATT - Set xattr for {code} to {prate}."))
+                            my_logger.info(rjlog.logt(f"ATT - Set xattr for {code} to {prate}."))
                         except:
-                            my_logger.warning(logt(f"ATT - Set xattr for {code} to {prate} failed."))
+                            my_logger.warning(rjlog.logt(f"ATT - Set xattr for {code} to {prate} failed."))
 
         if PROCESS_TASK & 1:
-            my_logger.info(logt(f_left = "=== Process Rescan Requests", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests", f_middle = "="))
            
             db_query = f"WHERE status = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
-            records_to_scan = get_db_array(my_cursor, db_query)
+            records_to_scan = rjdb.get_db_array(my_cursor, db_query)
 
-            my_logger.info(logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
 
             for record_to_scan in records_to_scan:
-                move_up_level(
+                rjgen.move_up_level(
                     f_source_directory = SOURCE_DIRECTORY,
                     f_target_directory = TARGET_DIRECTORY,
                     f_process_filename = record_to_scan['code'],
@@ -153,34 +158,34 @@ if __name__ == "__main__":
                     f_my_logger = my_logger,
                     )
                 record_to_scan['status'] = 1
-                update_db_title_record(my_cursor, record_to_scan)
+                rjdb.update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
-            my_logger.info(logt(f_left = "=== Process MP3 Runner Requests ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Process MP3 Runner Requests ", f_middle = "="))
 
             # anything with subtitles = 2, add to runner.sh MP3 creator then set to 3.
             db_query = f"WHERE subtitles = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
-            records_to_scan = get_db_array(my_cursor, db_query)
+            records_to_scan = rjdb.get_db_array(my_cursor, db_query)
             
             for record_to_scan in records_to_scan:
-                my_logger.info(logt(f"SUB - Add {record_to_scan['code']} to MP3 creation script."))
+                my_logger.info(rjlog.logt(f"SUB - Add {record_to_scan['code']} to MP3 creation script."))
                 source = record_to_scan['location'].replace(REMOTE_MOUNT_PREFIX, LOCAL_MOUNT_PREFIX)
                 destination = f"{SUBTITLE_WHISPER}Audio/{record_to_scan['code']}.mp3"
                 #destination = destination.replace('/mnt/', '/volume1/')
                 with open(SUBTITLE_WHISPER + "Audio/runner.sh", "a") as f:
                     f.write(f"ffmpeg -i {source} {destination}\n")
                 record_to_scan['subtitles'] = 3
-                update_db_title_record(my_cursor, record_to_scan)
+                rjdb.update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()         
 
         if PROCESS_TASK & 2:
-            my_logger.info(logt(f_left = "=== Scanning Subtitles ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Scanning Subtitles ", f_middle = "="))
 
             db_query = f"WHERE subtitles IN (0,1,3,4,5,6,7,8) AND location LIKE '{SOURCE_DIRECTORY_R}%'"
-            records_to_scan = get_db_array(my_cursor, db_query)
+            records_to_scan = rjdb.get_db_array(my_cursor, db_query)
 
             for record_to_scan in records_to_scan:
-                get_localsubtitles(
+                rjsub.get_localsubtitles(
                     f_subtitle_general=SUBTITLE_GENERAL,
                     f_subtitle_whisper=SUBTITLE_WHISPER,
                     f_target_directory=TARGET_DIRECTORY,
@@ -189,14 +194,14 @@ if __name__ == "__main__":
                     f_my_logger=my_logger
                     )
 
-                get_subtitlecat(
+                rjsub.get_subtitlecat(
                     f_target_directory=TARGET_DIRECTORY,
                     f_target_language=TARGET_LANGUAGE,
                     f_process_title=record_to_scan['code'],
                     f_my_logger=my_logger
                     )
 
-                subtitle_available = get_best_subtitle(
+                subtitle_available = rjsub.get_best_subtitle(
                     f_target_directory=TARGET_DIRECTORY,
                     f_target_language=TARGET_LANGUAGE,
                     f_process_title=record_to_scan['code'],
@@ -204,7 +209,7 @@ if __name__ == "__main__":
                     )
 
                 if os.path.isfile(f"{SUBTITLE_WHISPER}Audio/{record_to_scan['code']}.mp3"):
-                    my_logger.info(logt(f"SUB - Audio Found {record_to_scan['code']}.mp3 in 'whisper subs'."))
+                    my_logger.info(rjlog.logt(f"SUB - Audio Found {record_to_scan['code']}.mp3 in 'whisper subs'."))
                     if subtitle_available < 4:
                         subtitle_available = 4
 
@@ -213,18 +218,18 @@ if __name__ == "__main__":
                     subtitle_available = 3
 
                 record_to_scan['subtitles'] = subtitle_available
-                update_db_title_record(my_cursor, record_to_scan)
+                rjdb.update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
 
         if (PROCESS_TASK & 4) or (PROCESS_TASK & 8):
-            my_logger.info(logt(f_left = f"=== Processing Files ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = f"=== Processing Files ", f_middle = "="))
 
-            scanned_directory = get_list_of_files(
+            scanned_directory = rjgen.get_list_of_files(
                 f_source_directory=SOURCE_DIRECTORY,
                 f_source_extensions=SOURCE_EXTENSIONS
             )
 
-            my_javlibrary = JAVLibrary()
+            my_javlibrary = javscraper.JAVLibrary()
             total = len(scanned_directory)
             count = 0
             for full_filename in scanned_directory:
@@ -240,16 +245,16 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count = search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count = rjgen.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
 
                 progress = f" {count}/{total}"
-                my_logger.info(logt(f_left = f"Processing '{filename}' ", f_right = progress))
+                my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
                 if to_be_scraped_count >= 0:
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
 
                 if to_be_scraped_count == 1:
-                    metadata_array = download_metadata(
+                    metadata_array = rjmeta.download_metadata(
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger,
                         f_attribute_override=f_file_xdata
@@ -258,7 +263,7 @@ if __name__ == "__main__":
                     metadata_array["prate"] = ARBITRARY_PRATE
                     if f_file_xprate:
                         if f_file_xprate > 0:
-                            my_logger.info(logt(f"ATT - Found xattr for {filename}.  ({f_file_xprate})"))
+                            my_logger.info(rjlog.logt(f"ATT - Found xattr for {filename}.  ({f_file_xprate})"))
                             metadata_array["prate"] = f_file_xprate
                         
                     metadata_array["added_date"] = BATCH_DATETIME
@@ -299,7 +304,7 @@ if __name__ == "__main__":
                         metadata_array["status"] = 6 # what number?
 
                 if to_be_scraped_count >= 0:
-                    get_localsubtitles(
+                    rjsub.get_localsubtitles(
                         f_subtitle_general=SUBTITLE_GENERAL,
                         f_subtitle_whisper=SUBTITLE_WHISPER,
                         f_target_directory=TARGET_DIRECTORY,
@@ -309,14 +314,14 @@ if __name__ == "__main__":
                     )
 
                     if PROCESS_TASK & 4:
-                        get_subtitlecat(
+                        rjsub.get_subtitlecat(
                             f_target_directory=TARGET_DIRECTORY,
                             f_target_language=TARGET_LANGUAGE,
                             f_process_title=to_be_scraped,
                             f_my_logger=my_logger
                         )
 
-                    metadata_array["subtitles"] = get_best_subtitle(
+                    metadata_array["subtitles"] = rjsub.get_best_subtitle(
                         f_target_directory=TARGET_DIRECTORY,
                         f_target_language=TARGET_LANGUAGE,
                         f_process_title=to_be_scraped,
@@ -328,7 +333,7 @@ if __name__ == "__main__":
                         TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension
                     )
 
-                    send_to_database(
+                    rjdb.send_to_database(
                         f_metadata_array=metadata_array,
                         f_my_logger=my_logger,
                         f_my_cursor=my_cursor
@@ -336,17 +341,17 @@ if __name__ == "__main__":
 
                     my_connection.commit()
 
-                    send_to_json(
+                    rjdb.send_to_json(
                         f_metadata_array=metadata_array,
                         f_my_logger=my_logger,
                         f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
                 if to_be_scraped_count < 0:
-                    my_logger.warning(logt(f"+++++ {filename}{file_extension} - no confirmed match found.", f_width = -3))
+                    my_logger.warning(rjlog.logt(f"+++++ {filename}{file_extension} - no confirmed match found.", f_width = -3))
 
                 my_connection.commit()
-                my_logger.info(logt("="))
+                my_logger.info(rjlog.logt("="))
 
     my_cursor.close()
     my_connection.disconnect()

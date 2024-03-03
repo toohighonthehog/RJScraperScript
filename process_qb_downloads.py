@@ -44,7 +44,7 @@ if __name__ == "__main__":
                     # Test this.
                     shutil.move(full_filename, TARGET_DIRECTORY + new_filename)
     
-                    if (PROCESS == "COPY"):
+                if (PROCESS == "COPY"):
                     shutil.copy(full_filename, TARGET_DIRECTORY + new_filename)
 
             else:
