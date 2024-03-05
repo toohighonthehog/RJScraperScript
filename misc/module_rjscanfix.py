@@ -15,30 +15,7 @@ from javscraper import *
 
 # region Probably unused functions
 
-# def transfer_files_by_extension(f_source_directory, f_target_directory, f_extensions, f_my_logger, f_processmode='MOVE'):
-#     pass
-#     for root, _, files in os.walk(f_source_directory):
-#         pass
-#         for filename in files:
-#             pass
-#             if any(filename.endswith(ext) for ext in f_extensions):
-#                 p_source_filename = os.path.join(root, filename)
-#                 # p_target_directory = os.path.join(f_target_directory, filename)
 
-#                 # Ensure the destination directory exists
-#                 # os.makedirs(p_target_directory, exist_ok=True)
-#                 pass
-#                 # Move the file to the destination directory
-#                 if (f_processmode == "MOVE"):
-#                     shutil.move(p_source_filename, f_target_directory)
-
-#                 # ...or copy.
-#                 if (f_processmode == "COPY"):
-#                     f_my_logger.info(logt(f"MET - Transferring {filename} to {f_target_directory}."))
-#                     shutil.copy(p_source_filename, f_target_directory)
-
-#                 f_my_logger.info(logt(f"MET - Transferred {filename} to {f_target_directory}."))
-#     return True
 
 # def remove_substrings(f_strings):
 #     # Sort the strings by length in descending order

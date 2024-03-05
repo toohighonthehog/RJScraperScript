@@ -1,5 +1,5 @@
 import re, shutil, os
-import javscraper
+#import javscraper
 import rjscanmodule.rjlogging as rjlog
 
 __all__ = ["search_for_title", "get_list_of_files", "move_up_level"]
@@ -85,3 +85,20 @@ def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_
         shutil.move(p_source_filename, p_target_filename)
 
         return True
+    
+def transfer_files_by_extension(f_source_directory, f_target_directory, f_extensions, f_my_logger, f_processmode='MOVE'):
+    print (f"{f_source_directory} {f_target_directory} {f_extensions} {f_processmode}")
+    print (os.walk(f_source_directory))
+    for root, _, files in os.walk(f_source_directory):
+        for filename in files:
+            if any(filename.endswith(ext) for ext in f_extensions):
+                p_source_filename = os.path.join(root, filename)
+                if (f_processmode == "MOVE"):
+                    f_my_logger.info(rjlog.logt(f"MOV - Moving {filename} to {f_target_directory}."))
+                    shutil.move(p_source_filename, f_target_directory)
+
+                if (f_processmode == "COPY"):
+                    f_my_logger.info(rjlog.logt(f"MOV - Copying {filename} to {f_target_directory}."))
+                    shutil.copy(p_source_filename, f_target_directory)
+
+    return True
