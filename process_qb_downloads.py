@@ -1,6 +1,7 @@
-from module_rjscanfix import *
-import os
-import shutil
+#from module_rjscanfix import *
+import os, shutil
+import rjscanmodule.rjlogging as rjlog
+import rjscanmodule.rjgeneral as rjgen
 
 PROCESS = "MOVE"
 
@@ -17,7 +18,7 @@ BASE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 # BASE_EXTENSIONS = [".txt"]
 
 if __name__ == "__main__":
-    my_logger = get_logger()
+    my_logger = rjlog.get_logger()
 
 # #   stage 1 - move all the useful files to the store
     transfer_files_by_extension(f_source_directory=BASE_DIRECTORY,
@@ -27,8 +28,7 @@ if __name__ == "__main__":
                                 f_processmode=PROCESS)
 
     # stage 2 - fix all the filenames
-    scanned_directory = get_list_of_files(f_source_directory=INTERMEDIATE_DIRECTORY,
-                                          f_source_extensions=BASE_EXTENSIONS)
+    scanned_directory = rjgen.get_list_of_files(f_source_directory=INTERMEDIATE_DIRECTORY, f_source_extensions=BASE_EXTENSIONS)
     
     # Scan through the folder
     for full_filename in scanned_directory:

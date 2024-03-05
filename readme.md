@@ -95,14 +95,16 @@
 ## Audit the data which is updated on a rescan.
 ## The '5' value to generate the MP3 runner should clear after the .sh file is created.
 ## Tidy up the file/location relative path logic
+## Check that the URL is correct DVMM-003 and returning DVMM-033 for some reason.
+## Finish code for custom attribute search (javli)
+## Fix width of console output/logs.
+
+#  Testing:
+#t are 5 and 9 a reasonable options too?  Do they happen in the right order?
+#t Split functions from module (diff file for each function?)
 
 #  Todo:
-## Check that the URL is correct DVMM-003 and returning DVMM-033 for some reason.
-#? put_title_db_record function should be used more.  i.e. a reusable, universal write title function.
 #  How do we update metadata when it a) didn't exist before, or b) is different, or c) worse - i.e. no result?
-## Finish code for custom attribute search (javli)
-#  Split functions from module (diff file for each function?)
 #  What happens if the xcode is bad?
 #  The record in the database should take priority and overwrite this xattr even if it is set.
-#  are 5 and 9 a reasonable options too?  Do they happen in the right order?
-## Fix width of console output/logs.
+#  Rewrite process_qb_downloads.py

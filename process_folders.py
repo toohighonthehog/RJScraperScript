@@ -18,7 +18,7 @@ from datetime import datetime
 #  32 = Just undo / reset.  Don't Scan
 #  6 = Do DEFAULT_TASK.
 #  Add some logic on what can be run concurrently.
-#  valid values = 1,2,3,4,16,32,36
+#  valid values = 1,2,3,4,16,32,36 + 5,9
 
 # are 5 and 9 a reasonable options too?  Do they happen in the right order?
 
@@ -59,7 +59,8 @@ PROCESS_DIRECTORIES = [
     {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
 
-VALID_TASKS = (0, 1, 2, 3, 4, 8, 16, 32, 36, 40)
+# check 5 and 9 are okay.
+VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 32, 36, 40)
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
