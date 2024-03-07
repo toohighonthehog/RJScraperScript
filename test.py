@@ -5,8 +5,8 @@ import rjscanmodule.rjgeneral as rjgen
 
 PROCESS = "COPY"
 BASE_DIRECTORY = "/home/rjohnson/test/qb.1/"
-INTERMEDIATE_DIRECTORY = "~/test/qb.2/"
-TARGET_DIRECTORY = "~/test/qb.3/"
+INTERMEDIATE_DIRECTORY = "/home/rjohnson/test/qb.2/"
+TARGET_DIRECTORY = "/home/rjohnson/test/qb.3/"
 BASE_EXTENSIONS = [".txt", ".gif"]
 
 if __name__ == "__main__":
