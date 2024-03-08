@@ -66,7 +66,6 @@ def search_for_title(f_input_string, f_javli_override = None):
 def get_list_of_files(f_source_directory, f_source_extensions):
     p_folder_list_1 = os.listdir(f_source_directory)
     p_folder_list_2 = [f_source_directory + filename for filename in p_folder_list_1 if any(filename.endswith(extension) for extension in f_source_extensions)]
-
     p_folder_list_2.sort()
 
     return p_folder_list_2
@@ -87,18 +86,15 @@ def move_up_level(f_source_directory, f_target_directory, f_process_filename, f_
         return True
     
 def transfer_files_by_extension(f_source_directory, f_target_directory, f_extensions, f_my_logger, f_processmode='MOVE'):
-    #print (f"{f_source_directory} {f_target_directory} {f_extensions} {f_processmode}")
-    #print (os.walk(f_source_directory))
     for root, _, files in os.walk(f_source_directory):
         for filename in files:
             if any(filename.endswith(ext) for ext in f_extensions):
                 p_source_filename = os.path.join(root, filename)
+                f_my_logger.info(rjlog.logt(f"{f_processmode[:3]} - {filename} to {f_target_directory}."))
                 if (f_processmode == "MOVE"):
-                    f_my_logger.info(rjlog.logt(f"MOV - Moving {filename} to {f_target_directory}."))
                     shutil.move(p_source_filename, f_target_directory)
 
                 if (f_processmode == "COPY"):
-                    f_my_logger.info(rjlog.logt(f"MOV - Copying {filename} to {f_target_directory}."))
                     shutil.copy(p_source_filename, f_target_directory)
 
     return True
