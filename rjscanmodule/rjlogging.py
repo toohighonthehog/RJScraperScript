@@ -2,6 +2,8 @@ import logging, sys, os, datetime
 from datetime import datetime
 #import rich
 from rich.logging import RichHandler
+#from rich.console import RichConsole
+#from rich.theme import RichTheme
 
 __all__ = ["logt", "get_console_handler", "get_file_handler", "get_logger"]
 
@@ -23,16 +25,16 @@ def logt(f_left = "", f_right = "", f_middle = " ", f_width = 0):
     p_middle_length = p_width - (len(f_left) + len(f_right))
 
     f_result = f_left + (p_middle_length * f_middle) + f_right
-    return (f"{f_result}")
+    return (f_result)
 
 def get_console_handler():
     p_text_width = (os.get_terminal_size().columns - 47)
     #p_text_width = (max((min(p_display_width, 100), 60)))
-    p_console_handler = RichHandler()
+    p_console_handler = RichHandler(show_path=False)
 
     p_formatter = "%(message)-." + str(p_text_width) + "s"
     #p_formatter = "%(message)-." + str(20) + "s"
-    print (p_formatter)
+    #print (p_formatter)
     p_console_handler.setFormatter(logging.Formatter(p_formatter))
     p_console_handler.setLevel(logging.INFO)
     return p_console_handler
