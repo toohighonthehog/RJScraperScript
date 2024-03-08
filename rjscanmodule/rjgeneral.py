@@ -18,7 +18,7 @@ def search_for_title(f_input_string, f_javli_override = None):
                 #print (p_get_video)
                 return f_input_string, 1
     
-    p_valid = r'([A-Z]){2,}[0-9]{3,}([A-Z])'
+    p_valid = r'([A-Z]){3,}[0-9]{3,}([A-Z])'
     p_strict_valid = r'^([A-Z]{3,5})(\d{3})Z$'
     p_input_string = f_input_string.upper()
     p_input_string = re.sub(r'[^A-Z0-9]', '', p_input_string)
@@ -38,6 +38,7 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_get_video = p_my_javlibrary.get_video(p_matched_value)
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
+                print (p_get_video.code)
 
     #p_result = p_strict_matched_value
     p_result_count = (len(p_substrings))

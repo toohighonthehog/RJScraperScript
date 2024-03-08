@@ -12,7 +12,7 @@ import os
 #print (max((min(os.get_terminal_size().columns, 120),80)))
 
 #title = "javme4lqz4"
-title = "hhd800.com@HUNTC-050"
+title = "CLT079"
 #title = "042CLT-079"
 #title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
@@ -20,7 +20,7 @@ title = "hhd800.com@HUNTC-050"
 f_my_javlibrary = JAVLibrary()
 #print (f_my_javlibrary.search(title))
 #print (f_my_javlibrary.get_video(title))
-x, y = rjgen.search_for_title(f_input_string = title, f_javli_override = None)
+x, y = rjgen.search_for_title(f_input_string = title)
 
 #p_metadata = f_my_javlibrary.get_video("javme4lqz4")
 #p_metadata_url = f_my_javlibrary.search("javme4lqz4")
