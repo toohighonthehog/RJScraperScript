@@ -37,6 +37,7 @@ if __name__ == "__main__":
     
     for full_filename in scanned_directory:
         filename, file_extension = os.path.splitext(os.path.basename(full_filename))
+        print (f"{filename} + {file_extension}")
         fixed_filename, fixed_count = rjgen.search_for_title(filename)
         #print (f"{fixed_filename} {fixed_count}")
 

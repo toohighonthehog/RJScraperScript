@@ -12,7 +12,7 @@ import os
 #print (max((min(os.get_terminal_size().columns, 120),80)))
 
 #title = "javme4lqz4"
-title = "BBAN-022.gif"
+title = "hhd800.com@HUNTC-050"
 #title = "042CLT-079"
 #title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
