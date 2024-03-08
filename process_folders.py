@@ -82,12 +82,15 @@ my_cursor = my_connection.cursor(dictionary=True)
 my_logger = rjlog.get_logger()
 
 if __name__ == "__main__":
+
     for PROCESS_DIRECTORY in PROCESS_DIRECTORIES:
         SOURCE_DIRECTORY = LOCAL_MOUNT_PREFIX + PROCESS_DIRECTORY["base"]
         SOURCE_DIRECTORY_R = REMOTE_MOUNT_PREFIX + PROCESS_DIRECTORY["base"]
         TARGET_DIRECTORY = SOURCE_DIRECTORY
         ARBITRARY_PRATE = PROCESS_DIRECTORY["prate"]
         PROCESS_TASK = PROCESS_DIRECTORY["task"]
+
+
         
         if PROCESS_TASK == 64:
             PROCESS_TASK = DEFAULT_TASK

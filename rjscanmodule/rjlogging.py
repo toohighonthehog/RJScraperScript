@@ -40,6 +40,9 @@ def get_console_handler():
     return p_console_handler
 
 def get_file_handler():
+    if not os.path.exists('./logs'):
+        os.makedirs('./logs', exist_ok=True)
+    
     p_file_handler = logging.FileHandler('./logs/{:%Y-%m-%d_%H.%M.%S}.log'.format(datetime.now()), mode='w')
     p_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"))
     p_file_handler.setLevel(logging.DEBUG)
