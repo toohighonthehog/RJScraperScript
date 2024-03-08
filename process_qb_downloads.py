@@ -5,22 +5,22 @@ import rjscanmodule.rjgeneral as rjgen
 #from rjscanmodule import rjlogging as rjlog
 #from rjscanmodule import rjgeneral as rjgen
 
-# PROCESS = "MOVE"
+PROCESS = "MOVE"
 # BASE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/1. Raw Subs/"
 # INTERMEDIATE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/2. Dumped Subs/"
 # TARGET_DIRECTORY = "/mnt/multimedia/Other/Other/RatedFinalJ/~SubtitleRepository/General/"
 # BASE_EXTENSIONS = [".srt"]
 
-# BASE_DIRECTORY = "/mnt/vmwareshares/Docker-Download/qBitTorrent.finished/"
-# INTERMEDIATE_DIRECTORY = "/mnt/vmwareshares/Docker-Download/qBitTorrent.holding/"
-# TARGET_DIRECTORY = "/mnt/vmwareshares/Docker-Download/qBitTorrent.fixed/"
-# BASE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
+BASE_DIRECTORY = "/mnt/vmwareshares/Docker-Download/qBitTorrent.finished/"
+INTERMEDIATE_DIRECTORY = "/mnt/vmwareshares/Docker-Download/qBitTorrent.holding/"
+TARGET_DIRECTORY = "/mnt/vmwareshares/Docker-Download/qBitTorrent.fixed/"
+BASE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 
-PROCESS = "COPY"
-BASE_DIRECTORY = "/home/rjohnson/test/qb.1/"
-INTERMEDIATE_DIRECTORY = "/home/rjohnson/test/qb.2/"
-TARGET_DIRECTORY = "/home/rjohnson/test/qb.3/"
-BASE_EXTENSIONS = [".txt", ".gif"]
+# PROCESS = "COPY"
+# BASE_DIRECTORY = "/home/rjohnson/test/qb.1/"
+# INTERMEDIATE_DIRECTORY = "/home/rjohnson/test/qb.2/"
+# TARGET_DIRECTORY = "/home/rjohnson/test/qb.3/"
+# BASE_EXTENSIONS = [".txt", ".gif"]
 
 if __name__ == "__main__":
     my_logger = rjlog.get_logger()
