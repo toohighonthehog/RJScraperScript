@@ -89,9 +89,7 @@ if __name__ == "__main__":
         TARGET_DIRECTORY = SOURCE_DIRECTORY
         ARBITRARY_PRATE = PROCESS_DIRECTORY["prate"]
         PROCESS_TASK = PROCESS_DIRECTORY["task"]
-
-
-        
+     
         if PROCESS_TASK == 64:
             PROCESS_TASK = DEFAULT_TASK
 
@@ -352,7 +350,7 @@ if __name__ == "__main__":
                     )
 
                 if to_be_scraped_count < 0:
-                    my_logger.warning(rjlog.logt(f"+++++ {filename}{file_extension} - no confirmed match found.", f_width = -3))
+                    my_logger.warning(rjlog.logt(f"+++++ {filename}{file_extension} - no confirmed match found."))
 
                 my_connection.commit()
                 my_logger.info(rjlog.logt("="))

@@ -38,7 +38,7 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_get_video = p_my_javlibrary.get_video(p_matched_value)
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
-                print (p_get_video.code)
+                #print (p_get_video.code)
 
     #p_result = p_strict_matched_value
     p_result_count = (len(p_substrings))

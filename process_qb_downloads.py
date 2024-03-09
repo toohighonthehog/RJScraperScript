@@ -6,6 +6,7 @@ import rjscanmodule.rjgeneral as rjgen
 #from rjscanmodule import rjgeneral as rjgen
 
 # setfattr -n user.javli -v <value> <filename>
+# setfattr -n user.prate -v <value> <filename>
 
 PROCESS = "MOVE"
 # BASE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/1. Raw Subs/"
@@ -39,15 +40,12 @@ if __name__ == "__main__":
     
     for full_filename in scanned_directory:
         filename, file_extension = os.path.splitext(os.path.basename(full_filename))
-        # print (f"{filename} + {file_extension}")
         try:
             f_file_xdata = (os.getxattr(full_filename, 'user.javli')).decode("utf-8")
         except:
             f_file_xdata = None
 
         fixed_filename, fixed_count = rjgen.search_for_title(filename, f_file_xdata)
-        #print (f"{fixed_filename} {fixed_count}")
-
 
         if fixed_count == 1:
             new_filename = fixed_filename + file_extension

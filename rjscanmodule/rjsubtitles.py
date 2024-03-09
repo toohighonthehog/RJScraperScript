@@ -45,7 +45,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
     p_target_directory = f_target_directory + f_process_title + "/"
 
     if any(filename.endswith(f_target_language) for filename in os.listdir(p_target_directory)):
-        f_my_logger.debug(rjlog.logt(f_left = "SUB - Existing subtitles found.", f_width = -1))
+        f_my_logger.debug(rjlog.logt(f_left = "SUB - Existing subtitles found."))
 
     f_my_logger.info(rjlog.logt(f"SUB - Searching SubtitleCat for '{f_process_title}'."))
 
@@ -58,11 +58,11 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning(rjlog.logt(f_left = f"URL - SubtitleCat (L0) not responding.", f_right = f"{str(p_counter)}/5"), f_width = -3)
+            f_my_logger.warning(rjlog.logt(f_left = f"URL - SubtitleCat (L0) not responding.", f_right = f"{str(p_counter)}/5"))
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(rjlog.logt(f_left = "URL - SubtitleCat (L0) connection failed.  Terminating.", f_width = -4))
+        f_my_logger.critical(rjlog.logt(f_left = "URL - SubtitleCat (L0) connection failed.  Terminating."))
         exit()
 
     p_counter = 0
@@ -72,11 +72,11 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
             break
         except:
             p_counter += 1
-            f_my_logger.warning(rjlog.logt(f_left = f"URL - SubtitleCat (L1) not responding.", f_right = f"{str(p_counter)}/5", f_width = -3))
+            f_my_logger.warning(rjlog.logt(f_left = f"URL - SubtitleCat (L1) not responding.", f_right = f"{str(p_counter)}/5"))
             time.sleep(30)
 
     if p_counter >= 5:
-        f_my_logger.critical(rjlog.logt(f_left = "URL - SubtitleCat (L1) connection failed.  Terminating.", f_width = -4))
+        f_my_logger.critical(rjlog.logt(f_left = "URL - SubtitleCat (L1) connection failed.  Terminating."))
         exit()
 
     p_table_level1_entries = [[c.absolute_links for c in row.find('td')][:1] for row in p_table_level1.find('tr')][1:]
@@ -94,7 +94,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                     p_table_level2 = p_response_level2.html.xpath('/html/body/div[4]/div/div[2]', timeout=30, first=True)
                 except:
                     p_counter += 1
-                    f_my_logger.warning(rjlog.logt(f_left = f"URL - SubtitleCat (L2) not responding.", f_right = f"{str(p_counter)}/3", f_width = -3))
+                    f_my_logger.warning(rjlog.logt(f_left = f"URL - SubtitleCat (L2) not responding.", f_right = f"{str(p_counter)}/3"))
                     time.sleep(5)
 
             if p_counter >= 3:
@@ -113,7 +113,7 @@ def get_subtitlecat(f_target_directory, f_target_language, f_process_title, f_my
                             p_subtitle_url_check = (requests.head(p_subtitle_url).status_code)
                             p_count += 1
                             if p_subtitle_url_check == 200:
-                                f_my_logger.debug(rjlog.logt(f_left = f"SUB - Subtitle_URL " + p_subtitle_url + "."), f_width = -1)
+                                f_my_logger.debug(rjlog.logt(f_left = f"SUB - Subtitle_URL " + p_subtitle_url + "."))
                                 if p_subtitle_url.find('/'):
                                     p_subtitle_filename = ((p_subtitle_url.rsplit('/', 1)[1]).lower())
                                 f_my_logger.info(rjlog.logt(f"SUB - Downloading {p_subtitle_filename}."))
