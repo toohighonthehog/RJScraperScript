@@ -109,3 +109,4 @@
 #  The record in the database should take priority and overwrite this xattr even if it is set.
 #  Rewrite process_qb_downloads.py
 #  f_width can probably be removed in logger.
+#  Database needs to either avoid null values, ifnull them in queries, or a combination of both.
