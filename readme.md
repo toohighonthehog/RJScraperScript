@@ -110,3 +110,6 @@
 #  Rewrite process_qb_downloads.py
 #  f_width can probably be removed in logger.
 #  Database needs to either avoid null values, ifnull them in queries, or a combination of both.
+#  Create a mover function/option so that files are moved to a folder based on prate.
+#     We need to be careful with this to ensure the database is kept in sync with the target folder and that the meta data remains consistent.
+#     The idea here is that syncthing only replicates 8+

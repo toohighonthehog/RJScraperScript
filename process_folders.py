@@ -15,10 +15,11 @@ from datetime import datetime
 #   4 = Process files in root of source folder
 #   8 = Process files in root of source folder (but no SubtitleCat)
 #  16 = Write key data to extended attributes
-#  32 = Just undo / reset.  Don't Scan
-#  6 = Do DEFAULT_TASK.
+#  32 = Move to folder matching prate
+#  64 = Just undo / reset.  Don't Scan
+#  128 = Do DEFAULT_TASK.
 #  Add some logic on what can be run concurrently.
-#  valid values = 1,2,3,4,16,32,36 + 5,9
+#  valid values = 1,2,3,4,16,40,64,68 + 5,9
 
 # are 5 and 9 a reasonable options too?  Do they happen in the right order?
 
@@ -43,24 +44,24 @@ os.system("clear")
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {"task": 40, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
-    {"task": 64, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
-    {"task": 64, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {"task": 128, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Censored/12/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
+    {"task": 128, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
+    {"task": 32, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
 
 # check 5 and 9 are okay.
-VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 32, 36, 40)
+VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 64, 68, 72)
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -90,7 +91,7 @@ if __name__ == "__main__":
         ARBITRARY_PRATE = PROCESS_DIRECTORY["prate"]
         PROCESS_TASK = PROCESS_DIRECTORY["task"]
      
-        if PROCESS_TASK == 64:
+        if PROCESS_TASK == 128:
             PROCESS_TASK = DEFAULT_TASK
 
         if PROCESS_TASK not in VALID_TASKS:
@@ -108,7 +109,7 @@ if __name__ == "__main__":
                 os.makedirs(TARGET_DIRECTORY, exist_ok=True)
                 #my_logger.info(rjlog.logt("="))
 
-        if PROCESS_TASK & 32:
+        if PROCESS_TASK & 64:
             my_logger.info(rjlog.logt(f_left = "=== Reverting ( Mode: Undo Everything ) ", f_middle = "="))
             scanned_directory = os.listdir(SOURCE_DIRECTORY)
             for filename in scanned_directory:
@@ -142,6 +143,18 @@ if __name__ == "__main__":
                             my_logger.info(rjlog.logt(f"ATT - Set xattr for {code} to {prate}."))
                         except:
                             my_logger.warning(rjlog.logt(f"ATT - Set xattr for {code} to {prate} failed."))
+
+        if PROCESS_TASK & 32:
+            my_logger.info(rjlog.logt(f_left = "=== Move to relevant prate folder", f_middle = "="))
+            db_query = f"WHERE location LIKE '{SOURCE_DIRECTORY_R}%'"
+            records_to_scan = rjdb.get_db_array(my_cursor, db_query)
+
+            for record_to_scan in records_to_scan:
+                code = record_to_scan['code']
+                prate = record_to_scan['prate']
+                location = record_to_scan['location']
+                if (prate > 0):
+                    my_logger.info(rjlog.logt(f"{location} - {code} - {prate}."))
 
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests", f_middle = "="))
