@@ -155,7 +155,7 @@ if __name__ == "__main__":
                 prate_int = prate # if its a number <=10, convert to a 2 digit integer.
 
                 location = record_to_scan['location']
-                destination = rjgen.prate_directory(record_to_scan['location'], prate)
+                destination = rjgen.prate_directory(SOURCE_DIRECTORY, prate)
                 if (prate):
                     my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
 
