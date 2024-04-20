@@ -53,10 +53,10 @@ PROCESS_DIRECTORIES = [
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 128, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
-    {"task": 32, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/Names/"}
 ]
 
