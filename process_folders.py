@@ -156,9 +156,9 @@ if __name__ == "__main__":
                 destination = rjgen.prate_directory(SOURCE_DIRECTORY, prate)
                 if (destination):
                     my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
-                    print (f"{SOURCE_DIRECTORY + code} > {destination + code}")
+                    print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
                     for ext in SOURCE_EXTENSIONS:
-                        print (f"{destination + code + "/" + code + ext} > {destination + code + ext}")
+                        print (f"{destination}{code}/{code}{ext} > {destination}{code}{ext}")
                     # shutil.move(SOURCE_DIRECTORY + code, destination + FILE)
                     # move the whole folder to the new target
                     # revert the specific media file (from location) to parent.
