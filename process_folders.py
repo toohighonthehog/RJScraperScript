@@ -153,9 +153,11 @@ if __name__ == "__main__":
                 code = record_to_scan['code']
                 prate = record_to_scan['prate']
                 prate_int = prate # if its a number <=10, convert to a 2 digit integer.
+
                 location = record_to_scan['location']
-                if (prate > 0):
-                    my_logger.info(rjlog.logt(f"{location} - {code} - {prate}."))
+                destination = rjgen.prate_directory(record_to_scan['location'], prate)
+                if (prate):
+                    my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
 
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests ", f_middle = "="))
