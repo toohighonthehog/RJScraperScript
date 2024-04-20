@@ -152,12 +152,16 @@ if __name__ == "__main__":
             for record_to_scan in records_to_scan:
                 code = record_to_scan['code']
                 prate = record_to_scan['prate']
-                prate_int = prate # if its a number <=10, convert to a 2 digit integer.
-
-                location = record_to_scan['location']
+                prate_int = prate
                 destination = rjgen.prate_directory(SOURCE_DIRECTORY, prate)
-                if (prate):
+                if (destination):
                     my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
+                    print (f"{SOURCE_DIRECTORY + code} > {destination + code}")
+                    for ext in SOURCE_EXTENSIONS:
+                        print (f"{destination + code + "/" + code + ext} > {destination + code + ext}")
+                    # shutil.move(SOURCE_DIRECTORY + code, destination + FILE)
+                    # move the whole folder to the new target
+                    # revert the specific media file (from location) to parent.
 
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests ", f_middle = "="))
