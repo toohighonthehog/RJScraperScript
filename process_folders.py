@@ -19,7 +19,7 @@ from datetime import datetime
 #  64 = Just undo / reset.  Don't Scan
 #  128 = Do DEFAULT_TASK.
 #  Add some logic on what can be run concurrently.
-#  valid values = 1,2,3,4,16,32,40,64,68 + 5,9
+#  valid values = 1,2,3,4,16,32,36,40,64,68 + 5,9
 
 # are 5 and 9 a reasonable options too?  Do they happen in the right order?
 
@@ -61,7 +61,7 @@ PROCESS_DIRECTORIES = [
 ]
 
 # check 5 and 9 are okay.
-VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 32, 64, 68, 72)
+VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 32, 36, 64, 68, 72)
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"

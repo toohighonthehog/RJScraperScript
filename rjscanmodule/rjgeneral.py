@@ -6,7 +6,7 @@ __all__ = ["search_for_title", "get_list_of_files", "move_up_level"]
 
 def search_for_title(f_input_string, f_javli_override = None):
     p_my_javlibrary = javscraper.JAVLibrary()
-    
+
     if f_javli_override:
         if f_javli_override[:3] == 'jav':
             p_get_video = p_my_javlibrary.get_video(f_javli_override)
@@ -28,7 +28,7 @@ def search_for_title(f_input_string, f_javli_override = None):
     p_strict_matched_value = None
     if p_strict_match:
         p_strict_matched_value = p_strict_match.group(1) + '-' + p_strict_match.group(2)
-    
+
     p_substrings = set()
     for p_loop in range(len(p_input_string)):
         p_substring = p_input_string[p_loop:]
