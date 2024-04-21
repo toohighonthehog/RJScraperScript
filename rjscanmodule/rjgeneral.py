@@ -1,11 +1,14 @@
-import re, shutil, os
+import re, shutil, os, ast
 import javscraper
 import rjscanmodule.rjlogging as rjlog
 
 __all__ = ["search_for_title", "get_list_of_files", "move_up_level"]
 
 def search_for_title(f_input_string, f_javli_override = None):
+    with open("cookie.json", "r") as data:
+        cookie = ast.literal_eval(data.read())
     p_my_javlibrary = javscraper.JAVLibrary()
+    p_my_javlibrary._set_cookies(cookie)
 
     if f_javli_override:
         if f_javli_override[:3] == 'jav':

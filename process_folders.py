@@ -1,4 +1,5 @@
 import javscraper
+import ast
 import rjscanmodule.rjdatabase as rjdb
 import rjscanmodule.rjlogging as rjlog
 import rjscanmodule.rjgeneral as rjgen
@@ -259,7 +260,10 @@ if __name__ == "__main__":
                 f_source_extensions=SOURCE_EXTENSIONS
             )
 
+            with open("cookie.json", "r") as data:
+                cookie = ast.literal_eval(data.read())
             my_javlibrary = javscraper.JAVLibrary()
+            my_javlibrary._set_cookies(cookie)
             total = len(scanned_directory)
             count = 0
             for full_filename in scanned_directory:

@@ -1,4 +1,4 @@
-import javscraper
+import javscraper, ast
 import rjscanmodule.rjlogging as rjlog
 
 __all__ = ["download_metadata"]
@@ -6,7 +6,11 @@ __all__ = ["download_metadata"]
 def download_metadata(f_process_title, f_my_logger, f_attribute_override = None):
     ############## xxx
     ### need to check that, if f_attribute_override is set, try that first.
+    with open("cookie.json", "r") as data:
+        cookie = ast.literal_eval(data.read())
     p_my_javlibrary = javscraper.JAVLibrary()
+    p_my_javlibrary._set_cookies(cookie)
+    
     #p_process_title = f_process_title
     p_metadata_array = []
 
