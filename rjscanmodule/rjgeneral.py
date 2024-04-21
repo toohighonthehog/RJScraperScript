@@ -1,4 +1,4 @@
-import re, shutil, os, ast
+import re, shutil, os, ast, time
 import javscraper
 import rjscanmodule.rjlogging as rjlog
 
@@ -13,6 +13,7 @@ def search_for_title(f_input_string, f_javli_override = None):
     if f_javli_override:
         if f_javli_override[:3] == 'jav':
             p_get_video = p_my_javlibrary.get_video(f_javli_override)
+            time.sleep(5)
             ### if a value result is returned, return f_input_string, 1
             ### if not, just keep going.          
             #print (f"crap: {p_get_video}")

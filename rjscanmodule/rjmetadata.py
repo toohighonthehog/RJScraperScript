@@ -1,4 +1,4 @@
-import javscraper, ast
+import javscraper, ast, time
 import rjscanmodule.rjlogging as rjlog
 
 __all__ = ["download_metadata"]
@@ -22,7 +22,8 @@ def download_metadata(f_process_title, f_my_logger, f_attribute_override = None)
         p_metadata = p_my_javlibrary.get_video(f_process_title)
         p_metadata_url = p_my_javlibrary.search(f_process_title)
         f_string_override = ""
-  
+    time.sleep(5)
+
     f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}' metadata.{f_string_override}"))
 
     if p_metadata is not None:
