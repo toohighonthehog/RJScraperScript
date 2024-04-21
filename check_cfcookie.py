@@ -2,7 +2,7 @@
 # https://www.whatismybrowser.com/detect/what-is-my-user-agent/
 # this cookie seems to last for only 30 mins
 
-import javscraper, ast, os
+import javscraper, ast, os, time
 from datetime import datetime
 import rjscanmodule.rjlogging as rjlog
 
@@ -25,4 +25,4 @@ while True:
     print (datetime.now())
     result = my_javlibrary.search(title)
     my_logger.info(rjlog.logt(f"{result}."))
-    sleep 30
+    time.sleep(30)

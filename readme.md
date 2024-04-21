@@ -113,4 +113,5 @@
 #  Create a mover function/option so that files are moved to a folder based on prate.
 #     We need to be careful with this to ensure the database is kept in sync with the target folder and that the meta data remains consistent.
 #     The idea here is that syncthing only replicates 8+
+#     If its already in the right place, skip
 #  Think about what happens if cf cookies expire mid process.

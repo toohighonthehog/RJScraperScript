@@ -54,7 +54,7 @@ PROCESS_DIRECTORIES = [
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 128, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
-    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/10/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/General/"},
@@ -264,6 +264,7 @@ if __name__ == "__main__":
                 cookie = ast.literal_eval(data.read())
             my_javlibrary = javscraper.JAVLibrary()
             my_javlibrary._set_cookies(cookie)
+            
             total = len(scanned_directory)
             count = 0
             for full_filename in scanned_directory:
@@ -284,7 +285,7 @@ if __name__ == "__main__":
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
-                if to_be_scraped_count >= 0:
+                if to_be_scraped_count > 0:
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
 
                 if to_be_scraped_count == 1:
@@ -310,34 +311,34 @@ if __name__ == "__main__":
                     if ARBITRARY_PRATE < 0:
                         metadata_array["status"] = 7 # what number?
 
-                if to_be_scraped_count == 0:
-                    metadata_array = {
-                        "code": to_be_scraped,
-                        "name": None,
-                        "actor": [],
-                        "studio": None,
-                        "image": None,
-                        "genre": [],
-                        "url": [],
-                        "score": None,
-                        "release_date": None,
-                        "added_date": BATCH_DATETIME,
-                        "file_date": None,
-                        "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
-                        "subtitles": None,
-                        "prate": ARBITRARY_PRATE,
-                        "notes": None,
-                        "status": None
-                    }
+                # if to_be_scraped_count == 0:
+                #     metadata_array = {
+                #         "code": to_be_scraped,
+                #         "name": None,
+                #         "actor": [],
+                #         "studio": None,
+                #         "image": None,
+                #         "genre": [],
+                #         "url": [],
+                #         "score": None,
+                #         "release_date": None,
+                #         "added_date": BATCH_DATETIME,
+                #         "file_date": None,
+                #         "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
+                #         "subtitles": None,
+                #         "prate": ARBITRARY_PRATE,
+                #         "notes": None,
+                #         "status": None
+                #     }
 
-                    if ARBITRARY_PRATE >= 0:
-                        metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
-                        metadata_array["status"] = 8 # what number?
+                #     if ARBITRARY_PRATE >= 0:
+                #         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
+                #         metadata_array["status"] = 8 # what number?
 
-                    if ARBITRARY_PRATE < 0:
-                        metadata_array["status"] = 6 # what number?
+                #     if ARBITRARY_PRATE < 0:
+                #         metadata_array["status"] = 6 # what number?
 
-                if to_be_scraped_count >= 0:
+                if to_be_scraped_count > 0:
                     rjsub.get_localsubtitles(
                         f_subtitle_general=SUBTITLE_GENERAL,
                         f_subtitle_whisper=SUBTITLE_WHISPER,
