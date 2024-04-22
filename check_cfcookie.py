@@ -24,5 +24,5 @@ my_logger = rjlog.get_logger()
 while True:
     print (datetime.now())
     result = my_javlibrary.search(title)
-    my_logger.info(rjlog.logt(f"{result}."))
+    #my_logger.info(rjlog.logt(f"{result}."))
     time.sleep(30)

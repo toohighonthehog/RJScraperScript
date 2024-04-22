@@ -149,13 +149,12 @@ if __name__ == "__main__":
             my_logger.info(rjlog.logt(f_left = "=== Move to relevant prate folder ", f_middle = "="))
             db_query = f"WHERE location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = rjdb.get_db_array(my_cursor, db_query)
-
             for record_to_scan in records_to_scan:
                 code = record_to_scan['code']
                 prate = record_to_scan['prate']
                 prate_int = prate
                 destination = rjgen.prate_directory(SOURCE_DIRECTORY, prate)
-                if (destination):
+                if (destination and (SOURCE_DIRECTORY != destination )):
                     my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
                     try:
                         print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
@@ -168,9 +167,6 @@ if __name__ == "__main__":
                             shutil.move(destination + code + "/" + code + ext, destination + code + ext)
                         except:
                             pass
-                    # shutil.move(SOURCE_DIRECTORY + code, destination + FILE)
-                    # move the whole folder to the new target
-                    # revert the specific media file (from location) to parent.
 
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests ", f_middle = "="))
@@ -381,8 +377,8 @@ if __name__ == "__main__":
                         f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
-                if to_be_scraped_count < 0:
-                    my_logger.warning(rjlog.logt(f"+++++ {filename}{file_extension} - no confirmed match found."))
+                if to_be_scraped_count <= 0:
+                    my_logger.warning(rjlog.logt(f"+++++ {filename}{file_extension} - no confirmed match found.  ({to_be_scraped_count})"))
 
                 my_connection.commit()
                 my_logger.info(rjlog.logt("="))
