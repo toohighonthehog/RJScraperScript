@@ -171,7 +171,8 @@ if __name__ == "__main__":
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests ", f_middle = "="))
            
-            db_query = f"WHERE status = 2 AND location LIKE '{SOURCE_DIRECTORY_R}%'"
+            # check query below.           
+            db_query = f"WHERE (status = 2 or name IS NULL) AND location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = rjdb.get_db_array(my_cursor, db_query)
 
             my_logger.info(rjlog.logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
