@@ -116,3 +116,5 @@
 #     If its already in the right place, skip
 #  Think about what happens if cf cookies expire mid process.
 #  Put something useful on the screen when found count = 0.
+#  Add some pauses for cloudflare.
+#  Try other sources from javscraper module.
