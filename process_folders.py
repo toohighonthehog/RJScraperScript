@@ -11,7 +11,7 @@ from datetime import datetime
 
 # Task:
 #   0 = Do nothing
-#   1 = Generate the ffmpeg script, processed flagged
+#   1 = Generate the ffmpeg script, processed flagged abd look for missing data
 #   2 = Rescan for subtitles
 #   4 = Process files in root of source folder
 #   8 = Process files in root of source folder (but no SubtitleCat)
