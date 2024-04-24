@@ -2,6 +2,7 @@
 import javscraper, ast
 #import javscraper
 import rjscanmodule.rjmetadata as rjmeta
+import rjscanmodule.rjlogging as rjlog
 from datetime import datetime
 import os
 
@@ -26,6 +27,7 @@ with open("cookie.json", "r") as data:
 my_javlibrary = javscraper.JAVLibrary()
 my_javlibrary.debug = True
 my_javlibrary._set_cookies(cookie)
+my_logger = rjlog.get_logger()
 
 print (my_javlibrary.search(title))
 #print (f_my_javlibrary.get_video(title))
