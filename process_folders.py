@@ -277,7 +277,7 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count, metadata_array = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
