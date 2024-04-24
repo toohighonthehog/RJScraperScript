@@ -1,7 +1,7 @@
 import shutil, os, ast, time
 import rjscanmodule.rjlogging as rjlog
 
-__all__ = ["search_for_title", "get_list_of_files", "move_up_level"]
+__all__ = ["get_list_of_files", "move_up_level"]
 
 def get_list_of_files(f_source_directory, f_source_extensions):
     p_folder_list_1 = os.listdir(f_source_directory)
