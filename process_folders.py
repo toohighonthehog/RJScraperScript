@@ -277,14 +277,12 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count, metadata_array = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
-                if to_be_scraped_count > 0:
-                    os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
-
                 if to_be_scraped_count == 1:
+                    os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
                     metadata_array = rjmeta.download_metadata(
                         f_process_title=to_be_scraped,
                         f_my_logger=my_logger,
@@ -307,34 +305,6 @@ if __name__ == "__main__":
                     if ARBITRARY_PRATE < 0:
                         metadata_array["status"] = 7 # what number?
 
-                # if to_be_scraped_count == 0:
-                #     metadata_array = {
-                #         "code": to_be_scraped,
-                #         "name": None,
-                #         "actor": [],
-                #         "studio": None,
-                #         "image": None,
-                #         "genre": [],
-                #         "url": [],
-                #         "score": None,
-                #         "release_date": None,
-                #         "added_date": BATCH_DATETIME,
-                #         "file_date": None,
-                #         "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
-                #         "subtitles": None,
-                #         "prate": ARBITRARY_PRATE,
-                #         "notes": None,
-                #         "status": None
-                #     }
-
-                #     if ARBITRARY_PRATE >= 0:
-                #         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
-                #         metadata_array["status"] = 8 # what number?
-
-                #     if ARBITRARY_PRATE < 0:
-                #         metadata_array["status"] = 6 # what number?
-
-                if to_be_scraped_count > 0:
                     rjsub.get_localsubtitles(
                         f_subtitle_general=SUBTITLE_GENERAL,
                         f_subtitle_whisper=SUBTITLE_WHISPER,
@@ -378,7 +348,34 @@ if __name__ == "__main__":
                         f_json_filename=f"{TARGET_DIRECTORY}{to_be_scraped}/{to_be_scraped}.json"
                     )
 
-                if to_be_scraped_count <= 0:
+                # if to_be_scraped_count == 0:
+                #     metadata_array = {
+                #         "code": to_be_scraped,
+                #         "name": None,
+                #         "actor": [],
+                #         "studio": None,
+                #         "image": None,
+                #         "genre": [],
+                #         "url": [],
+                #         "score": None,
+                #         "release_date": None,
+                #         "added_date": BATCH_DATETIME,
+                #         "file_date": None,
+                #         "location": TARGET_DIRECTORY + to_be_scraped + "/" + to_be_scraped + file_extension,
+                #         "subtitles": None,
+                #         "prate": ARBITRARY_PRATE,
+                #         "notes": None,
+                #         "status": None
+                #     }
+
+                #     if ARBITRARY_PRATE >= 0:
+                #         metadata_array["file_date"] = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(full_filename)),)
+                #         metadata_array["status"] = 8 # what number?
+
+                #     if ARBITRARY_PRATE < 0:
+                #         metadata_array["status"] = 6 # what number?
+
+                if to_be_scraped_count != 1:
                     my_logger.warning(rjlog.logt(f"+++++ {filename}{file_extension} - no confirmed match found.  ({to_be_scraped_count})"))
 
                 my_connection.commit()
