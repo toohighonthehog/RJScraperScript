@@ -1,4 +1,4 @@
-import javscraper
+#import javscraper
 import ast
 import rjscanmodule.rjdatabase as rjdb
 import rjscanmodule.rjlogging as rjlog
@@ -259,8 +259,8 @@ if __name__ == "__main__":
 
             with open("cookie.json", "r") as data:
                 cookie = ast.literal_eval(data.read())
-            my_javlibrary = javscraper.JAVLibrary()
-            my_javlibrary._set_cookies(cookie)
+            #my_javlibrary = javscraper.JAVLibrary()
+            #my_javlibrary._set_cookies(cookie)
             
             total = len(scanned_directory)
             count = 0
@@ -277,7 +277,7 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count = rjgen.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 

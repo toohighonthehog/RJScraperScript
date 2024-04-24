@@ -118,3 +118,4 @@
 #  Put something useful on the screen when found count = 0.
 #  Add some pauses for cloudflare.
 #  Try other sources from javscraper module.
+#  Try to make the initial lookup a onetime thing.
