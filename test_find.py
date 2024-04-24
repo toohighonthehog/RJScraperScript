@@ -20,10 +20,11 @@ title = "MIAD-283"
 #title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
 
-my_javlibrary = javscraper.JAVLibrary()
 with open("cookie.json", "r") as data:
     cookie = ast.literal_eval(data.read())
+
 my_javlibrary = javscraper.JAVLibrary()
+my_javlibrary.debug = True
 my_javlibrary._set_cookies(cookie)
 
 print (my_javlibrary.search(title))
