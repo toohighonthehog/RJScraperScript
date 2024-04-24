@@ -33,10 +33,14 @@ print (my_javlibrary.search(title))
 #print (f_my_javlibrary.get_video(title))
 x, y = rjmeta.search_for_title(f_input_string = title)
 
-metadata = rjmeta.download_metadata(title)
+metadata_array = rjmeta.download_metadata(
+                        f_process_title=title,
+                        f_my_logger=my_logger
+)
+
 
 print (f"{x} {y}")
-print (metadata)
+print (metadata_array)
 
 #print (p_metadata)
 #print (p_metadata_url)
