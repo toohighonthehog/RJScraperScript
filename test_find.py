@@ -1,5 +1,5 @@
 #from ~/vscode/git/RJJAVScraperModule import javscraper
-import javscraper
+import javscraper, ast
 #import javscraper
 import rjscanmodule.rjgeneral as rjmeta
 from datetime import datetime
@@ -20,11 +20,15 @@ title = "MIAD-283"
 #title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
 
-f_my_javlibrary = javscraper.JAVLibrary()
+my_javlibrary = javscraper.JAVLibrary()
+with open("cookie.json", "r") as data:
+    cookie = ast.literal_eval(data.read())
+my_javlibrary = javscraper.JAVLibrary()
+my_javlibrary._set_cookies(cookie)
 
-print (f_my_javlibrary.search(title))
+print (my_javlibrary.search(title))
 #print (f_my_javlibrary.get_video(title))
-x, y = rjmeta.search_for_title(f_input_string = title)
+#x, y = rjmeta.search_for_title(f_input_string = title)
 
 #p_metadata = f_my_javlibrary.get_video("javme4lqz4")
 #p_metadata_url = f_my_javlibrary.search("javme4lqz4")
