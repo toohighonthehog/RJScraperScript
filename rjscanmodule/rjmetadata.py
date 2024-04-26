@@ -21,7 +21,7 @@ def download_metadata(f_process_title, f_my_logger, f_attribute_override = None)
         p_metadata = p_my_javlibrary.get_video(f_process_title)
         p_metadata_url = p_my_javlibrary.search(f_process_title)
         f_string_override = ""
-    time.sleep(3)
+    time.sleep(5)
 
     f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}' metadata.{f_string_override}"))
 
@@ -77,7 +77,7 @@ def search_for_title(f_input_string, f_javli_override = None):
     if f_javli_override:
         if f_javli_override[:3] == 'jav':
             p_get_video = p_my_javlibrary.get_video(f_javli_override)
-            time.sleep(3)
+            time.sleep(5)
             ### if a value result is returned, return f_input_string, 1
             ### if not, just keep going.          
             #print (f"crap: {p_get_video}")
@@ -106,7 +106,7 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_get_video = p_my_javlibrary.get_video(p_matched_value)
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
-                time.sleep(3)
+                time.sleep(5)
                 #print (p_get_video.code)
 
     #p_result = p_strict_matched_value
