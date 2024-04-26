@@ -1,6 +1,5 @@
 import hashlib, json
 import rjscanmodule.rjlogging as rjlog
-#from rjlogging import *
 
 __all__ = ["send_to_database", "send_to_json", "get_db_array", "get_db_title_record", "update_db_title_record"]
 

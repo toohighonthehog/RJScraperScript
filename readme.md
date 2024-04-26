@@ -110,12 +110,12 @@
 #  Rewrite process_qb_downloads.py
 #  f_width can probably be removed in logger.
 #  Database needs to either avoid null values, ifnull them in queries, or a combination of both.
-#  Create a mover function/option so that files are moved to a folder based on prate.
-#     We need to be careful with this to ensure the database is kept in sync with the target folder and that the meta data remains consistent.
-#     The idea here is that syncthing only replicates 8+
-#     If its already in the right place, skip
+## Create a mover function/option so that files are moved to a folder based on prate.
+##    We need to be careful with this to ensure the database is kept in sync with the target folder and that the meta data remains consistent.
+#     The idea here is that syncthing skips general
+##    If its already in the right place, skip
 #  Think about what happens if cf cookies expire mid process.
-#  Put something useful on the screen when found count = 0.
-#  Add some pauses for cloudflare.
-#  Try other sources from javscraper module.
-#  Try to make the initial lookup a onetime thing.
+## Put something useful on the screen when found count = 0.
+## Add some pauses for cloudflare.
+#X Try other sources from javscraper module.
+#  Try to make the initial lookup a one time thing.

@@ -1,9 +1,6 @@
-import logging, sys, os, datetime
+import logging, os, datetime
 from datetime import datetime
-#import rich
 from rich.logging import RichHandler
-#from rich.console import RichConsole
-#from rich.theme import RichTheme
 
 __all__ = ["logt", "get_console_handler", "get_file_handler", "get_logger"]
 

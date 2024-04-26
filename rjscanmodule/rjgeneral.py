@@ -1,4 +1,4 @@
-import shutil, os, ast, time
+import shutil, os
 import rjscanmodule.rjlogging as rjlog
 
 __all__ = ["get_list_of_files", "move_up_level"]

@@ -1,10 +1,7 @@
 #from ~/vscode/git/RJJAVScraperModule import javscraper
 import javscraper, ast
-#import javscraper
 import rjscanmodule.rjmetadata as rjmeta
 import rjscanmodule.rjlogging as rjlog
-from datetime import datetime
-import os
 
 #print (datetime.now())
 
