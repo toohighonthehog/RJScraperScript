@@ -119,3 +119,5 @@
 ## Add some pauses for cloudflare.
 #X Try other sources from javscraper module.
 #  Try to make the initial lookup a one time thing.
+#  Need a way to throttle off or pause for cookie errors.
+#    or the process is so resilient that a restart is fine. 
