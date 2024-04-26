@@ -121,3 +121,4 @@
 #  Try to make the initial lookup a one time thing.
 #  Need a way to throttle off or pause for cookie errors.
 #    or the process is so resilient that a restart is fine. 
+#  Logs and cookies outside of the repo folder.

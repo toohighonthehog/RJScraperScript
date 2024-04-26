@@ -177,13 +177,16 @@ if __name__ == "__main__":
             my_logger.info(rjlog.logt(f_left = "=== Reverting ( Mode: Flagged in DB ) ", f_middle = "="))
 
             for record_to_scan in records_to_scan:
-                rjgen.move_up_level(
-                    f_source_directory = SOURCE_DIRECTORY,
-                    f_target_directory = TARGET_DIRECTORY,
-                    f_process_filename = record_to_scan['code'],
-                    f_source_extensions = SOURCE_EXTENSIONS,
-                    f_my_logger = my_logger,
-                    )
+                try:
+                    rjgen.move_up_level(
+                        f_source_directory = SOURCE_DIRECTORY,
+                        f_target_directory = TARGET_DIRECTORY,
+                        f_process_filename = record_to_scan['code'],
+                        f_source_extensions = SOURCE_EXTENSIONS,
+                        f_my_logger = my_logger,
+                        )
+                except:
+                    pass
                 record_to_scan['status'] = 1
                 rjdb.update_db_title_record(my_cursor, record_to_scan)
                 my_connection.commit()
