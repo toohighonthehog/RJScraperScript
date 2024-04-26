@@ -2,12 +2,12 @@ import mysql.connector
 
 if __name__ == "__main__":
 
-    db_name="MultimediaShare"
+    db_name="Multimedia"
 
     my_connection = mysql.connector.connect(
         user="rjohnson",
         password="5Nf%GB6r10bD",
-        host="diskstation.hachiko.int",
+        host="mariadb.hachiko.int",
         port=3306,
     )
 

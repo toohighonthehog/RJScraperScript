@@ -74,7 +74,7 @@ BATCH_DATETIME = str(f"{datetime.now():%Y-%m-%d %H:%M:%S}")
 my_connection = mysql.connector.connect(
     user="rjohnson",
     password="5Nf%GB6r10bD",
-    host="diskstation.hachiko.int",
+    host="mariadb.hachiko.int",
     port=3306,
     database="Multimedia"
 )
