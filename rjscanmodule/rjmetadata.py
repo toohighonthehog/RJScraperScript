@@ -4,7 +4,6 @@ import rjscanmodule.rjlogging as rjlog
 __all__ = ["download_metadata", "search_for_title"]
 
 def download_metadata(f_process_title, f_my_logger, f_attribute_override = None):
-    ############## xxx
     ### need to check that, if f_attribute_override is set, try that first.
     with open("cookie.json", "r") as data:
         cookie = ast.literal_eval(data.read())
