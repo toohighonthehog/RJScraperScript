@@ -193,20 +193,21 @@ if __name__ == "__main__":
                     max_rate = (max_dict['MAX(actor.prate)'])
                     if max_rate:
                         destination = rjgen.prate_directory(SOURCE_DIRECTORY, "Names")
-                        print ("go for it")
 
 
 
                 if (destination and (SOURCE_DIRECTORY != destination )):
                     my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
                     try:
-                        print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
+                        pass
+                        #print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
                         #shutil.move(SOURCE_DIRECTORY + code, destination + code)
                     except:
                         pass
                     for ext in SOURCE_EXTENSIONS:
                         try:
-                            print (f"{destination}{code}/{code}{ext} > {destination}{code}{ext}")
+                            pass
+                            #print (f"{destination}{code}/{code}{ext} > {destination}{code}{ext}")
                             #shutil.move(destination + code + "/" + code + ext, destination + code + ext)
                         except:
                             pass
