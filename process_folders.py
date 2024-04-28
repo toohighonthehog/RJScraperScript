@@ -195,21 +195,19 @@ if __name__ == "__main__":
                         destination = rjgen.prate_directory(SOURCE_DIRECTORY, "Names")
                         prate = "Names"
 
-
-
                 if (destination and (SOURCE_DIRECTORY != destination )):
                     my_logger.info(rjlog.logt(f"{SOURCE_DIRECTORY}{code}/ > {prate}."))
                     try:
                         pass
                         #print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
-                        #shutil.move(SOURCE_DIRECTORY + code, destination + code)
+                        shutil.move(SOURCE_DIRECTORY + code, destination + code)
                     except:
                         pass
                     for ext in SOURCE_EXTENSIONS:
                         try:
                             pass
                             #print (f"{destination}{code}/{code}{ext} > {destination}{code}{ext}")
-                            #shutil.move(destination + code + "/" + code + ext, destination + code + ext)
+                            shutil.move(destination + code + "/" + code + ext, destination + code + ext)
                         except:
                             pass
                 # if it hasn't already been moved, get movie's max actor rating
