@@ -193,11 +193,12 @@ if __name__ == "__main__":
                     max_rate = (max_dict['MAX(actor.prate)'])
                     if max_rate:
                         destination = rjgen.prate_directory(SOURCE_DIRECTORY, "Names")
+                        prate = "Names"
 
 
 
                 if (destination and (SOURCE_DIRECTORY != destination )):
-                    my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
+                    my_logger.info(rjlog.logt(f"{SOURCE_DIRECTORY} - {code} - {prate}."))
                     try:
                         pass
                         #print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
