@@ -45,13 +45,13 @@ os.system("clear")
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 32, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {"task": 8, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {"task": 8, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
-    {"task": 8, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
+    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 128, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/09/"},
