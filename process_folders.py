@@ -80,6 +80,31 @@ my_connection = mysql.connector.connect(
 )
 
 my_cursor = my_connection.cursor(dictionary=True)
+
+########################################
+# code = "MIAD-283"
+# my_sql_query = (f"\
+#     SELECT MAX(actor.prate) \
+#     FROM title \
+#     LEFT OUTER JOIN actor_title_link \
+#     ON title.code = actor_title_link.title_code \
+#     LEFT OUTER JOIN actor \
+#     ON actor_title_link.actor_a_id = actor.a_ID \
+#     WHERE title_code = '{code}';" \
+#     )
+# my_cursor.execute(my_sql_query)
+# max_dict = my_cursor.fetchone()
+# max_rate = (max_dict['MAX(actor.prate)'])
+# if max_rate:
+#     print ("go for it")
+# else:
+#     print ("don't go for it")
+# exit()
+########################################
+
+
+
+
 my_logger = rjlog.get_logger()
 
 if __name__ == "__main__":
@@ -145,7 +170,7 @@ if __name__ == "__main__":
                             my_logger.warning(rjlog.logt(f"ATT - Set xattr for {code} to {prate} failed."))
 
         if PROCESS_TASK & 32:
-            my_logger.info(rjlog.logt(f_left = "=== Move to relevant prate folder ", f_middle = "="))
+            my_logger.info(rjlog.logt(f_left = "=== Move to relevant prate or name folder ", f_middle = "="))
             db_query = f"WHERE location LIKE '{SOURCE_DIRECTORY_R}%'"
             records_to_scan = rjdb.get_db_array(my_cursor, db_query)
             for record_to_scan in records_to_scan:
@@ -153,19 +178,40 @@ if __name__ == "__main__":
                 prate = record_to_scan['prate']
                 prate_int = prate
                 destination = rjgen.prate_directory(SOURCE_DIRECTORY, prate)
+                if destination == None:
+                    my_sql_query = (f"\
+                        SELECT MAX(actor.prate) \
+                        FROM title \
+                        LEFT OUTER JOIN actor_title_link \
+                        ON title.code = actor_title_link.title_code \
+                        LEFT OUTER JOIN actor \
+                        ON actor_title_link.actor_a_id = actor.a_ID \
+                        WHERE title_code = '{code}';" \
+                        )
+                    my_cursor.execute(my_sql_query)
+                    max_dict = my_cursor.fetchone()
+                    max_rate = (max_dict['MAX(actor.prate)'])
+                    if max_rate:
+                        destination = rjgen.prate_directory(SOURCE_DIRECTORY, "Names")
+                        print ("go for it")
+
+
+
                 if (destination and (SOURCE_DIRECTORY != destination )):
                     my_logger.info(rjlog.logt(f"{destination} - {code} - {prate}."))
                     try:
                         print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
-                        shutil.move(SOURCE_DIRECTORY + code, destination + code)
+                        #shutil.move(SOURCE_DIRECTORY + code, destination + code)
                     except:
                         pass
                     for ext in SOURCE_EXTENSIONS:
                         try:
                             print (f"{destination}{code}/{code}{ext} > {destination}{code}{ext}")
-                            shutil.move(destination + code + "/" + code + ext, destination + code + ext)
+                            #shutil.move(destination + code + "/" + code + ext, destination + code + ext)
                         except:
                             pass
+                # if it hasn't already been moved, get movie's max actor rating
+                # if the this rating is >0 or notnull, move it to names.
 
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests ", f_middle = "="))
