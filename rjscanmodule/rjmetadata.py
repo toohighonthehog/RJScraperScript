@@ -104,9 +104,9 @@ def search_for_title(f_input_string, f_javli_override = None):
             p_matched_value = (re.match(p_valid, p_substring)).group()
             p_matched_value = p_matched_value[:-1]
             p_get_video = p_my_javlibrary.get_video(p_matched_value)
+            time.sleep(6)
             if (p_get_video):
                 p_substrings.add(p_get_video.code)
-                time.sleep(6)
                 #print (p_get_video.code)
 
     #p_result = p_strict_matched_value
