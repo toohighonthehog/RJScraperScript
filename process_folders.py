@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
 
                 if (destination and (SOURCE_DIRECTORY != destination )):
-                    my_logger.info(rjlog.logt(f"{SOURCE_DIRECTORY} - {code} - {prate}."))
+                    my_logger.info(rjlog.logt(f"{SOURCE_DIRECTORY}{code} > {prate}."))
                     try:
                         pass
                         #print (f"{SOURCE_DIRECTORY}{code} > {destination}{code}")
