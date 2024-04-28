@@ -122,3 +122,6 @@
 #  Need a way to throttle off or pause for cookie errors.
 #    or the process is so resilient that a restart is fine. 
 #  Logs and cookies outside of the repo folder.
+#  What is screwing up permissions (seems to be specifically LR subs)  Maybe its just copies which are the problem?00
+#  https://stackoverflow.com/questions/19787348/copy-file-keep-permissions-and-owner
+#  Write file level versus SQL data check script.

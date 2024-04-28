@@ -21,22 +21,22 @@ def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_director
     if (os.path.isfile(f_subtitle_general + f_process_title + ".srt")):
         f_my_logger.info(rjlog.logt(f"SUB - Found {f_process_title}.srt in 'General'."))
         os.makedirs(f_target_directory + f_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_general + f_process_title + ".srt", f_target_directory + f_process_title + "/" + f_process_title + "-(LR).srt")
+        shutil.copyfile(f_subtitle_general + f_process_title + ".srt", f_target_directory + f_process_title + "/" + f_process_title + "-(LR).srt")
 
     if (os.path.isfile(f_subtitle_whisper + f_process_title + ".srt")):
         f_my_logger.info(rjlog.logt(f"SUB - Found {f_process_title}.srt in 'Whisper'."))
         os.makedirs(f_target_directory + f_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + f_process_title + ".srt", f_target_directory + f_process_title + "/" + f_process_title + "-(WH).srt")
+        shutil.copyfile(f_subtitle_whisper + f_process_title + ".srt", f_target_directory + f_process_title + "/" + f_process_title + "-(WH).srt")
 
     if (os.path.isfile(f_subtitle_whisper + f_process_title + "." + f_target_language)):
         f_my_logger.info(rjlog.logt(f"SUB - Found {f_process_title}{f_target_language} in 'Whisper'."))
         os.makedirs(f_target_directory + f_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + f_process_title + "." + f_target_language, f_target_directory + "/" + f_process_title + "/" + f_process_title + "-" + f_target_language)
+        shutil.copyfile(f_subtitle_whisper + f_process_title + "." + f_target_language, f_target_directory + "/" + f_process_title + "/" + f_process_title + "-" + f_target_language)
 
     if (os.path.isfile(f_subtitle_whisper + f_process_title + "-(WH)-" + f_target_language)):
         f_my_logger.info(rjlog.logt(f"SUB - Found {f_process_title}-(WH)-{f_target_language} in 'Whisper'."))
         os.makedirs(f_target_directory + f_process_title, exist_ok=True)
-        shutil.copy(f_subtitle_whisper + f_process_title + "-(WH)-" + f_target_language, f_target_directory + "/" + f_process_title + "/" + f_process_title + "-(WH)-" + f_target_language)
+        shutil.copyfile(f_subtitle_whisper + f_process_title + "-(WH)-" + f_target_language, f_target_directory + "/" + f_process_title + "/" + f_process_title + "-(WH)-" + f_target_language)
 
     return True
 
@@ -151,6 +151,6 @@ def get_best_subtitle(f_target_directory, f_target_language, f_process_title, f_
 
     if (p_biggest_filesize > 0) and not (os.path.isfile(p_target_directory + f_process_title + "-" + f_target_language)):
         f_my_logger.info(rjlog.logt(f"SUB - Creating {f_process_title}-{f_target_language} as default subtitle file."))
-        shutil.copy(p_biggest_filename, (p_target_directory + f_process_title + "-" + f_target_language))
+        shutil.copyfile(p_biggest_filename, (p_target_directory + f_process_title + "-" + f_target_language))
 
     return p_subtitle_available

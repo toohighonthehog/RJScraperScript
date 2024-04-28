@@ -31,11 +31,12 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
             if any(filename.endswith(ext) for ext in f_extensions):
                 p_source_filename = os.path.join(root, filename)
                 f_my_logger.info(rjlog.logt(f"{f_processmode[:3]} - {filename} to {f_target_directory}."))
+                print (f"{f_target_directory} {filename}")
                 if (f_processmode == "MOVE"):
-                    shutil.move(p_source_filename, f_target_directory)
+                    shutil.move(p_source_filename, f_target_directory + filename)
 
                 if (f_processmode == "COPY"):
-                    shutil.copy(p_source_filename, f_target_directory)
+                    shutil.copyfile(p_source_filename, f_target_directory + filename)
 
     return True
 

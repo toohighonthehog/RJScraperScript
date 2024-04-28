@@ -56,7 +56,7 @@ if __name__ == "__main__":
                     shutil.move(full_filename, TARGET_DIRECTORY + new_filename)
     
                 if (PROCESS == "COPY"):
-                    shutil.copy(full_filename, TARGET_DIRECTORY + new_filename)
+                    shutil.copyfile(full_filename, TARGET_DIRECTORY + new_filename)
 
         else:
             my_logger.warning(rjlog.logt(f"SKP - {full_filename} (skipping. {str(fixed_count)} results found)."))
