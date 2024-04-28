@@ -45,12 +45,12 @@ os.system("clear")
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
-    {"task": 32, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
-    {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/General/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/07/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/08/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/09/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Censored/10/"},
+    {"task": 4, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Names/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/Series/"},
     {"task": 128, "prate": -1, "base": "/multimedia/Other/RatedFinalJ/Request/"},
     {"task": 128, "prate":  0, "base": "/multimedia/Other/RatedFinalJ/VR/08/"},
@@ -80,31 +80,6 @@ my_connection = mysql.connector.connect(
 )
 
 my_cursor = my_connection.cursor(dictionary=True)
-
-########################################
-# code = "MIAD-283"
-# my_sql_query = (f"\
-#     SELECT MAX(actor.prate) \
-#     FROM title \
-#     LEFT OUTER JOIN actor_title_link \
-#     ON title.code = actor_title_link.title_code \
-#     LEFT OUTER JOIN actor \
-#     ON actor_title_link.actor_a_id = actor.a_ID \
-#     WHERE title_code = '{code}';" \
-#     )
-# my_cursor.execute(my_sql_query)
-# max_dict = my_cursor.fetchone()
-# max_rate = (max_dict['MAX(actor.prate)'])
-# if max_rate:
-#     print ("go for it")
-# else:
-#     print ("don't go for it")
-# exit()
-########################################
-
-
-
-
 my_logger = rjlog.get_logger()
 
 if __name__ == "__main__":
@@ -210,8 +185,6 @@ if __name__ == "__main__":
                             shutil.move(destination + code + "/" + code + ext, destination + code + ext)
                         except:
                             pass
-                # if it hasn't already been moved, get movie's max actor rating
-                # if the this rating is >0 or notnull, move it to names.
 
         if PROCESS_TASK & 1:
             my_logger.info(rjlog.logt(f_left = "=== Process Rescan Requests ", f_middle = "="))

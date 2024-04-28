@@ -126,3 +126,5 @@
 #  https://stackoverflow.com/questions/19787348/copy-file-keep-permissions-and-owner
 #  Write file level versus SQL data check script.
 #  Alongside the rating move, move and from General that have any actor with a rating to names (so general really is just 'general')
+#    Only do for 'general'
+#  I see to be hardcoding to folder names in the raw code - be careful.
