@@ -13,7 +13,8 @@ import rjscanmodule.rjlogging as rjlog
 
 title = "javme4lqz4"
 title = "SW-932"
-title = "IPZZ-002"
+title = "IPZZ-002" # javmeear7a
+#title = "MIAD-283"
 #title = "042CLT-079"
 #title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
@@ -22,22 +23,23 @@ with open("cookie.json", "r") as data:
     cookie = ast.literal_eval(data.read())
 
 my_javlibrary = javscraper.JAVLibrary()
-my_javlibrary.debug = True
+my_javlibrary.debug = False
 my_javlibrary._set_cookies(cookie)
 my_logger = rjlog.get_logger()
 
 print (my_javlibrary.search(title))
+print (my_javlibrary.get_video(title))
 #print (f_my_javlibrary.get_video(title))
-x, y = rjmeta.search_for_title(f_input_string = title)
+#x, y = rjmeta.search_for_title(f_input_string = title)
 
-metadata_array = rjmeta.download_metadata(
-                        f_process_title=title,
-                        f_my_logger=my_logger
-)
+#metadata_array = rjmeta.download_metadata(
+#                        f_process_title=title,
+#                        f_my_logger=my_logger
+#)
 
 
-print (f"{x} {y}")
-print (metadata_array)
+#print (f"{x} {y}")
+#print (metadata_array)
 
 #print (p_metadata)
 #print (p_metadata_url)
