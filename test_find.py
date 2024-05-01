@@ -13,8 +13,8 @@ import rjscanmodule.rjlogging as rjlog
 
 title = "javme4lqz4"
 title = "SW-932"
-title = "IPZZ-002" # javmeear7a
-#title = "MIAD-283"
+title = "IPZZ-003" # javmeear7a
+#title = "DOCP-094"
 #title = "042CLT-079"
 #title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
 #title = "FC2-PPV-4289049"
@@ -22,7 +22,7 @@ title = "IPZZ-002" # javmeear7a
 with open("cookie.json", "r") as data:
     cookie = ast.literal_eval(data.read())
 
-my_javlibrary = javscraper.JAVLibrary()
+my_javlibrary = javscraper.JAVLibrary2()
 my_javlibrary.debug = False
 my_javlibrary._set_cookies(cookie)
 my_logger = rjlog.get_logger()
