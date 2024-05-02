@@ -2,6 +2,7 @@
 import os, shutil
 import rjscanmodule.rjlogging as rjlog
 import rjscanmodule.rjgeneral as rjgen
+import rjscanmodule.rjmetadata as rjmeta
 #from rjscanmodule import rjlogging as rjlog
 #from rjscanmodule import rjgeneral as rjgen
 
@@ -45,7 +46,8 @@ if __name__ == "__main__":
         except:
             f_file_xdata = None
 
-        fixed_filename, fixed_count = rjgen.search_for_title(filename, f_file_xdata)
+        #fixed_filename, fixed_count = rjgen.search_for_title(filename, f_file_xdata)
+        fixed_filename, fixed_count = rjmeta.new_search_title(filename, my_logger, f_file_xdata)
 
         if fixed_count == 1:
             new_filename = fixed_filename + file_extension

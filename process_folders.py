@@ -298,17 +298,17 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count, metadata_array = rjmeta.new_search_title(f_input_string = filename, f_javli_override = f_file_xdata)
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
                 if to_be_scraped_count == 1:
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
-                    metadata_array = rjmeta.download_metadata(
-                        f_process_title=to_be_scraped,
-                        f_my_logger=my_logger,
-                        f_attribute_override=f_file_xdata
-                    )
+                    # metadata_array = rjmeta.download_metadata(
+                    #     f_process_title=to_be_scraped,
+                    #     f_my_logger=my_logger,
+                    #     f_attribute_override=f_file_xdata
+                    # )
 
                     metadata_array["prate"] = ARBITRARY_PRATE
                     if f_file_xprate:
