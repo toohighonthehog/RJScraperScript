@@ -27,8 +27,8 @@ my_javlibrary.debug = False
 my_javlibrary._set_cookies(cookie)
 my_logger = rjlog.get_logger()
 
-#print (my_javlibrary.search(title))
-#print (my_javlibrary.get_video(title))
+print (my_javlibrary.search(title))
+print (my_javlibrary.get_video(title))
 #print (f_my_javlibrary.get_video(title))
 x, y = rjmeta.search_for_title(f_input_string = title)
 
@@ -38,7 +38,7 @@ x, y = rjmeta.search_for_title(f_input_string = title)
 #)
 
 
-print (f"{x} {y}")
+#print (f"{x} {y}")
 #print (metadata_array)
 
 #print (p_metadata)

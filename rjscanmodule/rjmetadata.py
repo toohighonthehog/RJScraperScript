@@ -69,6 +69,7 @@ def download_metadata(f_process_title, f_my_logger, f_attribute_override = None)
     return p_metadata_array
 
 def search_for_title(f_input_string, f_javli_override = None):
+    print (f"fis: {f_input_string}")
     with open("cookie.json", "r") as data:
         cookie = ast.literal_eval(data.read())
     p_my_javlibrary = javscraper.JAVLibrary()
@@ -90,6 +91,7 @@ def search_for_title(f_input_string, f_javli_override = None):
     p_strict_valid = r'^([A-Z]{3,5})(\d{3})Z$'
     p_input_string = f_input_string.upper()
     p_input_string = re.sub(r'[^A-Z0-9]', '', p_input_string)
+    print (f"pis: {p_input_string}")
     p_input_string += "Z"
 
     p_strict_match = (re.match(p_strict_valid, p_input_string))
@@ -103,6 +105,7 @@ def search_for_title(f_input_string, f_javli_override = None):
         if re.match(p_valid, p_substring):
             p_matched_value = (re.match(p_valid, p_substring)).group()
             p_matched_value = p_matched_value[:-1]
+            print (f"pmv: {p_matched_value}")
             p_get_video = p_my_javlibrary.get_video(p_matched_value)
             time.sleep(6)
             if (p_get_video):
