@@ -6,9 +6,6 @@ import rjscanmodule.rjlogging as rjlog
 __all__ = ["get_localsubtitles", "get_subtitlecat", "get_best_subtitle"]
 
 def get_localsubtitles(f_subtitle_general, f_subtitle_whisper, f_target_directory, f_target_language, f_process_title, f_my_logger):
-    #p_process_title = f_process_title
-
-    pass
     # fix raw whisper filename
     p_whisper_raw = f_subtitle_whisper + f_process_title + "-en Whisper-cleaned.srt"
     p_whisper_raw_fixed = p_whisper_raw.replace("-en Whisper-cleaned", "-(WH)-en")

@@ -10,20 +10,19 @@ import os, shutil, mysql.connector, time
 from datetime import datetime
 
 # Task:
-#   0 = Do nothing
-#   1 = Generate the ffmpeg script, processed flagged abd look for missing data
-#   2 = Rescan for subtitles
-#   4 = Process files in root of source folder
-#   8 = Process files in root of source folder (but no SubtitleCat)
-#  16 = Write key data to extended attributes
-#  32 = Move to folder matching prate
-#  64 = Just undo / reset.  Don't Scan
-#  128 = Do DEFAULT_TASK.
-#  Add some logic on what can be run concurrently.
-#  valid values = 1,2,3,4,16,32,36,40,64,68 + 5,9
+# 0	    Do Nothing
+# 64	Undo everything
+# 16    Write key data and extended attributes
+# 32	Move to folder matching prate & ...
+# 1	    Generate the ffmpeg script, processed flagged and look for missing data
+# 2	    Rescan for subtitles (just locally)
+# 4	    Process files in root of source folder
+# 8 	Process files in root of source folder (but no SubtitleCat)
+# 128	Do DEFAULT_TASK.
 
 # are 5 and 9 a reasonable options too?  Do they happen in the right order?
 
+# How much of this is still relevent?
 # Status:
 #   1 = set for rescan (i.e. already reverted to parent folder)
 #   2 = set for rescan (i.e. revert to parent folder)
@@ -32,6 +31,7 @@ from datetime import datetime
 #   8 = metadata not found, file found.
 #   9 = all good.
 
+# How much of this is still relevent?
 # Subtitles:
 #   1 = ???
 #   2 = Trigger for the creation of runner.sh for MP3
@@ -61,7 +61,7 @@ PROCESS_DIRECTORIES = [
 ]
 
 # check 5 and 9 are okay.
-VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 32, 36, 64, 68, 72)
+VALID_TASKS = (0, 1, 2, 3, 4, 5, 8, 9, 16, 32, 36, 40, 64, 68, 72)
 
 SOURCE_EXTENSIONS = [".mkv", ".mp4", ".avi", ".xxx"]
 TARGET_LANGUAGE = "en.srt"
@@ -278,8 +278,8 @@ if __name__ == "__main__":
                 f_source_extensions=SOURCE_EXTENSIONS
             )
 
-            with open("cookie.json", "r") as data:
-                cookie = ast.literal_eval(data.read())
+            #with open("cookie.json", "r") as data:
+            #    cookie = ast.literal_eval(data.read())
             #my_javlibrary = javscraper.JAVLibrary()
             #my_javlibrary._set_cookies(cookie)
             
@@ -298,17 +298,17 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count = rjmeta.search_for_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count, metadata_array = rjmeta.new_search_title(f_input_string = filename, f_javli_override = f_file_xdata)
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
                 if to_be_scraped_count == 1:
                     os.makedirs(TARGET_DIRECTORY + to_be_scraped, exist_ok=True)
-                    metadata_array = rjmeta.download_metadata(
-                        f_process_title=to_be_scraped,
-                        f_my_logger=my_logger,
-                        f_attribute_override=f_file_xdata
-                    )
+                    # metadata_array = rjmeta.download_metadata(
+                    #     f_process_title=to_be_scraped,
+                    #     f_my_logger=my_logger,
+                    #     f_attribute_override=f_file_xdata
+                    # )
 
                     metadata_array["prate"] = ARBITRARY_PRATE
                     if f_file_xprate:
