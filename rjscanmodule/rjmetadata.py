@@ -1,70 +1,60 @@
 import javscraper, ast, time, re
 import rjscanmodule.rjlogging as rjlog
 
-__all__ = ["download_metadata", "search_for_title", "new_search_title"]
+__all__ = ["download_metadata", "new_search_title"]
 
-def download_metadata(f_process_title, f_my_logger, f_attribute_override = None):
-    ### need to check that, if f_attribute_override is set, try that first.
+def download_metadata(f_process_title, f_my_logger):
     with open("cookie.json", "r") as data:
         cookie = ast.literal_eval(data.read())
     p_my_javlibrary = javscraper.JAVLibrary()
     p_my_javlibrary._set_cookies(cookie)
     
-    #p_process_title = f_process_title
     p_metadata_array = []
-
-    if f_attribute_override:
-        p_metadata = p_my_javlibrary.get_video(f_attribute_override)
-        p_metadata_url = p_my_javlibrary.search(f_attribute_override)
-        f_string_override = f" (xcode: {f_attribute_override})"
-    else:
-        p_metadata = p_my_javlibrary.get_video(f_process_title)
-        p_metadata_url = p_my_javlibrary.search(f_process_title)
-        f_string_override = ""
+    p_metadata = p_my_javlibrary.get_video(f_process_title)
+    p_metadata_url = p_my_javlibrary.search(f_process_title)
     time.sleep(5)
 
-    f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}' metadata.{f_string_override}"))
+    f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}'."))
 
-    if p_metadata is not None:
-        p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
-
-        f_my_logger.info(rjlog.logt(f"MET - Metadata downloaded for '{f_process_title}'."))
-
-        p_metadata_array = {"code": p_metadata.code,
-                            "name": p_metadata.name,
-                            "actor": p_metadata.actresses,
-                            "studio": p_metadata.studio,
-                            "image": p_metadata.image,
-                            "genre": p_metadata.genres,
-                            "url": p_metadata_url,
-                            "score": p_metadata.score,
-                            "release_date": p_release_date,
-                            "added_date": None,
-                            "file_date": None,
-                            "notes": None,
-                            "location": None,
-                            "subtitles": None,
-                            "prate": None,
-                            "status": None}
-    else:
-        # does this ever get called?
+    if p_metadata is None:
         f_my_logger.info(rjlog.logt(f"MET - No metadata found for '{f_process_title}'."))
-        p_metadata_array = {"code": f_process_title,
-                            "name": None,
-                            "actor": None,
-                            "studio": None,
-                            "image": None,
-                            "genre": None,
-                            "url": None,
-                            "score": None,
-                            "release_date": None,
-                            "added_date": None,
-                            "file_date": None,
-                            "notes": None,
-                            "location": None,
-                            "subtitles": None,
-                            "prate": None,
-                            "status": None}
+        p_metadata_array = {
+            "code": f_process_title,
+            "name": None,
+            "actor": None,
+            "studio": None,
+            "image": None,
+            "genre": None,
+            "url": None,
+            "score": None,
+            "release_date": None,
+            "added_date": None,
+            "file_date": None,
+            "notes": None,
+            "location": None,
+            "subtitles": None,
+            "prate": None,
+            "status": None}
+    else:
+        #p_release_date = (p_metadata.release_date).strftime("%Y-%m-%d")
+        f_my_logger.info(rjlog.logt(f"MET - Metadata downloaded for '{f_process_title}'."))
+        p_metadata_array = {
+            "code": p_metadata.code,
+            "name": p_metadata.name,
+            "actor": p_metadata.actresses,
+            "studio": p_metadata.studio,
+            "image": p_metadata.image,
+            "genre": p_metadata.genres,
+            "url": p_metadata_url,
+            "score": p_metadata.score,
+            "release_date": (p_metadata.release_date).strftime("%Y-%m-%d"),
+            "added_date": None,
+            "file_date": None,
+            "notes": None,
+            "location": None,
+            "subtitles": None,
+            "prate": None,
+            "status": None}
 
     return p_metadata_array
 
@@ -141,7 +131,6 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
         p_input_string = f_input_string
         p_valid = r'([A-Z]){3,}[0-9]{3,}([A-Z])'
         p_input_string = re.sub(r'[^A-Z0-9]', '', p_input_string.upper()) + "Z"
-
         p_substrings = set()
         for p_loop in range(len(p_input_string)):
             p_substring = p_input_string[p_loop:]
@@ -151,7 +140,6 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
                 p_matched_value_split = (re.split('(\d+)', p_matched_value))
                 p_matched_value_hyphen = (f"{p_matched_value_split[0]}-{p_matched_value_split[1]}")
                 p_substrings.add(p_matched_value_hyphen)
-
         p_substrings_dd = []
         for item in p_substrings:
             is_substring = False
@@ -165,9 +153,10 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
     else:
         p_substrings_dd = [f_attribute_override]
 
-    p_metadata_array = None
-    #if len(p_substrings_dd) == 1:
+    # if len(p_substrings_dd) == 1:
     #    p_metadata_array = download_metadata(p_substrings_dd[0], f_my_logger)
     #    p_substrings = p_metadata_array["code"]
+    # else:
+    #    p_metadata_array = None
        
     return p_substrings_dd, len(p_substrings_dd), p_metadata_array

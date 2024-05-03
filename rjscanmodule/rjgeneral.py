@@ -1,7 +1,7 @@
 import shutil, os
 import rjscanmodule.rjlogging as rjlog
 
-__all__ = ["get_list_of_files", "move_up_level"]
+__all__ = ["get_list_of_files", "move_up_level", "transfer_files_by_extension", "prate_directory"]
 
 def get_list_of_files(f_source_directory, f_source_extensions):
     p_folder_list_1 = os.listdir(f_source_directory)
@@ -40,8 +40,8 @@ def transfer_files_by_extension(f_source_directory, f_target_directory, f_extens
 
     return True
 
+# I don't fully trust this.  Are the checks sufficient?
 def prate_directory(f_source = "", f_prate = ""):
-    # make this more general - i.e. a raw string which can't be turned into a number will be left alone.
     if f_prate != "Names":
         pos_end = f_source.rfind('/')
         pos_start = f_source.rfind('/', 0, pos_end)
