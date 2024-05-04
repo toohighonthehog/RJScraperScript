@@ -6,7 +6,7 @@ import javscraper, ast, os, time
 from datetime import datetime
 import rjscanmodule.rjlogging as rjlog
 
-os.system("clear")
+os.system('cls' if os.name == 'nt' else 'clear')
 title = "MIAD-283"
 
 # load the cookie

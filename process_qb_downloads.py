@@ -9,6 +9,8 @@ import rjscanmodule.rjmetadata as rjmeta
 # setfattr -n user.javli -v <value> <filename>
 # setfattr -n user.prate -v <value> <filename>
 
+os.system('cls' if os.name == 'nt' else 'clear')
+
 PROCESS = "MOVE"
 # BASE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/1. Raw Subs/"
 # INTERMEDIATE_DIRECTORY = "/mnt/multimedia/Other/X/SRT Files Project/2. Dumped Subs/"

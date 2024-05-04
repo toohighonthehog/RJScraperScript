@@ -41,7 +41,7 @@ from datetime import datetime
 #   8 = Untranslated Whisper Subtitles
 #   9 = Good, local language subtitle found. (check)
 
-os.system("clear")
+os.system('cls' if os.name == 'nt' else 'clear')
 
 DEFAULT_TASK = 0
 PROCESS_DIRECTORIES = [
@@ -298,7 +298,7 @@ if __name__ == "__main__":
                 except:
                     f_file_xprate = None
 
-                to_be_scraped, to_be_scraped_count, metadata_array = rjmeta.new_search_title(f_input_string = filename, f_javli_override = f_file_xdata)
+                to_be_scraped, to_be_scraped_count, metadata_array = rjmeta.new_search_title(f_input_string = filename, f_my_logger = my_logger, f_javli_override = f_file_xdata)
                 progress = f" {count}/{total}"
                 my_logger.info(rjlog.logt(f_left = f"Processing '{filename}' ", f_right = progress))
 
