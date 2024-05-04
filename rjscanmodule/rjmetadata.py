@@ -144,5 +144,9 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
             p_metadata_array = []
             p_result = None
     
+    if p_substrings_count < 1:
+        p_metadata_array = []
+        p_result = None
+        
     pass
     return p_result, p_substrings_count, p_metadata_array

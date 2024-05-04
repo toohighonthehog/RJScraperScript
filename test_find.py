@@ -11,7 +11,7 @@ import rjscanmodule.rjlogging as rjlog
 #os.system('cls' if os.name == 'nt' else 'clear')
 #print (max((min(os.get_terminal_size().columns, 120),80)))
 
-title = "ZZZZ-389" # just fails
+title = "DD-39" # just fails
 #title = "IPZZ014" # javmeear7a
 #title = "DOCP-094"
 #title = "042CLT-079"
