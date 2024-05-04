@@ -8,17 +8,18 @@ import rjscanmodule.rjlogging as rjlog
 # from module_rjscanfix import *deacr
 #from rjscanmodule import *
 
-os.system('cls' if os.name == 'nt' else 'clear')
+#os.system('cls' if os.name == 'nt' else 'clear')
 #print (max((min(os.get_terminal_size().columns, 120),80)))
 
-title = "SW-932"
+title = "ZZZZ-389" # just fails
 #title = "IPZZ014" # javmeear7a
-title = "DOCP-094"
+#title = "DOCP-094"
 #title = "042CLT-079"
-title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
-title = "abc123miad283af2ghj955xocp094rr1qqq123x4rjrj65078xcx105"#
-title = "hhd800.com@CAWD-675"
-title = "abc123xiad283af2ghj955xocp094rr1qqq123x4rjrj65078xcx105"#
+#title = "abc123miad283af2ghj955docp094rr1qqq123x4rjrj65078dcx105"#
+#title = "abc123miad283af2ghj955xocp094rr1qqq123x4rjrj65078xcx105"#
+#title = "hhd800.com@CAWD-675" # fails when it's valid is second
+#title = "abc123xiad283af2ghj955xocp094rr1qqq123x4rjrj65078xcx105"#
+#title = "IPZZ-002"
 #title = "DOCP-094"
 
 #title = "FC2-PPV-4289049"
