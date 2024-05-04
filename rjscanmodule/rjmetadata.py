@@ -14,7 +14,7 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
 
     #f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}'."))
     p_metadata_url = p_my_javlibrary.search(f_process_title)
-    pass
+    time.sleep(2)
     if p_metadata_url:
         if f_short_results == False:
             p_metadata = p_my_javlibrary.get_video(f_process_title)
@@ -37,6 +37,7 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
                 "prate": None,
                 "status": None
                 }
+            time.sleep(3)
             
         if f_short_results == True:
             f_my_logger.info(rjlog.logt(f"MET - Metadata found for '{f_process_title}'."))
@@ -79,8 +80,6 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
             "prate": None,
             "status": None
             }
-        
-    time.sleep(5)
 
     return p_metadata_array
 
@@ -213,9 +212,10 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
         # print (p_multi_count)
         if p_multi_count == 1:
             p_metadata_array = download_metadata(p_multi_result, f_my_logger)
-            p_substrings_dd = p_substrings_dd = [p_metadata_array["code"]]
+            p_result = p_metadata_array["code"]
             p_substrings_count = 1
         else:
-            p_metadata_array = None
+            p_metadata_array = []
+            p_result = None
        
-    return p_substrings_dd, p_substrings_count, p_metadata_array
+    return p_result, p_substrings_count, p_metadata_array
