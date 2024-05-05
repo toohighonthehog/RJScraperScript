@@ -131,7 +131,7 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
         else:
             p_substrings_count = 0
             p_result = None
-
+            
     # We need to think about what happens if the cookie fails mid stream and we've already found just 1 single match.
     # subsequent successfuls (therefore should cause failure) may give a false positive.
     # basically a 403 (and anything else?) should cause a script hard stop.
