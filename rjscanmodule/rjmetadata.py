@@ -1,6 +1,9 @@
 import javscraper, ast, time, re
 import rjscanmodule.rjlogging as rjlog
 
+# pip install /home/rjohnson/vscode/git/RJJAVScraperModule/
+# pip install /root/scripts/RJJAVScraperModule/
+
 __all__ = ["download_metadata", "new_search_title"]
 
 def download_metadata(f_process_title, f_my_logger, f_short_results = False):
@@ -121,6 +124,7 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
 
     if p_substrings_count == 1:
         p_metadata_array = download_metadata(p_substrings_dd[0], f_my_logger)
+
         if p_metadata_array and p_metadata_array["name"]:
             p_substrings_dd = [p_metadata_array["code"]]
             p_result = [p_metadata_array["code"]]

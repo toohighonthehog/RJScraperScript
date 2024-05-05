@@ -8,7 +8,7 @@ import rjscanmodule.rjlogging as rjlog
 # from module_rjscanfix import *deacr
 #from rjscanmodule import *
 
-#os.system('cls' if os.name == 'nt' else 'clear')
+os.system('cls' if os.name == 'nt' else 'clear')
 #print (max((min(os.get_terminal_size().columns, 120),80)))
 
 title = "DD-39" # just fails
