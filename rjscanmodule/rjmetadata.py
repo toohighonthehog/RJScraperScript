@@ -127,7 +127,7 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
 
         if p_metadata_array and p_metadata_array["name"]:
             p_substrings_dd = [p_metadata_array["code"]]
-            p_result = [p_metadata_array["code"]]
+            p_result = p_metadata_array["code"]
         else:
             p_substrings_count = 0
             p_result = None
