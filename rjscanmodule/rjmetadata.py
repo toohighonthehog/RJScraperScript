@@ -14,6 +14,8 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
 
     #f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}'."))
     p_metadata_url = p_my_javlibrary.search(f_process_title)
+
+    #print (requests.get(p_metadata_url))
     time.sleep(5)
     if p_metadata_url:
         if f_short_results == False:
@@ -119,13 +121,16 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
 
     if p_substrings_count == 1:
         p_metadata_array = download_metadata(p_substrings_dd[0], f_my_logger)
-        if p_metadata_array["name"]:
+        if p_metadata_array and p_metadata_array["name"]:
             p_substrings_dd = [p_metadata_array["code"]]
             p_result = [p_metadata_array["code"]]
         else:
             p_substrings_count = 0
             p_result = None
 
+    # We need to think about what happens if the cookie fails mid stream and we've already found just 1 single match.
+    # subsequent successfuls (therefore should cause failure) may give a false positive.
+    # basically a 403 (and anything else?) should cause a script hard stop.
     if p_substrings_count > 1:
         f_my_logger.warning(rjlog.logt(f"MET - Multiple {p_substrings_dd} ({p_substrings_count})."))
         p_multi_count = 0
@@ -133,6 +138,7 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
         for p_multi_item in p_substrings_dd:
             pass
             if p_multi_count > 1:
+                f_my_logger.warning(rjlog.logt(f"MET - Unable to find single {p_substrings_dd}."))
                 break
             p_multi_array = download_metadata(p_multi_item, f_my_logger, True)
             if p_multi_array["url"]:
