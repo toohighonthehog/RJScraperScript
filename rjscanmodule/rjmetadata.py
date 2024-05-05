@@ -86,6 +86,8 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
 # this logic and workflow needs a bit of cleaning.
 def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
     f_my_logger.info(rjlog.logt(f"MET - Processing '{f_input_string}'."))
+    
+    # Get a list of substrings which match the regular expression
     if f_attribute_override is None:
         p_input_string = f_input_string
         p_valid = r'[A-Z]{2,}[0-9]{3,}[^0-9]{1}'
@@ -109,10 +111,12 @@ def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
                         break
             if not is_substring:
                 p_substrings_dd.append(item)
+    # or, just the single value of it has an override string
     else:
         p_substrings_dd = [f_attribute_override]
 
     p_substrings_count = len(p_substrings_dd)
+
     if p_substrings_count == 1:
         p_metadata_array = download_metadata(p_substrings_dd[0], f_my_logger)
         if p_metadata_array["name"]:
