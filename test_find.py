@@ -31,19 +31,19 @@ my_javlibrary.debug = False
 my_javlibrary._set_cookies(cookie)
 my_logger = rjlog.get_logger()
 
-print (my_javlibrary.search("MIAD-283"))
+#print ("------------------------")
+#print (my_javlibrary.search("MIAD-283"))
+#print ("------------------------")
+#print (my_javlibrary.get_search("MIAD-283"))
+#print ("------------------------")
 #print (my_javlibrary.get_video(title))
+#print ("------------------------")
+#print (f"{x} / {y}")
 #print (f_my_javlibrary.get_video(title))
-x, y, z = rjmeta.new_search_title(f_input_string = title, f_my_logger = my_logger, f_attribute_override = "javmeear7a")
-
-#metadata_array = rjmeta.download_metadata(
-#                        f_process_title=title,
-#                        f_my_logger=my_logger
-#)
-
-
-print (f"{x} {y}")
-print (z)
+x, y, z = rjmeta.new_search_title(f_input_string = title, f_my_logger = my_logger)
+#print (f"{x} {y}")
+print (f"x: {x}, y: {x}")
+print (f"z: {z}")       
 #print (metadata_array)
 
 #print (p_metadata)

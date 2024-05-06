@@ -7,6 +7,7 @@ import rjscanmodule.rjlogging as rjlog
 __all__ = ["download_metadata", "new_search_title"]
 
 def download_metadata(f_process_title, f_my_logger, f_short_results = False):
+    valid_errorcode = [200, 302]
     with open("cookie.json", "r") as data:
         cookie = ast.literal_eval(data.read())
     p_my_javlibrary = javscraper.JAVLibrary()
@@ -14,12 +15,19 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
     p_my_javlibrary._set_cookies(cookie)
     
     p_metadata_array = []
-
     #f_my_logger.info(rjlog.logt(f"MET - Searching web for '{f_process_title}'."))
-    p_metadata_url = p_my_javlibrary.search(f_process_title)
+    p_metadata_url, p_metadata_errorcode = p_my_javlibrary.get_search(f_process_title)
+    #print (f"error: {p_metadata_error}")
+    
+    if p_metadata_errorcode not in valid_errorcode:
+        f_my_logger.error(rjlog.logt(f"MET - We got a '{p_metadata_errorcode} error', so we need to quit."))
+        quit()
+
+    f_my_logger.info(rjlog.logt(f"MET - Metadata Errorcode '{p_metadata_errorcode}'."))
+
 
     #print (requests.get(p_metadata_url))
-    time.sleep(5)
+    #time.sleep(5)
     if p_metadata_url:
         if f_short_results == False:
             p_metadata = p_my_javlibrary.get_video(f_process_title)
@@ -42,7 +50,7 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
                 "prate": None,
                 "status": None
                 }
-            time.sleep(5)
+            #time.sleep(5)
             
         if f_short_results == True:
             f_my_logger.info(rjlog.logt(f"MET - Metadata found for '{f_process_title}'."))
@@ -91,7 +99,7 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
 # this logic and workflow needs a bit of cleaning.
 def new_search_title(f_input_string, f_my_logger, f_attribute_override = None):
     f_my_logger.info(rjlog.logt(f"MET - Processing '{f_input_string}'."))
-    
+    f_error = 0
     # Get a list of substrings which match the regular expression
     if f_attribute_override is None:
         p_input_string = f_input_string
