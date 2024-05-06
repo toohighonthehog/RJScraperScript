@@ -11,7 +11,7 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
     with open("cookie.json", "r") as data:
         cookie = ast.literal_eval(data.read())
     p_my_javlibrary = javscraper.JAVLibrary()
-    p_my_javlibrary.debug = False
+    p_my_javlibrary.debug = True
     p_my_javlibrary._set_cookies(cookie)
     
     p_metadata_array = []
@@ -19,6 +19,7 @@ def download_metadata(f_process_title, f_my_logger, f_short_results = False):
     p_metadata_url, p_metadata_errorcode = p_my_javlibrary.get_search(f_process_title)
     #print (f"error: {p_metadata_error}")
     
+    print (p_metadata_errorcode)
     if p_metadata_errorcode not in valid_errorcode:
         f_my_logger.error(rjlog.logt(f"MET - We got a '{p_metadata_errorcode} error', so we need to quit."))
         quit()
